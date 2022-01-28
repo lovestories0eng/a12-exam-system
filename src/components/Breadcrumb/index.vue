@@ -41,7 +41,7 @@ export default {
       const first = matched[0]
       // 如果第一个面包屑不是首页则把首页放在第一个面包屑上面
       if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+        matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
       }
       // !==的优先级比&&大
       // undefined !== false的值为true
