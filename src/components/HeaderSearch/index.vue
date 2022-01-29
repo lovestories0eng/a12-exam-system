@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'show':show}" class="header-search">
+  <div class="header-search show">
     <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
     <el-select
       ref="headerSearchSelect"
@@ -13,74 +13,70 @@
       @change="change"
     >
       <!-- { item }解构数据 -->
-      <el-option v-for="{ item } in options" :key="item.path" :value="item" :label="item.title.join(' >> ')" />
+      <el-option v-for="{ item } in options" :key="searcherKey(item)" :value="item" :label="searcherLabel(item)" />
     </el-select>
   </div>
 </template>
 
 <script>
-// fuse is a lightweight fuzzy-search module
-// make search results more in line with expectations
+// Fuse是一个轻量级的模糊搜索模块 使搜索结果更符合预期
 import Fuse from 'fuse.js'
-import path from 'path'
 
 export default {
   name: 'HeaderSearch',
+  props: {
+    searchPool: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    searcherMethod: {
+      type: Function,
+      default() {
+        return null;
+      }
+    },
+    searcherKey: {
+      type: Function,
+      default() {
+        return null;
+      }
+    },
+    searcherLabel: {
+      type: Function,
+      default() {
+        return null;
+      }
+    },
+    fuseKeys: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
   data() {
     return {
       search: '',
       options: [],
-      searchPool: [],
-      show: false,
       fuse: undefined
     }
   },
-  computed: {
-    routes() {
-      return this.$store.getters.permissionRoutes
-    }
-  },
+  // 解决数据异步传输获取不到的问题
   watch: {
-    routes() {
-      this.searchPool = this.generateRoutes(this.routes)
-    },
     searchPool(list) {
       this.initFuse(list)
-    },
-    show(value) {
-      if (value) {
-        document.body.addEventListener('click', this.close)
-      } else {
-        document.body.removeEventListener('click', this.close)
-      }
     }
   },
-  mounted() {
-    this.searchPool = this.generateRoutes(this.routes)
+  created() {
+    this.initFuse(this.searchPool)
   },
   methods: {
-    click() {
-      this.show = !this.show
-      if (this.show) {
-        this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.focus()
-      }
-    },
-    close() {
-      this.$refs.headerSearchSelect && this.$refs.headerSearchSelect.blur()
-      this.options = []
-      this.show = false
-    },
     change(val) {
-      console.log(val)
-      this.$router.push(val.path)
+      this.searcherMethod(val)
       this.search = ''
       this.options = []
-      // Vue.nextTick()是在下次 DOM 更新循环结束之后执行延迟回调，
-      // 在修改数据之后使用 $nextTick，则可以在回调中获取更新后的 DOM（dom的改变是发生在nextTick()之后）
-      // 这个方法作用是当数据被修改后使用这个方法会回调获取更新后的dom再render出来
-      this.$nextTick(() => {
-        this.show = false
-      })
     },
     initFuse(list) {
       this.fuse = new Fuse(list, {
@@ -95,44 +91,8 @@ export default {
         maxPatternLength: 32,
         // 模式的最小字符长度
         minMatchCharLength: 1,
-        keys: [{
-          name: 'title',
-          weight: 0.7
-        }, {
-          name: 'path',
-          weight: 0.3
-        }]
+        keys: this.fuseKeys
       })
-    },
-    // Filter out the routes that can be displayed in the sidebar
-    // And generate the internationalized title
-    generateRoutes(routes, basePath = '/', prefixTitle = []) {
-      let res = []
-      for (const router of routes) {
-        // skip hidden router
-        if (router.hidden) { continue }
-        const data = {
-          path: path.resolve(basePath, router.path),
-          title: [...prefixTitle]
-        }
-        if (router.meta && router.meta.title) {
-          data.title = [...data.title, router.meta.title]
-          if (router.redirect !== 'noRedirect') {
-            // only push the routes with title
-            // special case: need to exclude parent router without redirect
-            res.push(data)
-          }
-        }
-
-        // recursive child routes
-        if (router.children) {
-          const tempRoutes = this.generateRoutes(router.children, data.path, data.title)
-          if (tempRoutes.length >= 1) {
-            res = [...res, ...tempRoutes]
-          }
-        }
-      }
-      return res
     },
     querySearch(query) {
       if (query !== '') {
@@ -165,7 +125,7 @@ export default {
     display: inline-block;
     vertical-align: middle;
 
-    ::v-deep .el-input__inner {
+    v-deep(.el-input__inner) {
       border-radius: 0;
       border: 0;
       padding-left: 0;

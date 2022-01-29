@@ -7,7 +7,15 @@
     />
 
     <div class="right-menu">
-      <search id="header-search" class="right-menu-item" />
+      <search
+        id="header-search"
+        class="right-menu-item"
+        :search-pool="searchPool"
+        :searcher-method="searcherMethod"
+        :searcher-key="searcherKey"
+        :searcher-label="searcherLabel"
+        :fuse-keys="fuseKeys"
+      />
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -34,23 +42,76 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Search from '@/components/HeaderSearch'
+import path from "path";
 
 export default {
   components: {
     Breadcrumb,
     Search
   },
+  data() {
+    return {
+      searchPool: [],
+      fuseKeys: [{
+        name: 'title',
+        weight: 0.7
+      }, {
+        name: 'path',
+        weight: 0.3
+      }],
+      searcherMethod: (val) => {
+        this.$router.push(val.path)
+      },
+      searcherKey: item => item.path,
+      searcherLabel: item => item.title.join(' >> ')
+    }
+  },
   computed: {
     ...mapGetters([
       'avatar',
+      "permissionRoutes"
     ])
+  },
+  created() {
+    this.searchPool = this.generateRoutes(this.permissionRoutes)
   },
   methods: {
     // 登出
     async logout() {
       await this.$store.dispatch('user/logout')
       await this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+    },
+    // 过滤出可以显示在侧边栏中的路由 并生成相关标题 用于查找
+    generateRoutes(routes, basePath = '/', prefixTitle = []) {
+      let res = []
+      for (const router of routes) {
+        // 跳过隐藏的路由
+        if (router.hidden) { continue }
+        const data = {
+          path: path.resolve(basePath, router.path),
+          title: [...prefixTitle]
+        }
+        // path为相关路由，title数组存储父路由和子路由的title
+        // {path: '/notice/received', title: Array(1)}
+        // title: Array(2)
+        if (router.meta && router.meta.title) {
+          data.title = [...data.title, router.meta.title]
+          if (router.redirect !== 'noRedirect') {
+            // 只推送带有标题的路由
+            // 特殊情况:需要排除无重定向父路由
+            res.push(data)
+          }
+        }
+        // 递归的子路由
+        if (router.children) {
+          const tempRoutes = this.generateRoutes(router.children, data.path, data.title)
+          if (tempRoutes.length >= 1) {
+            res = [...res, ...tempRoutes]
+          }
+        }
+      }
+      return res
+    },
   }
 }
 </script>
@@ -80,56 +141,5 @@ export default {
     vertical-align: top;
   }
 
-  .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 50px;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
-      }
-    }
-  }
 }
 </style>

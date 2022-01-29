@@ -63,7 +63,7 @@ export const studentRoutes = [
     name: 'notice',
     meta: {
       title: '通知',
-      icon: 'lock',
+      icon: 'tongzhi',
     },
     children: [
       {
@@ -72,7 +72,7 @@ export const studentRoutes = [
         name: '我发出的',
         meta: {
           title: '我发出的',
-          icon: 'lock'
+          icon: 'wofachude'
         }
       },
       {
@@ -81,7 +81,7 @@ export const studentRoutes = [
         name: '我收到的',
         meta: {
           title: '我收到的',
-          icon: 'lock'
+          icon: 'woshoudaode'
         }
       },
       // 404 page must be placed at the end !!!
@@ -100,7 +100,7 @@ export const studentRoutes = [
     name: '考试',
     meta: {
       title: '考试',
-      icon: 'lock',
+      icon: 'kaoshi',
     },
     children: [
       {
@@ -109,7 +109,7 @@ export const studentRoutes = [
         name: '我的考试',
         meta: {
           title: '我的考试',
-          icon: 'lock'
+          icon: 'kaoshi_2'
         }
       },
       {
@@ -118,7 +118,7 @@ export const studentRoutes = [
         name: '考试数据',
         meta: {
           title: '考试数据',
-          icon: 'lock'
+          icon: 'shujukanban'
         }
       },
       {
@@ -127,7 +127,7 @@ export const studentRoutes = [
         name: '错题本',
         meta: {
           title: '错题本',
-          icon: 'lock'
+          icon: 'cuotiben'
         }
       }
     ]
@@ -144,7 +144,7 @@ export const studentRoutes = [
     name: '帮助',
     meta: {
       title: '帮助',
-      icon: 'lock'
+      icon: 'bangzhu'
     }
   }
 ]

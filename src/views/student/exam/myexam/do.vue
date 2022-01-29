@@ -176,9 +176,11 @@ export default {
 
 <style lang="scss" scoped>
   .do-exam-title {
+    position: fixed;
     width: 99%;
     background: #fff6f6;
     padding: 5px 0;
+    z-index: 99;
   }
 
   .do-exam-title-hidden {

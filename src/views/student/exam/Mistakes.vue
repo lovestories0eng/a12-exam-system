@@ -66,7 +66,6 @@ export default {
     },
     search (params) {
       if (params !== undefined) {
-        console.log(params[0])
         this.pageIndex = params[0].page
         this.pageSize = params[0].limit
       }

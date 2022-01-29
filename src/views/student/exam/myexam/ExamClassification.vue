@@ -55,5 +55,7 @@ export default {
 </script>
 
 <style scoped>
-
+.el-table {
+  cursor: pointer;
+}
 </style>
