@@ -32,14 +32,24 @@ export default {
 
 <style scoped>
 .row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  /*flex-grow: 1;*/
   background-color: #eee;
   height: 50px;
   line-height: 50px;
 }
 
 .desc {
-  margin-left: 20px;
-  margin-right: 25px;
+  width: 50px;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.el-radio {
+  margin: 5px;
 }
 
 </style>

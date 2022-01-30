@@ -1,6 +1,6 @@
 <template>
   <div>
-    <logo />
+    <logo :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
@@ -34,6 +34,7 @@ export default {
     // 从VueX中取出permissionRoutes属性和sidebar属性
     ...mapGetters([
       'permissionRoutes',
+      'sidebar'
     ]),
     activeMenu() {
       // for debug
@@ -47,6 +48,9 @@ export default {
     },
     variables() {
       return variables
+    },
+    isCollapse() {
+      return !this.sidebar.opened
     }
   }
 }

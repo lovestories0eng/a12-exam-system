@@ -19,7 +19,7 @@
     font-size: 0;
     top: 0;
     bottom: 0;
-    left: calc((100% - 80%) / 2);
+    left: 0;
     z-index: 1001;
     overflow: hidden;
 
@@ -96,11 +96,11 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 54px !important;
+      width: 0 !important;
     }
 
     .main-container {
-      margin-left: 54px;
+      margin-left: 0;
     }
 
     .submenu-title-noDropdown {

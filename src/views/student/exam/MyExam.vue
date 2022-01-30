@@ -1,18 +1,20 @@
 <template>
   <div>
-    <Screen ref="screen" @filterExamLists="filterExamLists">
-      <div class="right-menu">
-        <search
-          class="right-menu-item"
-          :search-pool="allExams"
-          :searcher-key="searcherKey"
-          :searcher-label="searcherLabel"
-          :searcher-method="searcherMethod"
-          :fuse-keys="fuseKeys"
-          @change="searcherMethod"
-        >
-        </search>
-      </div>
+    <Screen ref="screen" style="margin-top: 55px" @filterExamLists="filterExamLists">
+      <template v-if="device!=='mobile'">
+        <div class="right-menu">
+          <search
+            class="right-menu-item"
+            :search-pool="allExams"
+            :searcher-key="searcherKey"
+            :searcher-label="searcherLabel"
+            :searcher-method="searcherMethod"
+            :fuse-keys="fuseKeys"
+            @change="searcherMethod"
+          >
+          </search>
+        </div>
+      </template>
     </Screen>
     <div v-for="(item, index) in tags" :key="item">
       <el-card v-if="examsShow[index].length !== 0">
@@ -31,6 +33,7 @@ import ExamClassification from "views/student/exam/myexam/ExamClassification";
 import Search from "components/HeaderSearch"
 
 import {examClassification} from "@/api/examClassification";
+import {mapGetters} from "vuex";
 
 export default {
   name: "MyExam",
@@ -71,6 +74,11 @@ export default {
       }
     }
   },
+  computed: {
+  ...mapGetters([
+      'device',
+    ])
+  },
   created() {
     examClassification("20141331").then(response => {
         this.allExams = response.response.response
@@ -81,6 +89,7 @@ export default {
         this.examsShow = this.examLists
       }
     )
+    console.log(this.device)
   },
   methods: {
     parseCategory(dateStr) {
@@ -104,7 +113,7 @@ export default {
         this.examsShow = this.examLists
       }
     }
-  }
+  },
 }
 </script>
 

@@ -74,6 +74,7 @@ export default {
       questionAnswerApi.pageList(this.queryParam).then(data => {
         data = data.response
         const re = data.response
+        console.log(re);
         _this.tableData = re.list
         _this.total = re.total
         _this.queryParam.pageIndex = re.pageNum

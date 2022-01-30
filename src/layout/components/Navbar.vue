@@ -1,5 +1,11 @@
 <template>
   <div class="navbar">
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
     <breadcrumb
       id="breadcrumb-container"
       class="breadcrumb-container"
@@ -7,16 +13,17 @@
     />
 
     <div class="right-menu">
-      <search
-        id="header-search"
-        class="right-menu-item"
-        :search-pool="searchPool"
-        :searcher-method="searcherMethod"
-        :searcher-key="searcherKey"
-        :searcher-label="searcherLabel"
-        :fuse-keys="fuseKeys"
-      />
-
+      <template v-if="device!=='mobile'">
+        <search
+          id="header-search"
+          class="right-menu-item"
+          :search-pool="searchPool"
+          :searcher-method="searcherMethod"
+          :searcher-key="searcherKey"
+          :searcher-label="searcherLabel"
+          :fuse-keys="fuseKeys"
+        />
+      </template>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" alt="">
@@ -40,12 +47,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Hamburger from '@/components/Hamburger'
 import Breadcrumb from '@/components/Breadcrumb'
 import Search from '@/components/HeaderSearch'
 import path from "path";
 
 export default {
   components: {
+    Hamburger,
     Breadcrumb,
     Search
   },
@@ -68,7 +77,9 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'sidebar',
       'avatar',
+      'device',
       "permissionRoutes"
     ])
   },
@@ -76,6 +87,10 @@ export default {
     this.searchPool = this.generateRoutes(this.permissionRoutes)
   },
   methods: {
+    // 切换栏
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
     // 登出
     async logout() {
       await this.$store.dispatch('user/logout')
@@ -130,6 +145,10 @@ export default {
     float: left;
     transition: background .3s;
     -webkit-tap-highlight-color:transparent;
+
+    &:hover {
+      background: rgba(0, 0, 0, .025)
+    }
   }
 
   .breadcrumb-container {
