@@ -17,6 +17,7 @@
                     :background="false"
                     :page="queryParam.pageIndex"
                     :limit="queryParam.pageSize"
+                    :layout="paginationLayout"
                     style="margin-top: 20px; text-align: center;"
                     @pagination="search(arguments)"
         />
@@ -50,7 +51,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('enumItem', ['enumFormat'])
+    ...mapGetters('enumItem', ['enumFormat']),
+    paginationLayout() {
+      return this.$store.getters.device === 'mobile'? 'prev, pager, next' : 'prev, pager, next, jumper'
+    }
   },
   created () {
     this.search()

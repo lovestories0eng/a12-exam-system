@@ -1,6 +1,15 @@
 // cover some element-ui styles
-.el-form-item__content, .el-radio-group, .el-table, .el-radio__label {
+.el-form-item__content, .el-radio-group, .el-table, .el-radio, .el-radio__label, .el-checkbox__label, .el-breadcrumb, .el-radio-group {
   font-size: inherit !important;
+}
+
+.el-radio {
+  margin-right: 2px !important;
+}
+
+.el-radio__inner {
+  width: 10px !important;
+  height: 10px !important;
 }
 
 .el-breadcrumb__inner,

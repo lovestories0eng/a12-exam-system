@@ -9,7 +9,7 @@
     <breadcrumb
       id="breadcrumb-container"
       class="breadcrumb-container"
-      style="line-height: 50px; margin-left: 15px;"
+      style="line-height: 50px; margin-left: 5px;"
     />
 
     <div class="right-menu">

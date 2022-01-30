@@ -42,9 +42,20 @@ export default {
 }
 
 .desc {
-  width: 50px;
-  margin-left: 10px;
-  margin-right: 5px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+@media only screen and (max-width: 480px) {
+  .desc {
+    width: 30px;
+  }
+}
+
+@media only screen and (min-width: 481px) {
+  .desc {
+    width: 50px;
+  }
 }
 
 .el-radio {
