@@ -36,7 +36,6 @@ export default {
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
-  /*flex-grow: 1;*/
   background-color: #eee;
   height: 50px;
   line-height: 50px;

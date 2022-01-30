@@ -4,7 +4,7 @@
     <side-bar class="sidebar-container" />
     <div class="main-container">
       <div class="fixed-header">
-        <navbar />
+        <navbar/>
       </div>
       <keep-alive>
         <router-view></router-view>
@@ -76,16 +76,18 @@ export default {
 }
 
 .fixed-header {
-  position: fixed;
+  position: relative;
   top: 0;
   z-index: 9;
-  // width: 100%;
   width: calc(100% - #{$sideBarWidth});
   transition: width 0.28s;
 }
 
 .hideSidebar .fixed-header {
-  //width: calc(100% - 54px)
+  width: 100%;
+}
+
+.openSidebar .fixed-header {
   width: 100%;
 }
 

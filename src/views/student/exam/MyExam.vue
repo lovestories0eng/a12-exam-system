@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Screen ref="screen" style="margin-top: 55px" @filterExamLists="filterExamLists">
+    <Screen ref="screen" @filterExamLists="filterExamLists">
       <template v-if="device!=='mobile'">
         <div class="right-menu">
           <search

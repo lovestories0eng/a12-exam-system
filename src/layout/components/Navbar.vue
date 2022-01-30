@@ -9,7 +9,7 @@
     <breadcrumb
       id="breadcrumb-container"
       class="breadcrumb-container"
-      style="line-height: 50px; font-size: 18px; margin-left: 15px;"
+      style="line-height: 50px; margin-left: 15px;"
     />
 
     <div class="right-menu">
@@ -134,7 +134,7 @@ export default {
 <style lang="scss" scoped>
 .navbar {
   height: 50px;
-  overflow: hidden;
+  //overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);

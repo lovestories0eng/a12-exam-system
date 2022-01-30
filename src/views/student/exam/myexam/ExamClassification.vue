@@ -5,7 +5,6 @@
         <el-table
           :data="examList"
           stripe
-          style="width: 100%"
           @row-click="clickData"
         >
           <el-table-column

@@ -1,4 +1,7 @@
 // cover some element-ui styles
+.el-form-item__content, .el-radio-group, .el-table, .el-radio__label {
+  font-size: inherit !important;
+}
 
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
