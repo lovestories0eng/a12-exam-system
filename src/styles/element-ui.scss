@@ -1,6 +1,15 @@
 // cover some element-ui styles
-.el-form-item__content, .el-radio-group, .el-table, .el-radio, .el-radio__label, .el-checkbox__label, .el-breadcrumb, .el-radio-group {
-  font-size: inherit !important;
+.el-form-item__content, .el-radio-group, .el-table, .el-radio, .el-radio__label,
+//.el-checkbox__label, .el-breadcrumb, .el-radio-group, .el-checkbox, .el-checkbox-group {
+//  font-size: inherit !important;
+//}
+
+.el-card__body {
+  padding: 10px !important;
+}
+
+.el-checkbox {
+  margin-right: 5px !important;
 }
 
 .el-radio {
@@ -18,7 +27,7 @@
 }
 
 .el-card {
-  margin: 25px 5px;
+  margin: 10px 5px !important;
 }
 
 .el-upload {

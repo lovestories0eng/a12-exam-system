@@ -21,7 +21,8 @@
         <span>
           <strong>{{ item }}</strong>
         </span>
-        <ExamClassification :exam-list="examsShow[index]"></ExamClassification>
+        <!-- 不同种类（进行中、待开始、已完成）的考试点击的事件不同 -->
+        <ExamClassification :row-click="rowClicks[index]" :exam-list="examsShow[index]"></ExamClassification>
       </el-card>
     </div>
   </div>
@@ -31,6 +32,8 @@
 import Screen from "views/student/exam/myexam/Screen";
 import ExamClassification from "views/student/exam/myexam/ExamClassification";
 import Search from "components/HeaderSearch"
+
+import { Message } from 'element-ui'
 
 import {examClassification} from "@/api/examClassification";
 import {mapGetters} from "vuex";
@@ -71,7 +74,32 @@ export default {
             }
           }
         }
-      }
+      },
+      // 点击进行中、待开始、已完成的考试分别触发的回调函数
+      rowClicks: [
+        (row) => {
+        let routeUrl = this.$router.resolve({
+          path: "/exam/do",
+          query: {
+            id: row.id,
+            studentId: this.$store.getters.studentId
+          }
+        });
+        window.open(routeUrl.href, '_blank');
+      },
+        () => {
+          Message.error('考试未开始，无法查看')
+      },
+        (row) => {
+          let routeUrl = this.$router.resolve({
+            path: "/exam/read",
+            query: {
+              id: row.id,
+              studentId: this.$store.getters.studentId
+            }
+          });
+          window.open(routeUrl.href, '_blank');
+        }]
     }
   },
   computed: {
@@ -89,7 +117,6 @@ export default {
         this.examsShow = this.examLists
       }
     )
-    console.log(this.device)
   },
   methods: {
     parseCategory(dateStr) {

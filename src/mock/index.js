@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
 const user = require('./user')
-import {getPageOne, getList, getExamList, getExamPaper, getExamResult} from "@/mock/examPaper";
+import {getPageOne, getList, getExamList, getExamPaper, getExamResult, getReadData} from "@/mock/examPaper";
 
 function param2Obj(url) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
@@ -47,5 +47,8 @@ for (const i of mocks) {
 Mock.mock('/web/student/question/answer/page', 'post', getPageOne)
 Mock.mock('/web/student/question/answer/list?id=student', 'post', getList)
 Mock.mock('/web/student/classification?studentId=20141331', 'post', getExamList)
-Mock.mock('/web/student/exam/paper/select?id=3&studentId=20141331', 'post', getExamPaper)
+Mock.mock('/web/student/exam/paper/select?id=4&studentId=20141331', 'post', getExamPaper)
 Mock.mock('/web/student/exam/paper/answer/answerSubmit', 'post', getExamResult)
+Mock.mock('/web/student/exampaper/answer/read?id=1&studentId=20141331', 'post', getReadData)
+Mock.mock('/web/student/exampaper/answer/read?id=2&studentId=20141331', 'post', getReadData)
+Mock.mock('/web/student/exampaper/answer/read?id=3&studentId=20141331', 'post', getReadData)

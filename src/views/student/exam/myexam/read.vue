@@ -1,0 +1,190 @@
+<template>
+  <div id="read">
+    <el-container class="app-item-contain">
+      <div id="left">
+        <div class="student-info">
+          <span class="detail">
+            学生学号：{{ $store.getters.studentId }}
+          </span>
+          <br>
+          <span class="detail">
+            学生姓名：{{ $store.getters.name }}
+          </span>
+        </div>
+        <!-- 试卷总览 -->
+        <el-row class="do-exam-title">
+          <el-col :span="24">
+            <span v-for="(item, index) in answer.answerItems" :key="item.itemOrder">
+              <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                {{ questionName[questionOrder.indexOf(index)] }} <br>
+              </span>
+              <!-- item.completed判断题目是否做完 -->
+              <el-tag
+                :type="questionDoRightTag(item.doRight)"
+                class="do-exam-title-tag"
+                style="display:inline-block;"
+                @click="goAnchor('#question-'+item.itemOrder)"
+              >
+                {{ item.itemOrder }}
+              </el-tag>
+            </span>
+          </el-col>
+        </el-row>
+      </div>
+      <div id="right">
+        <el-header class="align-center">
+          <h1>{{ form.name }}</h1>
+          <div>
+            <span class="question-title-padding">试卷得分：{{ answer.score }}</span>
+            <span class="question-title-padding">试卷耗时：{{ formatSeconds(answer.doTime) }}</span>
+          </div>
+        </el-header>
+        <el-main>
+          <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
+            <el-row v-for="(titleItem,index) in form.titleItems" :key="index">
+              <h3>{{ titleItem.name }}</h3>
+              <el-card v-if="titleItem.questionItems.length!==0" class="exampaper-item-box">
+                <el-form-item v-for="questionItem in titleItem.questionItems"
+                              :id="'question-'+ questionItem.itemOrder"
+                              :key="questionItem.itemOrder"
+                              :label="questionItem.itemOrder+'.'"
+                              class="exam-question-item"
+                              label-width="50px"
+                >
+                  <QuestionAnswerShow
+                    :card-style="'box-shadow: none; border: none;'"
+                    :q-type="questionItem.questionType"
+                    :question="questionItem"
+                    :answer="answer.answerItems[questionItem.itemOrder-1]"
+                  />
+                </el-form-item>
+              </el-card>
+            </el-row>
+          </el-form>
+        </el-main>
+      </div>
+    </el-container>
+  </div>
+</template>
+
+<script>
+import { mapState, mapGetters } from 'vuex'
+import { formatSeconds } from '@/utils/timeFormat'
+import QuestionAnswerShow from 'components/exam/QuestionAnswerShow'
+import examPaperAnswerApi from '@/api/examPaper'
+export default {
+  components: { QuestionAnswerShow },
+  data () {
+    return {
+      form: {},
+      formLoading: false,
+      answer: {
+        id: null,
+        score: 0,
+        doTime: 0,
+        answerItems: [],
+        doRight: false
+      },
+      questionOrder: [0],
+      questionName: []
+    }
+  },
+  computed: {
+    ...mapGetters('enumItem', ['enumFormat']),
+    ...mapState('enumItem', {
+      doRightTag: state => state.exam.question.answer.doRightTag
+    })
+  },
+  created () {
+    let id = this.$route.query.id
+    let studentId = this.$route.query.studentId
+    let _this = this
+    if (id && parseInt(id) !== 0) {
+      _this.formLoading = true
+      examPaperAnswerApi.read(id, studentId).then(re => {
+        re = re.response
+        console.log(JSON.stringify(re));
+        _this.form = re.response.paper
+        _this.answer = re.response.answer
+        _this.formLoading = false
+        let titleItems = _this.form.titleItems
+        let count = 0
+        for (let temp of titleItems) {
+          this.questionName.push(temp.name)
+          this.questionOrder.push(temp.questionItems.length + count)
+          count += temp.questionItems.length
+        }
+      })
+    }
+  },
+  methods: {
+    formatSeconds (theTime) {
+      return formatSeconds(theTime)
+    },
+    questionDoRightTag (status) {
+      return this.enumFormat(this.doRightTag, status)
+    },
+    goAnchor (selector) {
+      this.$el.querySelector(selector).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  @media only screen and (max-width: 480px) {
+
+  }
+
+  @media only screen and (min-width: 481px) {
+    #left {
+      position: fixed;
+      transform: translate(0, 50%);
+      margin: 15px;
+      width: 24%;
+      box-shadow: 0 2px 15px rgba(0, 0, 255, .2);
+    }
+
+    #right {
+     position: relative;
+     left: calc(24% + 30px);
+     width: calc(100% - 24% - 30px);
+    }
+
+    .do-exam-title {
+      width: 100%;
+      background: #fff;
+      padding: 5px 5px;
+      z-index: 99;
+    }
+  }
+
+  .do-exam-title-tag {
+    margin: 5px;
+    cursor: pointer;
+  }
+
+  .student-info {
+   padding: 5px;
+  }
+
+  .student-info .detail {
+    padding: 5px;
+  }
+
+  .align-center {
+    text-align: center
+  }
+
+  .exam-question-item{
+    padding: 10px;
+    .el-form-item__label{
+      font-size: 15px !important;
+    }
+  }
+
+  .question-title-padding{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+</style>

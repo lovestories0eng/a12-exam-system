@@ -3,8 +3,8 @@
 //     autoprefixer: {}, // 用来给不同的浏览器自动添加相应前缀，如-webkit-，-moz-等等
 //     "postcss-px-to-viewport": {
 //       unitToConvert: "px", // 要转化的单位
-//       viewportWidth: 1440, // 视窗的宽度，对应的是设计稿的宽度
-//       viewportHeight: 900, // 视窗的高度，对应的是我们设计稿的高度
+//       viewportWidth: 375, // 视窗的宽度，对应的是设计稿的宽度
+//       viewportHeight: 667, // 视窗的高度，对应的是我们设计稿的高度
 //       unitPrecision: 6, // 转换后的精度，即小数点位数
 //       propList: ["*"], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
 //       viewportUnit: "vw", // 指定需要转换成的视窗单位，默认vw

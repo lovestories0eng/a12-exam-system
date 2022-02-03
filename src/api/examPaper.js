@@ -10,5 +10,10 @@ export default {
     url: '/web/student/exam/paper/answer/answerSubmit',
     method: 'post',
     data: form
+  }),
+  read: (id, studentId) => request({
+    url: '/web/student/exampaper/answer/read',
+    method: 'post',
+    params: { id, studentId }
   })
 }

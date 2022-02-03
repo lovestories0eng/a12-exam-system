@@ -8,7 +8,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  role: ''
+  role: '',
+  studentId: ''
 }
 
 // 注册所有的mutation方法
@@ -28,13 +29,15 @@ const mutations = {
   },
   SET_ROLE: (state, role) => {
     state.role = role
+  },
+  SET_STUDENTID: (state, studentId) => {
+    state.studentId = studentId
   }
 }
 
 // action存在的意义就是执行异步操作
 // 注册所有的action方法
 const actions = {
-  // user login
   // 登录
   // commit为VueX中自带的方法
   // 将commit 从 context 中结构出来
@@ -66,11 +69,12 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { role, name, avatar, introduction } = data
+        const { role, name, avatar, introduction, studentId } = data
         commit('SET_ROLE', role)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
+        commit('SET_STUDENTID', studentId)
         resolve(data)
       }).catch(error => {
         reject(error)

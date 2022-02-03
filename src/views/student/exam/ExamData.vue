@@ -1,13 +1,14 @@
 <template>
-  <div></div>
+  <div class="databoard-container">
+    <Charts></Charts>
+  </div>
 </template>
 
 <script>
+import Charts from './examdata/charts'
+
 export default {
-  name: "ExamData"
+  name: "ExamData",
+  components: { Charts }
 }
 </script>
-
-<style scoped>
-
-</style>

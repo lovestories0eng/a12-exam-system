@@ -67,6 +67,15 @@ export const studentRoutes = [
     },
     children: [
       {
+        path: '/notice/edit',
+        component: () => import('@/views/student/notice/NoticeEdit'),
+        name: '发送通知',
+        meta: {
+          title: '发送通知',
+          icon: 'sendNotice',
+        }
+      },
+      {
         path: '/notice/sent',
         component: () => import('@/views/student/notice/Sent'),
         name: '我发出的',
@@ -84,12 +93,6 @@ export const studentRoutes = [
           icon: 'woshoudaode'
         }
       },
-      // 404 page must be placed at the end !!!
-      {
-        path: '*',
-        redirect: '/404',
-        hidden: true
-      }
     ]
   },
   {
@@ -139,13 +142,57 @@ export const studentRoutes = [
     name: '进行考试',
   },
   {
+    path: '/exam/read',
+    component: () => import('views/student/exam/myexam/read'),
+    hidden: true,
+    name: '查看试卷'
+  },
+  {
     path: '/help',
     component: Layout,
     name: '帮助',
     meta: {
       title: '帮助',
       icon: 'bangzhu'
-    }
+    },
+    children: [
+      {
+        path: '/help/index',
+        component: () => import('@/views/student/help/Help'),
+        meta: {
+          title: '帮助',
+          icon: 'bangzhu',
+          breadcrumb: false
+        },
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/index',
+    name: '个人资料',
+    meta: {
+      title: '个人资料',
+      icon: 'profile'
+    },
+    children: [
+      {
+        path: '/profile/index',
+        component: () => import('@/views/student/profile/Profile'),
+        meta: {
+          title: '个人资料',
+          icon: 'profile',
+          breadcrumb: false
+        },
+      }
+    ]
+  },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
   }
 ]
 

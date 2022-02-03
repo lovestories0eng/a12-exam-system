@@ -1,6 +1,6 @@
 <template>
   <div style="line-height:1.8;">
-    <el-card v-if="qType===1||qType===2||qType===3||qType===4||qType===5">
+    <el-card v-if="qType===1||qType===2||qType===3||qType===4||qType===5" :style="cardStyle">
       <div class="bar">
         <span class="desc">学科：{{ subjectName }}</span>
         <span class="desc">题型：{{ qTypeStr }}</span>
@@ -114,6 +114,10 @@ export default {
     subjectName: {
       type: String,
       default: ""
+    },
+    cardStyle: {
+      type: String,
+      default: 'box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);'
     }
   },
   computed: {

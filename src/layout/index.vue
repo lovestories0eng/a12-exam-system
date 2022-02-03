@@ -4,7 +4,7 @@
     <side-bar class="sidebar-container" />
     <div class="main-container">
       <div class="fixed-header">
-        <navbar/>
+        <navbar />
       </div>
       <keep-alive>
         <router-view></router-view>
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+      this.$store.dispatch('app/closeSideBar', {withoutAnimation: false})
     }
   }
 }

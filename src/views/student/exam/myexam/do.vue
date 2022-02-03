@@ -1,60 +1,74 @@
 <template>
   <div id="do">
-    <!-- 试卷总览 -->
-    <el-row class="do-exam-title">
-      <el-col :span="24">
-        <span v-for="item in answer.answerItems" :key="item.itemOrder">
-          <!-- item.completed判断题目是否做完 -->
-          <el-tag :type="questionCompleted(item.completed)" class="do-exam-title-tag" @click="goAnchor('#question-'+item.itemOrder)">{{ item.itemOrder }}</el-tag>
-        </span>
-        <span class="do-exam-time">
-          <label>剩余时间：</label>
-          <label>{{ formatSeconds(remainTime) }}</label>
-        </span>
-      </el-col>
-    </el-row>
-    <el-row class="do-exam-title-hidden">
-      <el-col :span="24">
-        <span v-for="item in answer.answerItems" :key="item.itemOrder">
-          <el-tag class="do-exam-title-tag">{{ item.itemOrder }}</el-tag>
-        </span>
-        <span class="do-exam-time">
-          <label>剩余时间：</label>
-        </span>
-      </el-col>
-    </el-row>
     <el-container class="app-item-contain">
-      <!-- 试卷名称与概况 -->
-      <el-header class="align-center">
-        <h1>{{ form.name }}</h1>
-        <div>
-          <span class="question-title-padding">试卷总分：{{ form.score }}</span>
-          <span class="question-title-padding">考试时间：{{ form.suggestTime }}分钟</span>
+      <div id="left">
+        <div class="student-info">
+          <span class="detail">
+            学生学号：{{ $store.getters.studentId }}
+          </span>
+          <br>
+          <span class="detail">
+            学生姓名：{{ $store.getters.name }}
+          </span>
         </div>
-      </el-header>
-      <el-main>
-        <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
-          <el-row v-for="(titleItem,index) in form.titleItems" :key="index">
-            <!-- 题目类型（单选题、多选题、简答题） -->
-            <h3>{{ titleItem.name }}</h3>
-            <el-card v-if="titleItem.questionItems.length!==0" class="exampaper-item-box">
-              <!-- question记录题目数据 -->
-              <el-form-item v-for="questionItem in titleItem.questionItems" :id="'question-'+ questionItem.itemOrder"
-                            :key="questionItem.itemOrder"
-                            :label="questionItem.itemOrder+'.'" class="exam-question-item" label-width="50px"
+        <!-- 试卷总览 -->
+        <el-row class="do-exam-title">
+          <el-col :span="24">
+            <span v-for="(item, index) in answer.answerItems" :key="item.itemOrder">
+              <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                {{ questionName[questionOrder.indexOf(index)] }} <br>
+              </span>
+              <!-- item.completed判断题目是否做完 -->
+              <el-tag
+                :type="questionCompleted(item.completed)"
+                class="do-exam-title-tag"
+                style="display:inline-block;"
+                @click="goAnchor('#question-'+item.itemOrder)"
               >
-                <question-edit :q-type="questionItem.questionType" :question="questionItem"
-                               :answer="answer.answerItems[questionItem.itemOrder-1]"
-                />
-              </el-form-item>
-            </el-card>
-          </el-row>
-          <el-row class="do-align-center">
-            <el-button type="primary" @click="submitForm">提交</el-button>
-            <el-button>取消</el-button>
-          </el-row>
-        </el-form>
-      </el-main>
+                {{ item.itemOrder }}
+              </el-tag>
+            </span>
+            <div class="do-exam-time">
+              <label>剩余时间：</label>
+              <label>{{ formatSeconds(remainTime) }}</label>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <div id="right">
+        <!-- 试卷名称与概况 -->
+        <el-header class="align-center">
+          <h1>{{ form.name }}</h1>
+          <div>
+            <span class="question-title-padding">试卷总分：{{ form.score }}</span>
+            <span class="question-title-padding">考试时间：{{ form.suggestTime }}分钟</span>
+          </div>
+        </el-header>
+        <el-main>
+          <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
+            <el-row v-for="(titleItem, index) in form.titleItems" :key="index">
+              <!-- 题目类型（单选题、多选题、简答题） -->
+              <h3>{{ titleItem.name }}</h3>
+              <el-card v-if="titleItem.questionItems.length !== 0" class="exampaper-item-box">
+                <!-- question记录题目数据 -->
+                <el-form-item v-for="questionItem in titleItem.questionItems" :id="'question-'+ questionItem.itemOrder"
+                              :key="questionItem.itemOrder"
+                              :label="questionItem.itemOrder+'.'" class="exam-question-item" label-width="50px"
+                >
+                  <question-edit :q-type="questionItem.questionType" :question="questionItem"
+                                 :answer="answer.answerItems[questionItem.itemOrder-1]"
+                  />
+                </el-form-item>
+              </el-card>
+            </el-row>
+            <el-row class="do-align-center">
+              <el-button type="primary" @click="submitForm">提交</el-button>
+              <el-button>取消</el-button>
+            </el-row>
+          </el-form>
+        </el-main>
+      </div>
     </el-container>
   </div>
 </template>
@@ -80,7 +94,9 @@ export default {
         answerItems: []
       },
       timer: null,
-      remainTime: 0
+      remainTime: 0,
+      questionOrder: [0],
+      questionName: []
     }
   },
   computed: {
@@ -99,15 +115,20 @@ export default {
       examPaperApi.select(id, studentId).then(re => {
         re = re.response
         _this.form = re.response
+        console.log(this.form)
         _this.remainTime = re.response.suggestTime * 60
         _this.initAnswer()
         _this.timeReduce()
         _this.formLoading = false
+        let titleItems = _this.form.titleItems
+        let count = 0
+        for (let temp of titleItems) {
+          this.questionName.push(temp.name)
+          this.questionOrder.push(temp.questionItems.length + count)
+          count += temp.questionItems.length
+        }
       })
     }
-  },
-  mounted () {
-
   },
   // 清除考试时间的定时器
   beforeDestroy () {
@@ -135,10 +156,13 @@ export default {
     },
     // 网页滚动到相应题号处
     goAnchor (selector) {
-      this.$el.querySelector(selector).scrollIntoView({ behavior: 'instant', block: 'center', inline: 'nearest' })
+      this.$el.querySelector(selector).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
     },
     // 生成选择题和判断题的选项
     initAnswer () {
+      // for debug
+      // console.log(this.form)
+      // console.log(JSON.stringify(this.form))
       this.answer.id = this.form.id
       let titleItemArray = this.form.titleItems
       for (let tIndex in titleItemArray) {
@@ -154,6 +178,8 @@ export default {
       let _this = this
       window.clearInterval(_this.timer)
       _this.formLoading = true
+      // for debug
+      console.log(JSON.stringify(this.answer))
       examPaperApi.answerSubmit(this.answer).then(re => {
         if (re.code === 200) {
           _this.$alert('试卷得分：' + re.response + '分', '考试结果', {
@@ -175,27 +201,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .do-exam-title {
-    position: fixed;
-    width: 99%;
-    background: #fff6f6;
-    padding: 5px 0;
-    z-index: 99;
+  @media only screen and (max-width: 480px) {
+
   }
 
-  .do-exam-title-hidden {
-    width: 100%;
-    visibility: hidden;
-    padding: 5px 0;
+  @media only screen and (min-width: 481px) {
+    #left {
+      position: fixed;
+      transform: translate(0, 50%);
+      margin: 15px;
+      width: 24%;
+      box-shadow: 0 2px 15px rgba(0, 0, 255, .2);
+    }
+
+    #right {
+      position: relative;
+      left: calc(24% + 30px);
+      width: calc(100% - 24% - 30px);
+    }
+
+    .do-exam-title {
+      width: 100%;
+      background: #fff;
+      padding: 5px 5px;
+      z-index: 99;
+    }
   }
 
   .do-exam-title-tag {
-    margin-left: 5px;
+    margin: 5px;
     cursor: pointer;
   }
 
   .do-exam-time {
-    float: right;
+    width: 100%;
+    text-align: center;
     line-height: 2;
     font-size: 14px;
     padding-right: 5px;
@@ -205,6 +245,14 @@ export default {
     .app-item-contain {
       padding: 30px 0 0 0;
     }
+  }
+
+  .student-info {
+    padding: 5px;
+  }
+
+  .student-info .detail {
+    padding: 5px;
   }
 
   .align-center {

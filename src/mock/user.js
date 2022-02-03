@@ -26,25 +26,29 @@ const users = {
     role: 'admin',
     introduction: 'I am a super administrator',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Super Admin'
+    name: 'Super Admin',
+    studentId: 20141331
   },
   'teacher-token': {
     role: 'teacher',
     introduction: 'I am a teacher',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal teacher'
+    name: 'Normal teacher',
+    studentId: 20141331
   },
   'student-token': {
     role: 'student',
     introduction: 'I am a student',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal student'
+    name: 'Normal student',
+    studentId: 20141331
   },
   'visitor-token': {
     role: 'visitor',
     introduction: 'I am just a visitor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal visitor'
+    name: 'Normal visitor',
+    studentId: 20141331
   }
 }
 

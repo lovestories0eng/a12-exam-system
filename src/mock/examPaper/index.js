@@ -1,6 +1,7 @@
 import { questions } from "@/mock/examPaper/questions";
 import { list, pageOne, pageTwo } from "@/mock/examPaper/mistakes";
 import { examLists } from "@/mock/examPaper/examList";
+import {read} from "@/mock/examPaper/read";
 
 export const getExamPaper = () => {
   return {
@@ -41,6 +42,13 @@ export const getExamList = () => {
   return {
     code: 200,
     response: examLists
+  }
+}
+
+export const getReadData = () => {
+  return {
+    code: 200,
+    response: read
   }
 }
 

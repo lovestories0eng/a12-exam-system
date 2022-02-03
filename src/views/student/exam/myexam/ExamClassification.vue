@@ -5,7 +5,7 @@
         <el-table
           :data="examList"
           stripe
-          @row-click="clickData"
+          @row-click="rowClick"
         >
           <el-table-column
             prop="name"
@@ -36,6 +36,12 @@ export default {
       default() {
         return {}
       }
+    },
+    rowClick: {
+      type: Function,
+      default() {
+        return undefined;
+      }
     }
   },
   methods: {
@@ -44,7 +50,7 @@ export default {
         path: "/exam/do",
         query: {
           id: row.id,
-          studentId: 20141331
+          studentId: this.$store.getters.studentId
         }
       });
       window.open(routeUrl.href, '_blank');
