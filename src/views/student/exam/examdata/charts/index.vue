@@ -1,26 +1,36 @@
 <template>
   <div class="dashboard-editor-container">
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
+      <line-chart :height="'380px'" :chart-data="lineChartData" />
     </el-row>
 
+    <!--
+      gutter是各col之间的间距
+      每行总共24个栅格，在不同尺寸的页面上如何分配宽度比例
+      名称	尺寸
+      xs	<768px
+      sm	≥768px
+      md	≥992px
+      lg	≥1200px
+      xl	≥1920px
+    -->
+
     <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
+      <el-col :xs="36" :sm="36" :lg="12">
         <div class="chart-wrapper">
-          <raddar-chart />
+          <raddar-chart :height="'450px'" />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
+      <el-col :xs="36" :sm="36" :lg="12">
         <div class="chart-wrapper">
-          <pie-chart />
+          <pie-chart :height="'450px'" />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
+      <!--<el-col :xs="24" :sm="24" :lg="8">-->
+      <!--  <div class="chart-wrapper">-->
+      <!--    <bar-chart :height="'450px'" />-->
+      <!--  </div>-->
+      <!--</el-col>-->
     </el-row>
   </div>
 </template>
@@ -31,25 +41,6 @@ import LineChart from './components/LineChart'
 import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import BarChart from './components/BarChart'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
 
 export default {
   name: 'DashboardAdmin',
@@ -62,12 +53,26 @@ export default {
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
-    }
-  },
-  methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+      lineChartData: {
+        actualData: [80, 82, 91, 54, 62, 70, 85, 76, 98, 87, 68, 98, 67, 87, 88],
+        xAxisData: [
+          '2021-08-24',
+          '2021-08-27',
+          '2021-09-02',
+          '2021-09-06',
+          '2021-09-09',
+          '2021-09-16',
+          '2021-09-19',
+          '2021-09-23',
+          '2021-09-26',
+          '2021-09-29',
+          '2021-10-04',
+          '2021-10-09',
+          '2021-10-19',
+          '2021-10-24',
+          '2021-10-29'
+        ]
+      }
     }
   }
 }

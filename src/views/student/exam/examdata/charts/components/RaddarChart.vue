@@ -47,6 +47,10 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
 
       this.chart.setOption({
+        title: {
+          text: '学科实力分析',
+          left: 'center'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -55,12 +59,12 @@ export default {
         },
         radar: {
           radius: '66%',
-          center: ['50%', '42%'],
+          center: ['50%', '48%'],
           splitNumber: 8,
           splitArea: {
             areaStyle: {
               color: 'rgba(127,95,132,.3)',
-              opacity: 1,
+              opacity: 0.5,
               shadowBlur: 45,
               shadowColor: 'rgba(0,0,0,.5)',
               shadowOffsetX: 0,
@@ -68,18 +72,18 @@ export default {
             }
           },
           indicator: [
-            { name: 'Sales'},
-            { name: 'Administration'},
-            { name: 'Information Technology'},
-            { name: 'Customer Support'},
-            { name: 'Development'},
-            { name: 'Marketing'}
+            { name: '最高分'},
+            { name: '最低分'},
+            { name: '平均分'},
+            { name: '优秀率'},
+            { name: '及格率'},
+            { name: '答题速度'}
           ]
         },
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Allocated Budget', 'Expected Spending', 'Actual Spending']
+          data: ['高等数学', '大学物理', '大学英语精读', '概率论与数理统计', '线性代数']
         },
         series: [{
           type: 'radar',
@@ -93,16 +97,24 @@ export default {
           },
           data: [
             {
-              value: [5000, 7000, 12000, 11000, 15000, 14000],
-              name: 'Allocated Budget'
+              value: [50, 70, 120, 110, 150, 140],
+              name: '高等数学'
             },
             {
-              value: [4000, 9000, 15000, 15000, 13000, 11000],
-              name: 'Expected Spending'
+              value: [40, 90, 150, 150, 130, 110],
+              name: '大学物理'
             },
             {
-              value: [5500, 11000, 12000, 15000, 12000, 12000],
-              name: 'Actual Spending'
+              value: [55, 110, 120, 150, 120, 120],
+              name: '大学英语精读'
+            },
+            {
+              value: [80, 70, 110, 180, 100, 60],
+              name: '概率论与数理统计'
+            },
+            {
+              value: [45, 90, 50, 50, 70, 100],
+              name: '线性代数'
             }
           ],
           animationDuration: animationDuration

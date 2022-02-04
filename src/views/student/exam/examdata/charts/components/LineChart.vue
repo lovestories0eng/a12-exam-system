@@ -67,10 +67,14 @@ export default {
       this.setOptions(this.chartData)
     },
     // 渲染方法 接受主要数据
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ xAxisData, actualData } = {}) {
       this.chart.setOption({
+        title: {
+          text: '考试成绩随时间变化曲线',
+          left: 'left'
+        },
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: xAxisData,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -78,7 +82,7 @@ export default {
         },
         grid: {
           left: 10,
-          right: 10,
+          right: 50,
           bottom: 20,
           top: 30,
           containLabel: true
@@ -96,25 +100,12 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['学生成绩']
         },
-        series: [{
-          name: 'expected', itemStyle: {
-            color: '#FF005A',
-            lineStyle: {
-              color: '#FF005A',
-              width: 2
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
+        series: [
         {
-          name: 'actual',
-          smooth: true,
+          name: '学生成绩',
+          smooth: false,
           type: 'line',
           itemStyle: {
             color: '#3888fa',

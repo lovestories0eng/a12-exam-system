@@ -45,6 +45,10 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
 
       this.chart.setOption({
+        title: {
+          text: '薄弱与强势学科分析',
+          left: 'center'
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -52,7 +56,7 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: ['高等数学', '大学物理', '大学英语精读', '概率论与数理统计', '线性代数']
         },
         series: [
           {
@@ -60,13 +64,13 @@ export default {
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
-            center: ['50%', '38%'],
+            center: ['50%', '46%'],
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
+              { value: 95, name: '高等数学' },
+              { value: 80, name: '大学物理' },
+              { value: 78, name: '大学英语精读' },
+              { value: 60, name: '概率论与数理统计' },
+              { value: 40, name: '线性代数' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600
