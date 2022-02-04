@@ -9,7 +9,12 @@ const state = {
   avatar: '',
   introduction: '',
   role: '',
-  studentId: ''
+  studentId: '',
+  imgUrl: '',
+  phoneNumber: 0,
+  address: "",
+  email: '',
+  className: ''
 }
 
 // 注册所有的mutation方法
@@ -32,6 +37,21 @@ const mutations = {
   },
   SET_STUDENTID: (state, studentId) => {
     state.studentId = studentId
+  },
+  SET_IMGURL: (state, imgUrl) => {
+    state.imgUrl = imgUrl
+  },
+  SET_PHONE_NUMBER: (state, phoneNumber) => {
+    state.phoneNumber = phoneNumber
+  },
+  SET_ADDRESS: (state, address) => {
+    state.address = address
+  },
+  SET_EMAIL: (state, email) => {
+    state.email = email
+  },
+  SET_CLASS_NAME: (state, className) => {
+    state.className = className
   }
 }
 
@@ -69,12 +89,17 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { role, name, avatar, introduction, studentId } = data
+        const { role, name, avatar, introduction, studentId, imgUrl, phoneNumber, address, email, className } = data
         commit('SET_ROLE', role)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
         commit('SET_STUDENTID', studentId)
+        commit('SET_IMGURL', imgUrl)
+        commit('SET_PHONE_NUMBER', phoneNumber)
+        commit('SET_ADDRESS', address)
+        commit('SET_EMAIL', email)
+        commit('SET_CLASS_NAME', className)
         resolve(data)
       }).catch(error => {
         reject(error)

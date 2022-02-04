@@ -11,6 +11,7 @@
     "@better-scroll/pull-up": "^2.4.2",
     "axios": "^0.24.0",
     "better-scroll": "^2.4.2",
+    "canvas": "^2.9.0",
     "core-js": "^3.6.5",
     "echarts": "^5.3.0",
     "element-ui": "^2.15.6",
