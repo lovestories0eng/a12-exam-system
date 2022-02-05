@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import {resetRouter} from "router";
 
 // vuex模块---登录，获取用户信息，登出模块--user.js
 
@@ -116,6 +117,7 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLE', [])
         removeToken()
+        resetRouter()
         resolve()
       }).catch(error => {
         reject(error)

@@ -247,7 +247,15 @@ Router.prototype.push = function push(location, onResolve, onReject) {
   return originalPush.call(this, location).catch((err) => err)
 }
 
-export const router = new Router({
-  mode: 'hash',
+const createRouter = () => new Router({
+  mode: 'hash', // require service support
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
+
+export const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
