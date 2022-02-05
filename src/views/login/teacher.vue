@@ -79,8 +79,8 @@ export default {
       if(this.loginForm.password === "")
         return false;
       let newPassword = this.loginForm.password.replace(/\s/g, "")
-      if(newPassword.length < 6 || newPassword.length > 14){
-        callback(new Error("密码长度为6~14位，不能包含空格"));
+      if(newPassword.length < 6 || newPassword.length > 18){
+        callback(new Error("密码长度为6~18位，不能包含空格"));
         this.loginForm.password = "";
         return false;
       }
@@ -97,8 +97,8 @@ export default {
     return {
       title: "老师登录",
       loginForm: {
-        username: "",
-        password: "",
+        username: "teacher",
+        password: "teacherPassword",
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -125,7 +125,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               // '/'默认为首页
-              this.$router.push({ path: this.redirect || '/s'})
+              this.$router.push({ path: this.redirect || '/'})
               this.btnLoad = false
             })
             .catch(() => {

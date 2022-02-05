@@ -6,22 +6,6 @@ import Layout from 'layout'
 Vue.use(Router)
 
 export const constantRoutes =[
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: '/dashboard',
-        component: () => import('@/views/student/dashboard/index'),
-        name: 'dashboard',
-        meta: {
-          title: '首页',
-          icon: 'dashboard'
-        }
-      }
-    ]
-  },
   // 登录界面路由
   {
     path: '/login',
@@ -55,35 +39,38 @@ export const constantRoutes =[
 
 export const studentRoutes = [
   {
+    path: '/',
+    redirect: '/notice'
+  },
+  {
     path: '/notice',
     component: Layout,
-    // component: Layout,
-    redirect: '/notice/sent',
-    alwaysShow: true,
+    redirect: '/notice/received',
+    // alwaysShow: true,
     name: 'notice',
     meta: {
       title: '通知',
       icon: 'tongzhi',
     },
     children: [
-      {
-        path: '/notice/edit',
-        component: () => import('@/views/student/notice/NoticeEdit'),
-        name: '发送通知',
-        meta: {
-          title: '发送通知',
-          icon: 'sendNotice',
-        }
-      },
-      {
-        path: '/notice/sent',
-        component: () => import('@/views/student/notice/Sent'),
-        name: '我发出的',
-        meta: {
-          title: '我发出的',
-          icon: 'wofachude'
-        }
-      },
+      // {
+      //   path: '/notice/edit',
+      //   component: () => import('@/views/student/notice/NoticeEdit'),
+      //   name: '发送通知',
+      //   meta: {
+      //     title: '发送通知',
+      //     icon: 'sendNotice',
+      //   }
+      // },
+      // {
+      //   path: '/notice/sent',
+      //   component: () => import('@/views/student/notice/Sent'),
+      //   name: '我发出的',
+      //   meta: {
+      //     title: '我发出的',
+      //     icon: 'wofachude'
+      //   }
+      // },
       {
         path: '/notice/received',
         component: () => import('@/views/student/notice/Received'),
@@ -196,7 +183,58 @@ export const studentRoutes = [
   }
 ]
 
-export const teacherRoutes = []
+export const teacherRoutes = [
+  {
+    path: '/',
+    redirect: '/exam'
+  },
+  {
+    path: '/exam',
+    component: Layout,
+    redirect: '/exam/exam-edit',
+    alwaysShow: true,
+    name: '考试',
+    meta: {
+      title: '考试',
+      icon: 'kaoshi',
+    },
+    children: [
+      {
+        path: '/exam/exam-edit',
+        component: () => import('@/views/teacher/examEdit'),
+        name: '考试编录及发布',
+        meta: {
+          title: '考试编录及发布',
+          icon: 'kaoshi_2'
+        }
+      },
+      {
+        path: '/exam/exam-spot',
+        component: () => import('@/views/teacher/examSpot'),
+        name: '考试现场',
+        meta: {
+          title: '考试现场',
+          icon: 'shujukanban'
+        }
+      },
+      {
+        path: 'exam/exam-data',
+        component: () => import('@/views/teacher/examData'),
+        name: '考试数据',
+        meta: {
+          title: '考试数据',
+          icon: 'cuotiben'
+        }
+      }
+    ]
+  },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
+]
 
 export const adminRoutes = []
 

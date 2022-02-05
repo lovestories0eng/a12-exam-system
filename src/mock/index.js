@@ -2,6 +2,7 @@ import Mock from 'mockjs'
 const user = require('./user')
 import {getPageOne, getList, getExamList, getExamPaper, getExamResult, getReadData} from "@/mock/examPaper";
 import {getChartData} from "@/mock/chartData";
+import {getReceivedData} from "@/mock/notice"
 
 function param2Obj(url) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
@@ -58,3 +59,5 @@ Mock.mock('/web/student/exampaper/answer/read?id=3&studentId=20141331', 'post', 
 Mock.mock('/web/student/exampaper/answer/read?id=3&studentId=20141331', 'post', getReadData)
 
 Mock.mock('/web/student/exam-data/chartdata?studentId=20141331', 'post', getChartData)
+
+Mock.mock('/web/student/notice/received?studentId=20141331', 'post', getReceivedData)

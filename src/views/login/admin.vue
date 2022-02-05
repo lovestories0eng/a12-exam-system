@@ -75,12 +75,11 @@ export default {
     }
 
     let validatePassword = (rule, value, callback) => {
-      console.log('zxc')
       if(this.loginForm.password === "")
         return false;
       let newPassword = this.loginForm.password.replace(/\s/g, "")
-      if(newPassword.length < 6 || newPassword.length > 14){
-        callback(new Error("密码长度为6~14位，不能包含空格"));
+      if(newPassword.length < 6 || newPassword.length > 18){
+        callback(new Error("密码长度为6~18位，不能包含空格"));
         this.loginForm.password = "";
         return false;
       }
@@ -97,8 +96,8 @@ export default {
     return {
       title: "管理员登录",
       loginForm: {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "adminPassword",
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

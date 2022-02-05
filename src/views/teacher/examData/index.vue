@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "Notice"
+  name: "index"
 }
 </script>
 
