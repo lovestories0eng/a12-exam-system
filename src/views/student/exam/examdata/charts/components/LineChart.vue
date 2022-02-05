@@ -28,7 +28,16 @@ export default {
     },
     chartData: {
       type: Object,
-      required: true
+      required: true,
+      default() {
+        return undefined
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   },
   data() {
@@ -40,10 +49,14 @@ export default {
   watch: {
     chartData: {
       deep: true,
-      handler(val) {
-        this.setOptions(val)
+      handler() {
+        this.reinitializeChart()
       }
     }
+  },
+  created() {
+    if (this.chartData !== undefined)
+      this.reinitializeChart()
   },
   // mounted 钩子中创建图表
   mounted() {
@@ -67,10 +80,10 @@ export default {
       this.setOptions(this.chartData)
     },
     // 渲染方法 接受主要数据
-    setOptions({ xAxisData, actualData } = {}) {
+    setOptions({ xAxisData, yAxisData } = {}) {
       this.chart.setOption({
         title: {
-          text: '考试成绩随时间变化曲线',
+          text: this.title,
           left: 'left'
         },
         xAxis: {
@@ -117,7 +130,7 @@ export default {
               color: '#f3f8ff'
             }
           },
-          data: actualData,
+          data: yAxisData,
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
         }]

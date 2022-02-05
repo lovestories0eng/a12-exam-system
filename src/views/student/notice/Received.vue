@@ -3,14 +3,7 @@
     <el-row>
       <el-col :span="24">
         <div class="grid-content bg-purple-dark">
-          考试通知
-        </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24">
-        <div class="grid-content bg-purple-dark">
-          成绩推送
+          <el-button class="editButton">批量编辑</el-button>
         </div>
       </el-col>
     </el-row>
@@ -36,6 +29,10 @@ export default {
   margin: 25px;
   border-radius: 4px;
   min-height: 36px;
+}
+
+.editButton {
+  margin: 5px;
 }
 
 </style>

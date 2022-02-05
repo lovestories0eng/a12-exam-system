@@ -36,6 +36,13 @@ export default {
     this.$_destroySidebarResizeEvent()
   },
   methods: {
+    reinitializeChart() {
+      if (this.chart !== null) {
+        this.chart.dispose()
+        this.chart = null
+        this.initChart()
+      }
+    },
     // bug fixed
     resize() {
       const { chart } = this

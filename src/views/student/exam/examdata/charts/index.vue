@@ -1,9 +1,8 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :height="'380px'" :chart-data="lineChartData" />
+      <line-chart :title="'考试成绩'" :height="'380px'" :chart-data="lineChartData" />
     </el-row>
-
     <!--
       gutter是各col之间的间距
       每行总共24个栅格，在不同尺寸的页面上如何分配宽度比例
@@ -14,65 +13,72 @@
       lg	≥1200px
       xl	≥1920px
     -->
-
     <el-row :gutter="32">
       <el-col :xs="36" :sm="36" :lg="12">
         <div class="chart-wrapper">
-          <raddar-chart :height="'450px'" />
+          <raddar-chart :raddar-data="raddarData" :raddar-indicator="raddarIndicator" :height="'450px'" />
         </div>
       </el-col>
       <el-col :xs="36" :sm="36" :lg="12">
         <div class="chart-wrapper">
-          <pie-chart :height="'450px'" />
+          <pie-chart :pie-data="pieData" :height="'450px'" />
         </div>
       </el-col>
-      <!--<el-col :xs="24" :sm="24" :lg="8">-->
-      <!--  <div class="chart-wrapper">-->
-      <!--    <bar-chart :height="'450px'" />-->
-      <!--  </div>-->
-      <!--</el-col>-->
     </el-row>
+    <el-card>
+      <Select :subjects="subjects" @changeOption="changeOption"></Select>
+      <LineChart v-if="Object.keys(subjectShow).length !== 0" :chart-data="subjectShow"></LineChart>
+      <el-empty v-else description="请选择科目"></el-empty>
+    </el-card>
   </div>
 </template>
 
 <script>
-import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
+import Select from "./components/Select";
+
+import {getChartData} from "@/api/examData";
 
 export default {
-  name: 'DashboardAdmin',
+  name: 'DataBoard',
   components: {
-    PanelGroup,
     LineChart,
     RaddarChart,
     PieChart,
-    BarChart,
+    Select
   },
   data() {
     return {
-      lineChartData: {
-        actualData: [80, 82, 91, 54, 62, 70, 85, 76, 98, 87, 68, 98, 67, 87, 88],
-        xAxisData: [
-          '2021-08-24',
-          '2021-08-27',
-          '2021-09-02',
-          '2021-09-06',
-          '2021-09-09',
-          '2021-09-16',
-          '2021-09-19',
-          '2021-09-23',
-          '2021-09-26',
-          '2021-09-29',
-          '2021-10-04',
-          '2021-10-09',
-          '2021-10-19',
-          '2021-10-24',
-          '2021-10-29'
-        ]
-      }
+      subjects: [],
+      lineChartData: {},
+      raddarData: [],
+      raddarIndicator: [],
+      pieData: [],
+      subjectData: [],
+      subjectShow: {}
+    }
+  },
+  created() {
+    getChartData(this.$store.getters.studentId)
+    .then(res => {
+      res = res.data
+      this.raddarData = res.raddarData.raddarData
+      this.raddarIndicator = res.raddarData.raddarIndicator
+      this.lineChartData = res.lineData
+      this.pieData = res.pieData
+      this.subjectData = res.subjectData
+      this.subjectData.forEach(item => {
+        this.subjects.push(item.name)
+      })
+    })
+  },
+  methods: {
+    changeOption(type) {
+      this.subjectShow = this.subjectData.find(item => {
+        return item.name === type
+      })
     }
   }
 }

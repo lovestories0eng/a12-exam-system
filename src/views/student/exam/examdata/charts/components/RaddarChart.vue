@@ -23,11 +23,43 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    raddarData: {
+      type: Array,
+      default() {
+        return undefined
+      }
+    },
+    raddarIndicator: {
+      type: Array,
+      default() {
+        return undefined
+      }
     }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      subjects: []
+    }
+  },
+  // 用于数据的异步传输
+  watch: {
+    raddarData(value) {
+      this.subjects = []
+      value.forEach(item => {
+        this.subjects.push(item.name)
+      })
+      this.reinitializeChart()
+    }
+  },
+  created() {
+    if (this.raddarData !== undefined) {
+      this.subjects = []
+      this.raddarData.forEach(item => {
+        this.subjects.push(item.name)
+      })
+      this.reinitializeChart()
     }
   },
   mounted() {
@@ -71,19 +103,12 @@ export default {
               shadowOffsetY: 15
             }
           },
-          indicator: [
-            { name: '最高分'},
-            { name: '最低分'},
-            { name: '平均分'},
-            { name: '优秀率'},
-            { name: '及格率'},
-            { name: '答题速度'}
-          ]
+          indicator: this.raddarIndicator
         },
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['高等数学', '大学物理', '大学英语精读', '概率论与数理统计', '线性代数']
+          data: this.subjects
         },
         series: [{
           type: 'radar',
@@ -95,28 +120,7 @@ export default {
             shadowOffsetY: 10,
             opacity: 1
           },
-          data: [
-            {
-              value: [50, 70, 120, 110, 150, 140],
-              name: '高等数学'
-            },
-            {
-              value: [40, 90, 150, 150, 130, 110],
-              name: '大学物理'
-            },
-            {
-              value: [55, 110, 120, 150, 120, 120],
-              name: '大学英语精读'
-            },
-            {
-              value: [80, 70, 110, 180, 100, 60],
-              name: '概率论与数理统计'
-            },
-            {
-              value: [45, 90, 50, 50, 70, 100],
-              name: '线性代数'
-            }
-          ],
+          data: this.raddarData,
           animationDuration: animationDuration
         }]
       })

@@ -21,12 +21,38 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    pieData: {
+      type: Array,
+      default() {
+        return undefined
+      }
     }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      subjects: []
     }
+  },
+  // 用于数据的异步传输
+  watch: {
+    pieData(value) {
+      this.subjects = []
+      value.forEach(item => {
+        this.subjects.push(item.name)
+      })
+      this.reinitializeChart()
+    }
+  },
+  created() {
+    if (this.pieData !== undefined) {
+      this.subjects = []
+      this.pieData.forEach(item => {
+        this.subjects.push(item.name)
+      })
+    }
+    this.reinitializeChart()
   },
   mounted() {
     this.$nextTick(() => {
@@ -41,9 +67,9 @@ export default {
     this.chart = null
   },
   methods: {
+
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
       this.chart.setOption({
         title: {
           text: '薄弱与强势学科分析',
@@ -56,22 +82,16 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['高等数学', '大学物理', '大学英语精读', '概率论与数理统计', '线性代数']
+          data: this.subjects
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '排名得分',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '46%'],
-            data: [
-              { value: 95, name: '高等数学' },
-              { value: 80, name: '大学物理' },
-              { value: 78, name: '大学英语精读' },
-              { value: 60, name: '概率论与数理统计' },
-              { value: 40, name: '线性代数' }
-            ],
+            data: this.pieData,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }
