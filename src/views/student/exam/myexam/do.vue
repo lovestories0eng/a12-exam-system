@@ -63,7 +63,7 @@
               </el-card>
             </el-row>
             <el-row class="do-align-center">
-              <el-button type="primary" @click="submitForm">提交</el-button>
+              <el-button type="primary" @click="submitForm();commit()">提交</el-button>
               <el-button>取消</el-button>
             </el-row>
           </el-form>
@@ -78,6 +78,7 @@ import { mapState, mapGetters } from 'vuex'
 import { formatSeconds } from '@/utils/timeFormat'
 import QuestionEdit from 'components/exam/QuestionEdit'
 import examPaperApi from '@/api/examPaper'
+import screenfull from 'screenfull'
 
 export default {
   components: { QuestionEdit },
@@ -129,10 +130,16 @@ export default {
         }
       })
     }
+    this.ban()
+    this.Screenfull()
   },
   // 清除考试时间的定时器
   beforeDestroy () {
     window.clearInterval(this.timer)
+  },
+  // 全局点击事件监听
+  mounted() {
+    document.addEventListener('click', this.Screenfull)
   },
   methods: {
     // 时间格式标准化
@@ -195,7 +202,21 @@ export default {
       }).catch(e => {
         _this.formLoading = false
       })
-    }
+    },    
+    //禁止右键，复制，粘贴，拖拽
+    ban(){
+      document.body.oncontextmenu=document.body.ondragstart= 	document.body.onselectstart=document.body.onbeforecopy=function(){return false;};
+      document.body.oncopy=document.body.oncut=function(){return false;};	
+    },
+    // 全屏
+    Screenfull() {
+      screenfull.request()
+    },
+    commit() {
+      //提交试卷，退出全屏
+      screenfull.exit();
+      document.removeEventListener('click', this.Screenfull)
+    },
   }
 }
 </script>
