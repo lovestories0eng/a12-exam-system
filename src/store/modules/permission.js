@@ -17,11 +17,11 @@ const actions = {
   async generateRoutes({ commit }, role) {
     return new Promise(resolve => {
       let accessedRoutes
-      if (role === 'student') {
+      if (role === '学生') {
         accessedRoutes = deepClone([...studentRoutes])
-      } else if (role === 'teacher') {
+      } else if (role === '老师') {
         accessedRoutes = deepClone([...teacherRoutes])
-      } else if (role === 'admin') {
+      } else if (role === '管理员') {
         accessedRoutes = deepClone([...adminRoutes])
       }
       commit('SET_ROUTES', accessedRoutes)

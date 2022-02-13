@@ -1,7 +1,7 @@
 <template>
   <el-row class="header">
     {{ desc }}
-    <span v-for="(item, index) in list" :key="index" class="subject">{{ item.name }}</span>
+    <span v-for="(item, index) in list" :key="index" class="subject">{{ item }}</span>
     <hr>
   </el-row>
 </template>
@@ -21,7 +21,7 @@ export default {
     return {
       desc: "学科分类"
     }
-  }
+  },
 }
 </script>
 

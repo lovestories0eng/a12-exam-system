@@ -22,7 +22,12 @@
           <strong>{{ item }}</strong>
         </span>
         <!-- 不同种类（进行中、待开始、已完成）的考试点击的事件不同 -->
-        <ExamClassification :row-click="rowClicks[index]" :exam-list="examsShow[index]"></ExamClassification>
+        <ExamClassification
+          :operation="operations[index]"
+          :handle-click="rowClicks[index]"
+          :exam-list="examsShow[index]"
+        >
+        </ExamClassification>
       </el-card>
     </div>
   </div>
@@ -35,8 +40,10 @@ import Search from "components/HeaderSearch"
 
 import { Message } from 'element-ui'
 
-import {examClassification} from "@/api/examClassification";
+import {examClassification} from "@/api/user";
 import {mapGetters} from "vuex";
+
+import {formatDate} from "utils/timeFormat";
 
 export default {
   name: "MyExam",
@@ -48,6 +55,7 @@ export default {
   data() {
     return {
       tags: ["进行中", "待开始", "已完成"],
+      operations: ["进入考试", "", "查看原卷"],
       show: [true, true, false],
       // 生成1x3的空二维数组
       examLists: [[], [], []],
@@ -55,19 +63,19 @@ export default {
       allExams: [],
       currentTime: (new Date).getTime(),
       fuseKeys: [{
-        name: 'name',
+        name: 'examName',
         weight: 0.7
       }, {
-        name: 'id',
+        name: 'examId',
         weight: 0.3
       }],
-      searcherKey: (item) => item.id,
-      searcherLabel: (item) => item.name,
+      searcherKey: (item) => item.examId,
+      searcherLabel: (item) => item.examName,
       searcherMethod: (value) => {
         this.examsShow = [[], [], []]
         for (let i in this.examLists) {
           for (let j in this.examLists[i]) {
-            if (value.id === this.examLists[i][j].id) {
+            if (value.examId === this.examLists[i][j].examId) {
               this.examsShow[i].push(value)
               this.$refs.screen.selectedRadio = this.$refs.screen.radioData[parseInt(i) + 1]
               return
@@ -81,8 +89,7 @@ export default {
         let routeUrl = this.$router.resolve({
           path: "/exam/do",
           query: {
-            id: row.id,
-            studentId: this.$store.getters.studentId
+            examId: row.examId
           }
         });
         window.open(routeUrl.href, '_blank');
@@ -92,13 +99,12 @@ export default {
       },
         (row) => {
           let routeUrl = this.$router.resolve({
-            path: "/exam/read",
+            path: '/exam/read',
             query: {
-              id: row.id,
-              studentId: this.$store.getters.studentId
+              examId: row.examId
             }
-          });
-          window.open(routeUrl.href, '_blank');
+          })
+          window.open(routeUrl.href, '_blank')
         }]
     }
   },
@@ -108,10 +114,12 @@ export default {
     ])
   },
   created() {
-    examClassification("20141331").then(response => {
-        this.allExams = response.response.response
+    examClassification().then(response => {
+      this.allExams = response.data
         for (let i of this.allExams) {
-          let index = this.parseCategory(i.time)
+          i.processedBeginTime = formatDate(new Date(i.examBeginTime), 'yyyy-MM-dd hh:ss')
+          i.processedEndTime = formatDate(new Date(i.examEndTime), 'yyyy-MM-dd hh:ss')
+          let index = this.parseCategory(i.examBeginTime, i.examEndTime)
           this.examLists[index].push(i)
         }
         this.examsShow = this.examLists
@@ -119,10 +127,9 @@ export default {
     )
   },
   methods: {
-    parseCategory(dateStr) {
-      let dateArray = dateStr.split('-')
-      let start = new Date(dateArray[0]).getTime()
-      let end = new Date(dateArray[1]).getTime()
+    parseCategory(start, end) {
+      start = new Date(start).getTime()
+      end = new Date(end).getTime()
       // 0代表进行中，1代表未开始，2代表已结束
       if (start <= this.currentTime && this.currentTime <= end) {
         return 0

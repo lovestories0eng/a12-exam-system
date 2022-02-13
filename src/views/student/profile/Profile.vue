@@ -12,8 +12,8 @@
               用户名
             </template>
             <span v-if="edit">
-              <el-form-item prop="nameMask">
-                <el-input ref="nameMask" v-model="form.nameMask"></el-input>
+              <el-form-item prop="name">
+                <el-input ref="name" v-model="form.name"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -26,8 +26,8 @@
               手机号
             </template>
             <span v-if="edit">
-              <el-form-item prop="phoneNumberMask">
-                <el-input ref="phoneNumberMask" v-model="form.phoneNumberMask"></el-input>
+              <el-form-item prop="phoneNumber">
+                <el-input ref="phoneNumber" v-model="form.phoneNumber"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -40,8 +40,8 @@
               居住地
             </template>
             <span v-if="edit">
-              <el-form-item prop="addressMask">
-                <el-input ref="addressMask" v-model="form.addressMask"></el-input>
+              <el-form-item prop="address">
+                <el-input ref="address" v-model="form.address"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -54,12 +54,12 @@
               学号
             </template>
             <span v-if="edit">
-              <el-form-item prop="studentIdMask">
-                <el-input ref="studentIdMask" v-model="form.studentIdMask"></el-input>
+              <el-form-item prop="userId">
+                <el-input ref="userId" v-model="form.userId"></el-input>
               </el-form-item>
             </span>
             <span v-else>
-              {{ studentId }}
+              {{ userId }}
             </span>
           </el-descriptions-item>
           <el-descriptions-item>
@@ -68,8 +68,8 @@
               邮箱
             </template>
             <span v-if="edit">
-              <el-form-item prop="emailMask">
-                <el-input ref="emailMask" v-model="form.emailMask"></el-input>
+              <el-form-item prop="email">
+                <el-input ref="email" v-model="form.email"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -79,14 +79,14 @@
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-s-custom"></i>
-              班级
+              性别
             </template><span v-if="edit">
-              <el-form-item prop="classNameMask">
-                <el-input ref="classNameMask" v-model="form.classNameMask"></el-input>
+              <el-form-item prop="sex">
+                <el-input ref="sex" v-model="form.sex"></el-input>
               </el-form-item>
             </span>
             <span v-else>
-              {{ className }}
+              {{ sex }}
             </span>
           </el-descriptions-item>
         </el-descriptions>
@@ -105,7 +105,7 @@
     <el-card>
       <div>
         <section style="text-align: center; display: block">
-          <img v-if="!progressFlag" class="head-img" :src="imgUrl" alt="" />
+          <img v-if="!progressFlag" class="head-img" :src="image" alt="" />
           <div v-show="progressFlag" class="head-img">
             <el-progress :width="500" type="circle" :percentage="progressPercent"></el-progress>
           </div>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import {uploadImage, uploadInfo} from "@/api/userInfoUpload";
+import {updateImage, updateInfo} from "@/api/user";
 import {mapGetters} from "vuex";
 
 export default {
@@ -135,7 +135,7 @@ export default {
       let zg = /\s/g
       let newValue = value.toString().replace(/\s/g, "")
       if (value.length !== newValue.length) {
-        this.form.nameMask = ""
+        this.form.name = ""
         callback(new Error("用户名不能包含空格"))
         return false
       }
@@ -148,30 +148,30 @@ export default {
       let phoneNumber = value.toString().replace(/\s/g, "")
       if (phoneNumber.length !== 11) {
         callback(new Error("手机号长度为11位，不能包含空格"));
-        this.form.phoneNumberMask = "";
+        this.form.phoneNumber = "";
         return false;
       }
       let zg = /^[0-9]*$/;
       if (!zg.test(phoneNumber)) {
         callback(new Error("手机号只能由数字组成"));
-        this.form.phoneNumberMask = "";
+        this.form.phoneNumber = "";
       }
       callback()
     }
 
-    let validateStudentId = (rule, value, callback) => {
+    let validateUserId = (rule, value, callback) => {
       if (value === "")
         return false;
-      let studentId = value.toString().replace(/\s/g, "")
-      if (studentId.length !== 8) {
+      let userId = value.toString().replace(/\s/g, "")
+      if (userId.length !== 8) {
         callback(new Error("学号长度为8位，不能包含空格"));
-        this.form.studentIdMask = "";
+        this.form.userId = "";
         return false;
       }
       let zg = /^[0-9]*$/;
-      if (!zg.test(studentId)) {
+      if (!zg.test(userId)) {
         callback(new Error("学号只能由数字组成"));
-        this.form.studentIdMask = "";
+        this.form.userId = "";
       }
       callback()
     }
@@ -182,32 +182,37 @@ export default {
       let zg = /^([a-zA-Z]|[0-9])(\w|)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
       if (!zg.test(value)) {
         callback(new Error("请输入正确的邮箱格式"))
-        this.form.emailMask = ""
+        this.form.email = ""
       }
       callback()
     }
     return {
       form: {
-        nameMask: null,
-        studentIdMask: null,
-        phoneNumberMask: null,
-        addressMask: null,
-        emailMask: null,
-        classNameMask: null,
-        imgUrlMask: null,
+        name: null,
+        userId: null,
+        phoneNumber: null,
+        address: null,
+        email: null,
+        sex: null,
+        image: null,
       },
       rules: {
-        nameMask: [{ required: true, trigger: 'blur', validator: validateName }],
-        studentIdMask: [{ required: true, trigger: 'blur', validator: validateStudentId }],
-        phoneNumberMask: [{ required: true, trigger: 'blur', validator: validatePhoneNumber }],
-        emailMask: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        name: [{ required: true, trigger: 'blur', validator: validateName }],
+        userId: [{ required: true, trigger: 'blur', validator: validateUserId }],
+        phoneNumber: [{ required: true, trigger: 'blur', validator: validatePhoneNumber }],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
       },
       size: '',
       progressFlag: false,
       progressPercent: 0,
       edit: false,
       buttonContent: '编辑',
-      btnLoad: false
+      btnLoad: false,
+      onUploadProgress: progressEvent => {
+        // progressEvent.loaded:已上传文件大小
+        // progressEvent.total:被上传文件的总大小
+        this.progressPercent = (progressEvent.loaded / progressEvent.total * 100)
+      }
     }
   },
   computed: {
@@ -216,12 +221,12 @@ export default {
     },
     ...mapGetters([
       'name',
-      'studentId',
+      'userId',
       'phoneNumber',
       'address',
       'email',
-      'className',
-      'imgUrl'
+      'image',
+      'sex'
     ]),
   },
   created() {
@@ -229,29 +234,30 @@ export default {
   },
   methods: {
     dataInit() {
-      this.form.nameMask = this.$store.getters.name
-      this.form.studentIdMask = this.$store.getters.studentId
-      this.form.phoneNumberMask = this.$store.getters.phoneNumber
-      this.form.addressMask = this.$store.getters.address
-      this.form.emailMask = this.$store.getters.email
-      this.form.classNameMask = this.$store.getters.className
-      this.form.imgUrlMask = this.$store.getters.imgUrl
+      this.form.name = this.$store.getters.name
+      this.form.userId = this.$store.getters.userId
+      this.form.phoneNumber = this.$store.getters.phoneNumber
+      this.form.address = this.$store.getters.address
+      this.form.email = this.$store.getters.email
+      this.form.sex = this.$store.getters.sex
+      this.form.image = this.$store.getters.image
     },
     uploadImg (f) {
       this.progressFlag = true
-      let formData = new FormData()
-      formData.append('image', f.file)
-      uploadImage(formData)
-        .then(async res => {
-          this.imgUrl = res.data.imgUrl
+      let formData = new window.FormData()
+      formData.append('picture', f.file)
+      updateImage(formData, this.onUploadProgress)
+        .then(res => {
           if (this.progressPercent === 100) {
+            this.$message.success('提交成功')
             this.progressFlag = false
             this.progressPercent = 0
             // 重新获取信息
-            await this.$store.dispatch('user/getInfo')
+            this.$store.dispatch('user/getInfo')
           }
         })
         .catch(error => {
+          this.$message.error('提交失败')
           console.log(error)
         })
       },
@@ -283,11 +289,16 @@ export default {
       this.$refs.form.validate(valid => {
         this.btnLoad = true
         if (valid) {
-          uploadInfo(this.form)
-            .then(async () => {
-              // 重新获取信息
-              await this.$store.dispatch('user/getInfo')
-              this.btnLoad = false
+          updateInfo(this.form)
+            .then(async (res) => {
+              if (res.status === 100) {
+                this.$message.success('提交成功')
+                // 重新获取信息
+                await this.$store.dispatch('user/getInfo')
+                this.btnLoad = false
+              } else {
+                this.$message.error('提交失败')
+              }
             })
             .catch(() => {
               this.btnLoad = false

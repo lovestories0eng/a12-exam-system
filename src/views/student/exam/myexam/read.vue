@@ -4,7 +4,7 @@
       <div id="left">
         <div class="student-info">
           <span class="detail">
-            学生学号：{{ $store.getters.studentId }}
+            学生学号：{{ $store.getters.userId }}
           </span>
           <br>
           <span class="detail">
@@ -14,13 +14,13 @@
         <!-- 试卷总览 -->
         <el-row class="do-exam-title">
           <el-col :span="24">
-            <span v-for="(item, index) in answer.answerItems" :key="item.itemOrder">
+            <span v-for="(item, index) in tableData" :key="item.itemOrder">
               <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <!-- item.completed判断题目是否做完 -->
               <el-tag
-                :type="questionDoRightTag(item.doRight)"
+                :type="questionDoRightTag(item.student === item[item.exerciseType + 'Tea'].rightAnswer)"
                 class="do-exam-title-tag"
                 style="display:inline-block;"
                 @click="goAnchor('#question-'+item.itemOrder)"
@@ -33,7 +33,7 @@
       </div>
       <div id="right">
         <el-header class="align-center">
-          <h1>{{ form.name }}</h1>
+          <h1>{{ examName }}</h1>
           <div>
             <span class="question-title-padding">试卷得分：{{ answer.score }}</span>
             <span class="question-title-padding">试卷耗时：{{ formatSeconds(answer.doTime) }}</span>
@@ -41,25 +41,22 @@
         </el-header>
         <el-main>
           <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
-            <el-row v-for="(titleItem,index) in form.titleItems" :key="index">
-              <h3>{{ titleItem.name }}</h3>
-              <el-card v-if="titleItem.questionItems.length!==0" class="exampaper-item-box">
-                <el-form-item v-for="questionItem in titleItem.questionItems"
-                              :id="'question-'+ questionItem.itemOrder"
-                              :key="questionItem.itemOrder"
-                              :label="questionItem.itemOrder+'.'"
-                              class="exam-question-item"
-                              label-width="50px"
-                >
-                  <QuestionAnswerShow
-                    :card-style="'box-shadow: none; border: none;'"
-                    :q-type="questionItem.questionType"
-                    :question="questionItem"
-                    :answer="answer.answerItems[questionItem.itemOrder-1]"
-                  />
-                </el-form-item>
-              </el-card>
-            </el-row>
+            <el-form-item>
+              <QuestionAnswerShow v-for="(item, index) in tableData"
+                                  :id="'question-'+ item.itemOrder"
+                                  :key="index"
+                                  :q-type-str="item.exerciseType"
+                                  :chapter-id="item.chapterId"
+                                  :chapter-name="item.chapterName"
+                                  :major-name="item.majorName"
+                                  :question-overview="item[item.exerciseType + 'Tea']"
+                                  :student-answer="item.studentAnswer"
+                                  :student-value="item.studentValue"
+                                  :exercise-value="item.exerciseValue"
+                                  :teacher-message="item.teacherMessage"
+                                  class="record-answer-info"
+              />
+            </el-form-item>
           </el-form>
         </el-main>
       </div>
@@ -71,7 +68,9 @@
 import { mapState, mapGetters } from 'vuex'
 import { formatSeconds } from '@/utils/timeFormat'
 import QuestionAnswerShow from 'components/exam/QuestionAnswerShow'
-import examPaperAnswerApi from '@/api/examPaper'
+import {getHistoryPaper} from "@/api/exam/paper";
+import {questionMap} from "utils/questionMap";
+
 export default {
   components: { QuestionAnswerShow },
   data () {
@@ -85,8 +84,10 @@ export default {
         answerItems: [],
         doRight: false
       },
-      questionOrder: [0],
-      questionName: []
+      questionOrder: [],
+      questionName: [],
+      tableData: [],
+      examName: ''
     }
   },
   computed: {
@@ -96,24 +97,29 @@ export default {
     })
   },
   created () {
-    let id = this.$route.query.id
-    let studentId = this.$route.query.studentId
+    let examId = this.$route.query.examId
     let _this = this
-    if (id && parseInt(id) !== 0) {
+    if (examId && parseInt(examId) !== 0) {
       _this.formLoading = true
-      examPaperAnswerApi.read(id, studentId).then(re => {
-        re = re.response
-        console.log(JSON.stringify(re));
-        _this.form = re.response.paper
-        _this.answer = re.response.answer
-        _this.formLoading = false
-        let titleItems = _this.form.titleItems
+      getHistoryPaper(examId).then(re => {
+        console.log(re)
+        this.examName = re.data.examName
+        let exerciseItems = re.exerciseItems
+        this.tableData = exerciseItems
         let count = 0
-        for (let temp of titleItems) {
-          this.questionName.push(temp.name)
-          this.questionOrder.push(temp.questionItems.length + count)
-          count += temp.questionItems.length
+        let index = 0
+        let tempExerciseType = ""
+        for (let temp of exerciseItems) {
+          if (tempExerciseType !== temp.exerciseType) {
+            tempExerciseType = temp.exerciseType
+            this.questionOrder.push(index)
+            this.questionName.push(questionMap(temp.exerciseType))
+          }
+          // tempExerciseType = temp.exerciseType
+          index++
+          temp.itemOrder = index
         }
+        this.formLoading = false
       })
     }
   },

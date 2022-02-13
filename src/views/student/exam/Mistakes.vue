@@ -3,13 +3,17 @@
     <el-form>
       <el-form-item>
         <Categories :list="list"></Categories>
-        <QuestionAnswerShow v-for="(item, index) in processedData"
+        <QuestionAnswerShow v-for="(item, index) in tableData"
                             :key="index"
-                            :q-type="item.questionType"
-                            :q-type-str="item.questionTypeStr"
-                            :subject-name="item.subjectName"
-                            :question="item.questionItem"
-                            :answer="item.answerItem"
+                            :q-type-str="item.exerciseType"
+                            :chapter-id="item.chapterId"
+                            :chapter-name="item.chapterName"
+                            :major-name="item.majorName"
+                            :question-overview="item[item.exerciseType + 'Tea']"
+                            :student-answer="item.studentAnswer"
+                            :student-value="item.studentValue"
+                            :exercise-value="item.exerciseValue"
+                            :teacher-message="item.teacherMessage"
                             class="record-answer-info"
         />
         <pagination v-show="total > 0"
@@ -27,11 +31,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 import Pagination from '@/components/Pagination'
-import Categories from "views/student/exam/mistakes/Categories";
-import questionAnswerApi from '@/api/mistakes'
+import Categories from "views/student/exam/mistakes/Categories"
 import QuestionAnswerShow from 'components/exam/QuestionAnswerShow'
+
+import {getFlowSweeper} from '@/api/user'
+import {unique} from "utils";
 
 export default {
   name: 'MyExam',
@@ -47,7 +53,6 @@ export default {
       tableData: [],
       total: 0,
       qAnswerLoading: false,
-      processedData: []
     }
   },
   computed: {
@@ -58,16 +63,8 @@ export default {
   },
   created () {
     this.search()
-    this.getList()
   },
   methods: {
-    getList() {
-      questionAnswerApi.select('student').then(data => {
-        data = data.response.response
-        this.list = data
-        }
-      )
-    },
     search (params) {
       if (params !== undefined) {
         this.pageIndex = params[0].page
@@ -75,31 +72,17 @@ export default {
       }
       this.listLoading = true
       let _this = this
-      questionAnswerApi.pageList(this.queryParam).then(data => {
-        data = data.response
-        const re = data.response
-        console.log(JSON.stringify(re));
-        _this.tableData = re.list
-        _this.total = re.total
-        _this.queryParam.pageIndex = re.pageNum
+      getFlowSweeper().then(response => {
+        const re = response.data
+        console.log(re);
+        re.forEach(item => {
+          _this.list.push(item.majorName)
+        })
+        _this.list = unique(_this.list)
+        _this.tableData = re
+        _this.total = re.length
         _this.listLoading = false
-        if (re.list.length !== 0) {
-          _this.initData()
-        }
       })
-    },
-    initData() {
-      // 清空上一页的数据，存储下一页的数据
-      this.processedData = []
-      for (let i of this.tableData) {
-        let temp_obj = {}
-        temp_obj.questionType = i.questionAnswerVM.questionVM.questionType
-        temp_obj.questionItem = i.questionAnswerVM.questionVM
-        temp_obj.answerItem = i.questionAnswerVM.questionAnswerVM
-        temp_obj.questionTypeStr = i.questionTypeStr
-        temp_obj.subjectName = i.subjectName
-        this.processedData.push(temp_obj)
-      }
     }
   }
 }

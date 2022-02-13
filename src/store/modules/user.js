@@ -1,55 +1,54 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserId, setUserId, removeUserId } from '@/utils/auth'
 import {resetRouter} from "router";
 
 // vuex模块---登录，获取用户信息，登出模块--user.js
 
 const state = {
-  token: getToken(),
+  image: '',
+  role: '',
+  address: "",
+  phoneNumber: 0,
+  sex: '',
   name: '',
+  userId: '',
+  email: '',
   avatar: '',
   introduction: '',
-  role: '',
-  studentId: '',
-  imgUrl: '',
-  phoneNumber: 0,
-  address: "",
-  email: '',
-  className: ''
+  className: '',
 }
 
 // 注册所有的mutation方法
 const mutations = {
-  // //将函数赋值给变量
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_IMAGE: (state, image) => {
+    state.image = image
   },
   SET_ROLE: (state, role) => {
     state.role = role
   },
-  SET_STUDENTID: (state, studentId) => {
-    state.studentId = studentId
-  },
-  SET_IMGURL: (state, imgUrl) => {
-    state.imgUrl = imgUrl
+  SET_ADDRESS: (state, address) => {
+    state.address = address
   },
   SET_PHONE_NUMBER: (state, phoneNumber) => {
     state.phoneNumber = phoneNumber
   },
-  SET_ADDRESS: (state, address) => {
-    state.address = address
+  SET_SEX: (state, sex) => {
+    state.sex = sex
+  },
+  SET_NAME: (state, name) => {
+    state.name = name
+  },
+  SET_USERID: (state, userId) => {
+    state.userId = userId
   },
   SET_EMAIL: (state, email) => {
     state.email = email
+  },
+  SET_INTRODUCTION: (state, introduction) => {
+    state.introduction = introduction
+  },
+  SET_AVATAR: (state, avatar) => {
+    state.avatar = avatar
   },
   SET_CLASS_NAME: (state, className) => {
     state.className = className
@@ -64,13 +63,13 @@ const actions = {
   // 将commit 从 context 中结构出来
   // Promise封装的组合式action
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { userId, userPassword } = userInfo
     return new Promise((resolve, reject) => {
       // trim() 方法用于删除字符串的头尾空白符，空白符包括：空格、制表符 tab、换行符等其他空白符等。
       // utils里的login
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ userId: userId.trim(), userPassword: userPassword }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
+        setUserId(userId)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -83,24 +82,26 @@ const actions = {
   // get user info
   // 获取用户信息
   // 将commit,state从 context 中结构出来
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('认证失败，请重新登录')
         }
-        const { role, name, avatar, introduction, studentId, imgUrl, phoneNumber, address, email, className } = data
+        const { image, role, sex, address, phoneNumber, name, userId, email, avatar, introduction,  className } = data
+        console.log(data);
+        commit('SET_IMAGE', image)
         commit('SET_ROLE', role)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        commit('SET_STUDENTID', studentId)
-        commit('SET_IMGURL', imgUrl)
-        commit('SET_PHONE_NUMBER', phoneNumber)
+        commit('SET_SEX', sex)
         commit('SET_ADDRESS', address)
+        commit('SET_PHONE_NUMBER', phoneNumber)
+        commit('SET_NAME', name)
+        commit('SET_USERID', userId)
         commit('SET_EMAIL', email)
-        commit('SET_CLASS_NAME', className)
+        // commit('SET_AVATAR', avatar)
+        // commit('SET_INTRODUCTION', introduction)
+        // commit('SET_CLASS_NAME', className)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -114,9 +115,9 @@ const actions = {
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
         commit('SET_ROLE', [])
         removeToken()
+        removeUserId()
         resetRouter()
         resolve()
       }).catch(error => {
@@ -132,6 +133,7 @@ const actions = {
       commit('SET_ROLE', [])
       commit('SET_TOKEN', '')
       removeToken()
+      removeUserId()
       resolve()
     })
   },

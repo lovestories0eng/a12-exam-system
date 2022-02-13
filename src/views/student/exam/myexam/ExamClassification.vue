@@ -5,17 +5,30 @@
         <el-table
           :data="examList"
           stripe
-          @row-click="rowClick"
         >
           <el-table-column
-            prop="name"
+            prop="examName"
             label="试卷名称"
           >
           </el-table-column>
           <el-table-column
-            prop="time"
-            label="考试时间"
+            prop="processedBeginTime"
+            label="考试开始时间"
           >
+          </el-table-column>
+          <el-table-column
+            prop="processedEndTime"
+            label="考试结束时间"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="operation.length !== 0"
+            fixed="right"
+            label="操作"
+          >
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="handleClick(scope.row)">{{ operation }}</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </template>
@@ -37,30 +50,21 @@ export default {
         return {}
       }
     },
-    rowClick: {
+    handleClick: {
       type: Function,
       default() {
         return undefined;
       }
-    }
-  },
-  methods: {
-    clickData(row) {
-      let routeUrl = this.$router.resolve({
-        path: "/exam/do",
-        query: {
-          id: row.id,
-          studentId: this.$store.getters.studentId
-        }
-      });
-      window.open(routeUrl.href, '_blank');
+    },
+    operation: {
+      type: String,
+      default() {
+        return ''
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.el-table {
-  cursor: pointer;
-}
 </style>

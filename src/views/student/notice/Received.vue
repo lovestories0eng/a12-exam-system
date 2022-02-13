@@ -6,7 +6,7 @@
           <div>
             考试通知
           </div>
-          <el-button class="editButton">批量编辑</el-button>
+          <el-button ref="examEdit" class="editButton">批量编辑</el-button>
         </div>
       </el-col>
     </el-row>
@@ -30,12 +30,33 @@
       >
       </el-table-column>
       <el-table-column
+        prop="examIsRead"
+        label="状态"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.examIsRead === '未读'" style="color: red;">
+            {{ scope.row.examIsRead }}
+          </div>
+          <div v-else>
+            {{ scope.row.examIsRead }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="examEdit"
         fixed="right"
         label="操作"
         width="100"
       >
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="handleClick(scope.row)">标为已读</el-button>
+          <el-button
+            :disabled="examMessage[scope.$index].examReadTime !== null"
+            type="text"
+            size="small"
+            @click="handleClick(scope.$index, examMessage)"
+          >
+            标为已读
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -45,7 +66,7 @@
           <div>
             成绩推送
           </div>
-          <el-button class="editButton">批量编辑</el-button>
+          <el-button ref="gradeEdit" class="editButton">批量编辑</el-button>
         </div>
       </el-col>
     </el-row>
@@ -74,12 +95,33 @@
       >
       </el-table-column>
       <el-table-column
+        prop="gradeIsRead"
+        label="状态"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.examIsRead === '未读'" style="color: red;">
+            {{ scope.row.examIsRead }}
+          </div>
+          <div v-else>
+            {{ scope.row.examIsRead }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="gradeEdit"
         fixed="right"
         label="操作"
         width="100"
       >
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="handleClick(scope.row)">标为已读</el-button>
+          <el-button
+            :disabled="gradeMessage[scope.$index].gradeReadTime !== null"
+            type="text"
+            size="small"
+            @click="handleClick(scope.$index, gradeMessage)"
+          >
+            标为已读
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,7 +129,7 @@
 </template>
 
 <script>
-import getNotice from "@/api/notice"
+import {getNotice} from "@/api/user"
 import {formatDate} from "utils/timeFormat";
 
 export default {
@@ -96,12 +138,13 @@ export default {
     return {
       examMessage: undefined,
       gradeMessage: undefined,
+      examEdit: false,
+      gradeEdit: false
     }
   },
   created() {
-    getNotice.received(this.$store.getters.studentId).then(res => {
-      console.log(res);
-      let tableData = res.data.data
+    getNotice().then(res => {
+      let tableData = res.data
       this.examMessage = tableData.filter(item => {
         return item.grade === null
       })
@@ -109,19 +152,46 @@ export default {
         return item.grade !== null
       })
       this.examMessage.forEach(item => {
+        item.examIsRead = item.examReadTime !== null ? "已读" : "未读"
+        item.gradeIsRead = item.gradeReadTime !== null ? "已读" : "未读"
         item.examBeginTime = formatDate(new Date(item.examBeginTime), 'yyyy-MM-dd hh:mm:ss')
         item.examEndTime = formatDate(new Date(item.examEndTime), 'yyyy-MM-dd hh:mm:ss')
       })
       this.gradeMessage.forEach(item => {
+        item.examIsRead = item.examReadTime !== null ? "已读" : "未读"
+        item.gradeIsRead = item.gradeReadTime !== null ? "已读" : "未读"
         item.examBeginTime = formatDate(new Date(item.examBeginTime), 'yyyy-MM-dd hh:mm:ss')
         item.examEndTime = formatDate(new Date(item.examEndTime), 'yyyy-MM-dd hh:mm:ss')
       })
     })
+  },
+  mounted() {
+    this.$refs.examEdit.$el.onclick = () => {
+      this.examEdit = !this.examEdit
+    }
+    this.$refs.gradeEdit.$el.onclick = () => {
+      this.gradeEdit = !this.gradeEdit
+    }
+  },
+  methods: {
+    handleClick(index, message) {
+      if (message[index].grade === null) {
+        message[index].examReadTime = new Date()
+        message[index].examIsRead = "已读"
+      } else {
+        message[index].gradeReadTime = new Date()
+        message[index].gradeIsRead = "已读"
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+.is-active {
+  color: red;
+}
+
 .bg-purple-dark {
   font-weight: 700;
   margin: 10px;

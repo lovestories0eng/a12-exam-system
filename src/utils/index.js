@@ -32,3 +32,8 @@ export function debounce(func, wait, immediate) {
     return result
   }
 }
+
+// 数组去重
+export function unique (arr) {
+  return Array.from(new Set(arr))
+}

@@ -9,7 +9,7 @@
       <div v-if="qTypeStr==='choice4'">
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          <el-radio-group disabled>
+          <el-radio-group v-model="answer.answer">
             <el-radio v-for="index in 4" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
               <span class="question-prefix"> {{ choice4Options[index - 1] }}.</span>
               <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
@@ -20,7 +20,7 @@
       <div v-if="qTypeStr==='choice5'">
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          <el-radio-group disabled>
+          <el-radio-group v-model="answer.answer">
             <el-radio v-for="index in 5" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
               <span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>
               <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
@@ -40,38 +40,14 @@
           {{ studentAnswer }}
         </div>
       </div>
-      <div class="question-answer-show-item" style="margin-top: 15px">
-        <span class="question-show-item">结果：</span>
-        <el-tag :type="doRightTagFormatter(studentAnswer === questionOverview.rightAnswer)">
-          {{ doRightTextFormatter(studentAnswer === questionOverview.rightAnswer) }}
-        </el-tag>
-      </div>
       <div class="question-answer-show-item">
         <span class="question-show-item">题目分数：</span>
         <span>{{ exerciseValue }}</span>
       </div>
       <div class="question-answer-show-item">
-        <span class="question-show-item">学生得分：</span>
-        <span>{{ studentValue }}</span>
-      </div>
-
-      <div class="question-answer-show-item">
-        <span class="question-show-item">难度：</span>
-        <el-rate v-model="questionOverview.difficult" disabled class="question-show-item"></el-rate>
-      </div>
-      <br />
-      <div class="question-answer-show-item">
-        <span class="question-show-item">学生答案：{{ studentAnswer }}</span>
-        <br>
-        <span class="question-show-item">正确答案：</span>
         <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'" class="q-item-span-content" v-html="questionOverview.rightAnswer" />
         <!--<span v-if="qType===3" class="q-item-span-content" v-html="trueFalseFormatter(question)" />-->
         <!--<span v-if="qType===4">{{ question.correctArray }}</span>-->
-      </div>
-      <div class="question-answer-show-item" style="line-height: 1.8">
-        <span class="question-show-item">解析：</span>
-        <span class="q-item-span-content" v-html="questionOverview.analyze" /> <br>
-        <span class="q-item-span-content" v-html="teacherMessage" />
       </div>
     </el-card>
     <div v-else>
@@ -81,10 +57,10 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import {questionMap} from "utils/questionMap";
+import {questionMap} from "utils/questionMap"
 
 export default {
-  name: 'QuestionShow',
+  name: 'QuestionAnswerShow',
   props: {
     questionOverview: {
       type: Object,
@@ -104,10 +80,10 @@ export default {
         return ''
       }
     },
-    studentAnswer: {
-      type: String,
-      default() {
-        return ''
+    answer: {
+      type: Object,
+      default: function () {
+        return { exerciseId: null, answer: '', exerciseType: ''}
       }
     },
     studentValue: {
@@ -171,17 +147,17 @@ export default {
 </script>
 
 <style scoped>
-  .bar {
-    width: 100%;
-    height: 30px;
-    background-color: #fff;
-    margin-bottom: 20px;
-    font-weight: 700;
-  }
+.bar {
+  width: 100%;
+  height: 30px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
 
-  .desc {
-    height: inherit;
-    line-height: 30px;
-    margin-right: 30px;
-  }
+.desc {
+  height: inherit;
+  line-height: 30px;
+  margin-right: 30px;
+}
 </style>

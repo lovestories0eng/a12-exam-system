@@ -38,23 +38,23 @@ export default {
       // 只显示带有meta属性和meta.title的路由
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       // 第一个面包屑
-      const first = matched[0]
+      // const first = matched[0]
       // 如果第一个面包屑不是首页则把首页放在第一个面包屑上面
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
-      }
+      // if (!this.isDashboard(first)) {
+      //   matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
+      // }
       // !==的优先级比&&大
       // undefined !== false的值为true
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
     // 判断第一个面包屑是不是dashboard（首页）
-    isDashboard(route) {
-      const name = route && route.name
-      if (!name) {
-        return false
-      }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
-    },
+    // isDashboard(route) {
+    //   const name = route && route.name
+    //   if (!name) {
+    //     return false
+    //   }
+    //   return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+    // },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
       // 得到当前路由中的参数（query之类的）

@@ -1,19 +1,31 @@
 // 此文件用于封装权限数据
-import Cookies from 'js-cookie'
 
-const TokenKey = 'myToken'
+const TokenKey = 'examSystemToken'
+const userIdKey = 'examSystemUserId'
+
+export function getUserId() {
+  return localStorage.getItem(userIdKey)
+}
+
+export function setUserId(userId) {
+  return localStorage.setItem(userIdKey, userId)
+}
+
+export function removeUserId() {
+  // 销毁userId
+  return localStorage.removeItem(userIdKey)
+}
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return localStorage.getItem(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return localStorage.setItem(TokenKey, token)
 }
 
 export function removeToken() {
-  // 销毁cookie
-  return Cookies.remove(TokenKey)
+  // 销毁token
+  return localStorage.removeItem(TokenKey)
 }
 
-// console.log(document.cookie)打印当前的cookie

@@ -4,7 +4,7 @@
       <div id="left">
         <div class="student-info">
           <span class="detail">
-            学生学号：{{ $store.getters.studentId }}
+            学生学号：{{ $store.getters.userId }}
           </span>
           <br>
           <span class="detail">
@@ -14,13 +14,15 @@
         <!-- 试卷总览 -->
         <el-row class="do-exam-title">
           <el-col :span="24">
-            <span v-for="(item, index) in answer.answerItems" :key="item.itemOrder">
+            <label>剩余时间：</label>
+            <label>{{ formatSeconds(remainTime) }}</label>
+            <span v-for="(item, index) in tableData" :key="item.itemOrder">
               <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <!-- item.completed判断题目是否做完 -->
               <el-tag
-                :type="questionCompleted(item.completed)"
+                type="info"
                 class="do-exam-title-tag"
                 style="display:inline-block;"
                 @click="goAnchor('#question-'+item.itemOrder)"
@@ -28,10 +30,8 @@
                 {{ item.itemOrder }}
               </el-tag>
             </span>
-            <div class="do-exam-time">
-              <label>剩余时间：</label>
-              <label>{{ formatSeconds(remainTime) }}</label>
-            </div>
+            <span class="do-exam-time">
+            </span>
           </el-col>
         </el-row>
       </div>
@@ -39,31 +39,32 @@
       <div id="right">
         <!-- 试卷名称与概况 -->
         <el-header class="align-center">
-          <h1>{{ form.name }}</h1>
+          <h1>{{ examName }}</h1>
           <div>
-            <span class="question-title-padding">试卷总分：{{ form.score }}</span>
-            <span class="question-title-padding">考试时间：{{ form.suggestTime }}分钟</span>
+            <span class="question-title-padding">试卷总分：{{ totalScore }}</span>
+            <span class="question-title-padding">考试时间：{{ formatSeconds(remainTime) }}分钟</span>
           </div>
         </el-header>
         <el-main>
-          <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
-            <el-row v-for="(titleItem, index) in form.titleItems" :key="index">
-              <!-- 题目类型（单选题、多选题、简答题） -->
-              <h3>{{ titleItem.name }}</h3>
-              <el-card v-if="titleItem.questionItems.length !== 0" class="exampaper-item-box">
-                <!-- question记录题目数据 -->
-                <el-form-item v-for="questionItem in titleItem.questionItems" :id="'question-'+ questionItem.itemOrder"
-                              :key="questionItem.itemOrder"
-                              :label="questionItem.itemOrder+'.'" class="exam-question-item" label-width="50px"
-                >
-                  <question-edit :q-type="questionItem.questionType" :question="questionItem"
-                                 :answer="answer.answerItems[questionItem.itemOrder-1]"
-                  />
-                </el-form-item>
-              </el-card>
-            </el-row>
+          <el-form ref="form" v-loading="formLoading" label-width="100px">
+            <el-form-item>
+              <QuestionAnswerEdit v-for="(item, index) in tableData"
+                                  :id="'question-'+ item.itemOrder"
+                                  :key="index"
+                                  :q-type-str="item.exerciseType"
+                                  :chapter-id="item.chapterId"
+                                  :chapter-name="item.chapterName"
+                                  :major-name="item.majorName"
+                                  :question-overview="item[item.exerciseType + 'Tea']"
+                                  :answer="answer.answerItems[item.itemOrder - 1]"
+                                  :student-value="item.studentValue"
+                                  :exercise-value="item.exerciseValue"
+                                  :teacher-message="item.teacherMessage"
+                                  class="record-answer-info"
+              />
+            </el-form-item>
             <el-row class="do-align-center">
-              <el-button type="primary" @click="submitForm();commit()">提交</el-button>
+              <el-button type="primary" @click="submitForm;commit()">提交</el-button>
               <el-button>取消</el-button>
             </el-row>
           </el-form>
@@ -76,28 +77,36 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { formatSeconds } from '@/utils/timeFormat'
-import QuestionEdit from 'components/exam/QuestionEdit'
-import examPaperApi from '@/api/examPaper'
+import QuestionAnswerEdit from 'components/exam/QuestionAnswerEdit'
+
+import {submitAnswer} from "@/api/exam/paper"
+
+import {getOnGoingPaper} from "@/api/exam/paper"
+import {questionMap} from "utils/questionMap"
+
 import screenfull from 'screenfull'
 
 export default {
-  components: { QuestionEdit },
+  components: { QuestionAnswerEdit },
   data () {
     return {
-      form: {},
       // 是否在试卷数据未完全获取时进行加载样式
       formLoading: false,
       answer: {
-        // 题目编号
-        questionId: null,
+        // 试卷编号
+        examId: null,
         // 考试已经进行了的时间
         doTime: 0,
         answerItems: []
       },
+      examId: 0,
       timer: null,
-      remainTime: 0,
-      questionOrder: [0],
-      questionName: []
+      remainTime: 1000,
+      questionOrder: [],
+      questionName: [],
+      tableData: [],
+      examName: '',
+      totalScore: 0
     }
   },
   computed: {
@@ -107,27 +116,33 @@ export default {
     })
   },
   created () {
-    let id = this.$route.query.id
-    let studentId = this.$route.query.studentId
+    let examId = this.$route.query.examId
     let _this = this
     // 得到数据
-    if (id && parseInt(id) !== 0) {
+    if (examId && parseInt(examId) !== 0) {
       _this.formLoading = true
-      examPaperApi.select(id, studentId).then(re => {
-        re = re.response
-        _this.form = re.response
-        console.log(this.form)
-        _this.remainTime = re.response.suggestTime * 60
+      getOnGoingPaper(examId).then(re => {
+        this.examName = re.data.examName
+        this.examId = re.data.examId
+        let exerciseItems = re.exerciseItems
+        this.tableData = exerciseItems
+        let count = 0
+        let index = 0
+        let tempExerciseType = ""
+        for (let temp of exerciseItems) {
+          this.totalScore += temp.exerciseValue
+          if (tempExerciseType !== temp.exerciseType) {
+            tempExerciseType = temp.exerciseType
+            this.questionOrder.push(index)
+            this.questionName.push(questionMap(temp.exerciseType))
+          }
+          // tempExerciseType = temp.exerciseType
+          index++
+          temp.itemOrder = index
+        }
+        this.formLoading = false
         _this.initAnswer()
         _this.timeReduce()
-        _this.formLoading = false
-        let titleItems = _this.form.titleItems
-        let count = 0
-        for (let temp of titleItems) {
-          this.questionName.push(temp.name)
-          this.questionOrder.push(temp.questionItems.length + count)
-          count += temp.questionItems.length
-        }
       })
     }
     this.ban()
@@ -167,28 +182,19 @@ export default {
     },
     // 生成选择题和判断题的选项
     initAnswer () {
-      // for debug
-      // console.log(this.form)
-      // console.log(JSON.stringify(this.form))
-      this.answer.id = this.form.id
-      let titleItemArray = this.form.titleItems
-      for (let tIndex in titleItemArray) {
-        let questionArray = titleItemArray[tIndex].questionItems
-        for (let qIndex in questionArray) {
-          let question = questionArray[qIndex]
-          // 初始状态complete状态都设置为false
-          this.answer.answerItems.push({ questionId: question.id, content: null, contentArray: [], completed: false, itemOrder: question.itemOrder })
-        }
+      this.answer.examId = this.examId
+      let exerciseItems = this.tableData
+      for (let index in exerciseItems) {
+        let tempAnswer = exerciseItems[index]
+        this.answer.answerItems.push({ exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null })
       }
     },
     submitForm () {
       let _this = this
       window.clearInterval(_this.timer)
       _this.formLoading = true
-      // for debug
-      console.log(JSON.stringify(this.answer))
-      examPaperApi.answerSubmit(this.answer).then(re => {
-        if (re.code === 200) {
+      submitAnswer(this.examId, this.answer.answerItems).then(re => {
+        if (re.status === 100) {
           _this.$alert('试卷得分：' + re.response + '分', '考试结果', {
             confirmButtonText: '返回考试记录',
             callback: action => {
@@ -202,11 +208,11 @@ export default {
       }).catch(e => {
         _this.formLoading = false
       })
-    },    
+    },
     //禁止右键，复制，粘贴，拖拽
     ban(){
-      document.body.oncontextmenu=document.body.ondragstart= 	document.body.onselectstart=document.body.onbeforecopy=function(){return false;};
-      document.body.oncopy=document.body.oncut=function(){return false;};	
+      document.body.oncontextmenu = document.body.ondragstart = document.body.onselectstart=document.body.onbeforecopy = function(){ return false }
+      document.body.oncopy = document.body.oncut = function(){ return false }
     },
     // 全屏
     Screenfull() {
@@ -223,7 +229,6 @@ export default {
 
 <style lang="scss" scoped>
   @media only screen and (max-width: 480px) {
-
   }
 
   @media only screen and (min-width: 481px) {
