@@ -1,6 +1,7 @@
 // cover some element-ui styles
 .el-form-item__content, .el-radio-group, .el-table, .el-radio, .el-radio__label,
-.el-checkbox__label, .el-breadcrumb, .el-radio-group, .el-checkbox, .el-checkbox-group {
+.el-checkbox__label, .el-breadcrumb, .el-radio-group, .el-checkbox, .el-checkbox-group,
+.el-button--small{
   font-size: inherit !important;
 }
 
