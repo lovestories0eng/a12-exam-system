@@ -14,12 +14,13 @@ export default {
   name: 'SidebarLogo',
   data() {
     return {
-      title: '超星学习通'
+      title: '考试助手'
     }
   },
   computed: {
     logo: () => {
-      return require('@/assets/logo.jpg')
+      // return require('@/assets/logo.jpg')
+      return require('@/assets/logo_final.png')
     }
   }
 }

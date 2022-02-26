@@ -39,6 +39,7 @@ import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import Select from "./components/Select";
 
+import {getSingleSubjectPerformanceCurve} from '@/api/examData/student'
 import {getChartData} from "@/api/examData";
 
 export default {
@@ -61,6 +62,13 @@ export default {
     }
   },
   created() {
+    let singleSubjectCurve = new FormData()
+    singleSubjectCurve.append('majorId', '1')
+    getSingleSubjectPerformanceCurve(singleSubjectCurve)
+    .then(res => {
+      console.log(res)
+    })
+
     getChartData(this.$store.getters.studentId)
     .then(res => {
       res = res.data

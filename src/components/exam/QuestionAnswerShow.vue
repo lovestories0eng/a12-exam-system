@@ -30,9 +30,9 @@
       </div>
       <div v-if="qTypeStr==='fill'">
         <div class="q-title" v-html="questionOverview.question" />
-        <div class="q-content">
-          {{ studentAnswer }}
-        </div>
+        <!--<div class="q-content">-->
+        <!--  {{ studentAnswer }}-->
+        <!--</div>-->
       </div>
       <div v-if="qTypeStr==='judge'">
         <div class="q-title" v-html="questionOverview.question" />

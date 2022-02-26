@@ -41,20 +41,22 @@
         </el-header>
         <el-main>
           <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px">
-            <el-form-item>
-              <QuestionAnswerShow v-for="(item, index) in tableData"
-                                  :id="'question-'+ item.itemOrder"
-                                  :key="index"
-                                  :q-type-str="item.exerciseType"
-                                  :chapter-id="item.chapterId"
-                                  :chapter-name="item.chapterName"
-                                  :major-name="item.majorName"
-                                  :question-overview="item[item.exerciseType + 'Tea']"
-                                  :student-answer="item.studentAnswer"
-                                  :student-value="item.studentValue"
-                                  :exercise-value="item.exerciseValue"
-                                  :teacher-message="item.teacherMessage"
-                                  class="record-answer-info"
+            <el-form-item v-for="(item, index) in tableData" :key="index">
+              <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                {{ questionName[questionOrder.indexOf(index)] }} <br>
+              </span>
+              <QuestionAnswerShow
+                :id="'question-'+ item.itemOrder"
+                :q-type-str="item.exerciseType"
+                :chapter-id="item.chapterId"
+                :chapter-name="item.chapterName"
+                :major-name="item.majorName"
+                :question-overview="item[item.exerciseType + 'Tea']"
+                :student-answer="item.studentAnswer"
+                :student-value="item.studentValue"
+                :exercise-value="item.exerciseValue"
+                :teacher-message="item.teacherMessage"
+                class="record-answer-info"
               />
             </el-form-item>
           </el-form>

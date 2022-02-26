@@ -131,6 +131,7 @@
 <script>
 import {getNotice} from "@/api/user"
 import {formatDate} from "utils/timeFormat";
+import {changeExamReadStatus, changeGradeReadStatus} from "@/api/user";
 
 export default {
   name: "Received",
@@ -175,12 +176,31 @@ export default {
   },
   methods: {
     handleClick(index, message) {
+      console.log(message)
       if (message[index].grade === null) {
         message[index].examReadTime = new Date()
         message[index].examIsRead = "已读"
+        changeExamReadStatus({ examReadTime: message[index].examReadTime, examId: (message[index]).examId })
+          .then(res => {
+            if (res.status === 100) {
+              this.$message.success('修改成功')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error || 'error')
+          })
       } else {
         message[index].gradeReadTime = new Date()
         message[index].gradeIsRead = "已读"
+        changeGradeReadStatus({ gradeReadTime: message[index].gradeReadTime, examId: (message[index]).examId })
+          .then(res => {
+            if (res.status === 100) {
+              this.$message.success('修改成功')
+            }
+          })
+          .catch(error => {
+            this.$message.error(error || 'error')
+          })
       }
     }
   }

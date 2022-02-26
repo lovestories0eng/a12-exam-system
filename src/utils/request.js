@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
+import {getToken} from "utils/auth";
 
 const serviceOne = axios.create({
   baseURL: 'http://8.136.87.235:8085',
@@ -10,17 +11,29 @@ const serviceOne = axios.create({
 
 const serviceTwo = axios.create({
   baseURL: 'http://8.136.87.235:8083',
-  // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
+})
+
+const serviceThree = axios.create({
+  baseURL: 'http://8.136.87.235:8084',
+  timeout: 5000
+})
+
+const serviceFour = axios.create({
+  baseURL: 'http://8.136.87.235:8082',
+  timeout: 5000
 })
 
 setInterceptor(serviceOne)
 setInterceptor(serviceTwo)
+setInterceptor(serviceThree)
+setInterceptor(serviceFour)
 
 function setInterceptor(Obj) {
   Obj.interceptors.request.use(
       config => {
-        config.headers['Content-Type'] = 'application/json'
+        // 在网络请求发送之前为请求头设置token
+        config.headers['token'] = getToken()
         return config
       },
       error => {
@@ -74,4 +87,4 @@ function setInterceptor(Obj) {
   )
 }
 
-export { serviceOne, serviceTwo }
+export { serviceOne, serviceTwo, serviceThree, serviceFour }

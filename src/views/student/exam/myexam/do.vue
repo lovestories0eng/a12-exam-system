@@ -22,7 +22,7 @@
               </span>
               <!-- item.completed判断题目是否做完 -->
               <el-tag
-                type="info"
+                :type="questionCompleted((answer.answerItems[index]).completed)"
                 class="do-exam-title-tag"
                 style="display:inline-block;"
                 @click="goAnchor('#question-'+item.itemOrder)"
@@ -47,24 +47,26 @@
         </el-header>
         <el-main>
           <el-form ref="form" v-loading="formLoading" label-width="100px">
-            <el-form-item>
-              <QuestionAnswerEdit v-for="(item, index) in tableData"
-                                  :id="'question-'+ item.itemOrder"
-                                  :key="index"
-                                  :q-type-str="item.exerciseType"
-                                  :chapter-id="item.chapterId"
-                                  :chapter-name="item.chapterName"
-                                  :major-name="item.majorName"
-                                  :question-overview="item[item.exerciseType + 'Tea']"
-                                  :answer="answer.answerItems[item.itemOrder - 1]"
-                                  :student-value="item.studentValue"
-                                  :exercise-value="item.exerciseValue"
-                                  :teacher-message="item.teacherMessage"
-                                  class="record-answer-info"
+            <el-form-item v-for="(item, index) in tableData" :key="index">
+              <span v-if="questionOrder.indexOf(index) !== -1" style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                {{ questionName[questionOrder.indexOf(index)] }} <br>
+              </span>
+              <QuestionAnswerEdit
+                :id="'question-'+ item.itemOrder"
+                :q-type-str="item.exerciseType"
+                :chapter-id="item.chapterId"
+                :chapter-name="item.chapterName"
+                :major-name="item.majorName"
+                :question-overview="item[item.exerciseType + 'Tea']"
+                :answer="answer.answerItems[item.itemOrder - 1]"
+                :student-value="item.studentValue"
+                :exercise-value="item.exerciseValue"
+                :teacher-message="item.teacherMessage"
+                class="record-answer-info"
               />
             </el-form-item>
             <el-row class="do-align-center">
-              <el-button type="primary" @click="submitForm;commit()">提交</el-button>
+              <el-button type="primary" @click="submitForm">提交</el-button>
               <el-button>取消</el-button>
             </el-row>
           </el-form>
@@ -122,6 +124,7 @@ export default {
     if (examId && parseInt(examId) !== 0) {
       _this.formLoading = true
       getOnGoingPaper(examId).then(re => {
+        console.log(re);
         this.examName = re.data.examName
         this.examId = re.data.examId
         let exerciseItems = re.exerciseItems
@@ -180,19 +183,20 @@ export default {
     goAnchor (selector) {
       this.$el.querySelector(selector).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
     },
-    // 生成选择题和判断题的选项
+    // 生成初始答案
     initAnswer () {
       this.answer.examId = this.examId
       let exerciseItems = this.tableData
       for (let index in exerciseItems) {
         let tempAnswer = exerciseItems[index]
-        this.answer.answerItems.push({ exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null })
+        this.answer.answerItems.push({ completed: false, exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null })
       }
     },
     submitForm () {
       let _this = this
       window.clearInterval(_this.timer)
       _this.formLoading = true
+      console.log(this.answer.answerItems)
       submitAnswer(this.examId, this.answer.answerItems).then(re => {
         if (re.status === 100) {
           _this.$alert('试卷得分：' + re.response + '分', '考试结果', {
@@ -208,6 +212,7 @@ export default {
       }).catch(e => {
         _this.formLoading = false
       })
+      this.commit()
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){

@@ -16,6 +16,7 @@
     "element-ui": "^2.15.6",
     "fuse.js": "^6.5.3",
     "js-cookie": "^3.0.1",
+    "mavon-editor": "^2.10.4",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",

@@ -43,6 +43,22 @@ export function getNotice() {
   })
 }
 
+export function changeExamReadStatus(data) {
+  return serviceOne({
+    url: '/user/message/exam/read',
+    method: 'post',
+    data
+  })
+}
+
+export function changeGradeReadStatus(data) {
+  return serviceOne({
+    url: '/user/message/grade/read',
+    method: 'post',
+    data
+  })
+}
+
 export function examClassification() {
   return serviceOne({
     url: '/user/exam',

@@ -5,6 +5,7 @@ import Element from 'element-ui'
 import store from "store";
 import { router } from 'router'
 import './icons'
+import './markdown'
 
 import 'normalize.css/normalize.css'
 import '@/styles/index.scss' // 全局样式
