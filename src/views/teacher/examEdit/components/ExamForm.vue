@@ -16,23 +16,13 @@
           <el-option label="学生个人试卷" value="学生个人试卷"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="开始时间">
+      <el-form-item label="考试时间">
         <el-col :span="5">
-          <el-date-picker v-model="form.startDate1" type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
-        </el-col>
-        <el-col class="line" :span="1">-</el-col>
-        <el-col :span="5">
-          <el-time-picker v-model="form.startDate2" placeholder="选择时间" style="width: 100%;"></el-time-picker>
+          <el-date-picker v-model="form.startEndDate" type="datetimerange" range-separator="至" placeholder="选择日期" style="width: 100%;" value-format="timestamp"></el-date-picker>
         </el-col>
       </el-form-item>
-      <el-form-item label="截止时间">
-        <el-col :span="5">
-          <el-date-picker v-model="form.endDate1" type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
-        </el-col>
-        <el-col class="line" :span="1">-</el-col>
-        <el-col :span="5">
-          <el-time-picker v-model="form.endDate2" placeholder="选择时间" style="width: 100%;"></el-time-picker>
-        </el-col>
+      <el-form-item label="班级">
+
       </el-form-item>
       <el-form-item label="学生列表">
         <el-checkbox-group v-model="form.studentChosenList">
@@ -46,7 +36,7 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="考试时长">
-        <el-input-number v-model="form.examLastTime" :min="1" :max="300" @change="handleChange"></el-input-number>
+        <el-input-number v-model="form.examLastTime" :min="1" :max="300" @change="handleChange"></el-input-number> 分钟
       </el-form-item>
       <el-form-item label="学科">
         <el-input v-model="form.major" style="width: 25%;" placeholder="请输入学科"></el-input>
@@ -94,6 +84,7 @@
 </template>
 
 <script>
+import {getClassList} from "@/api/common";
 export default {
   name: "ExamForm",
   data() {
@@ -119,10 +110,7 @@ export default {
       form: {
         name: '',
         examType: '',
-        startDate1: '',
-        startDate2: '',
-        endDate1: '',
-        endDate2: '',
+        startEndDate: '',
         major: '',
         chapter: '',
         studentList: ['ycl', 'psh', 'wsy', 'syt', 'czk'],
@@ -131,6 +119,12 @@ export default {
         note: ''
       }
     }
+  },
+  created() {
+    getClassList()
+    .then(res => {
+      console.log(res)
+    })
   },
   methods: {
     onSubmit() {

@@ -4,12 +4,14 @@ import { serviceOne } from "utils/request";
 export function getSingleSubjectPerformanceCurve(data) {
   return serviceOne({
     url: '/user/grade/major',
-    data
+    method: 'post',
+    data: data
   })
 }
 
 export function getGeneralExaminationData() {
   return serviceOne({
-    url: '/user/grade/general'
+    url: '/user/grade/general',
+    method: 'get'
   })
 }

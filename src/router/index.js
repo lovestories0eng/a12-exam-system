@@ -246,6 +246,32 @@ export const teacherRoutes = [
       }
     ]
   },
+  {
+    path: '/info',
+    component: Layout,
+    alwaysShow: true,
+    redirect: '/info/class-info',
+    name: '班级和学生信息',
+    meta: {
+      title: '班级和学生信息',
+      icon: 'info'
+    },
+    children: [
+      {
+        path: '/info/class-info',
+        component: () => import('@/views/teacher/info/classInfo'),
+        name: '班级信息',
+        meta: {
+          title: '班级信息'
+        }
+      },
+      {
+        path: '/info/student-info',
+        component: () => import('@/views/teacher/info/studentInfo'),
+        name: ''
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   {
     path: '*',

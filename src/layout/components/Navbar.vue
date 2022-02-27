@@ -1,7 +1,6 @@
 <template>
   <div class="navbar">
     <hamburger
-      v-if="device === 'mobile'"
       id="hamburger-container"
       :is-active="sidebar.opened"
       class="hamburger-container"

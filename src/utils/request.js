@@ -4,23 +4,28 @@ import store from '@/store'
 import {getToken} from "utils/auth";
 
 const serviceOne = axios.create({
-  baseURL: 'http://8.136.87.235:8085',
+  baseURL: 'http://47.97.51.81:8085',
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
 
 const serviceTwo = axios.create({
-  baseURL: 'http://8.136.87.235:8083',
+  baseURL: 'http://47.97.51.81:8083',
   timeout: 5000 // request timeout
 })
 
 const serviceThree = axios.create({
-  baseURL: 'http://8.136.87.235:8084',
+  baseURL: 'http://47.97.51.81:8084',
   timeout: 5000
 })
 
 const serviceFour = axios.create({
-  baseURL: 'http://8.136.87.235:8082',
+  baseURL: 'http://47.97.51.81:8082',
+  timeout: 5000
+})
+
+const serviceFive = axios.create({
+  baseURL: 'http://47.97.51.81:8081',
   timeout: 5000
 })
 
@@ -28,6 +33,7 @@ setInterceptor(serviceOne)
 setInterceptor(serviceTwo)
 setInterceptor(serviceThree)
 setInterceptor(serviceFour)
+setInterceptor(serviceFive)
 
 function setInterceptor(Obj) {
   Obj.interceptors.request.use(
@@ -87,4 +93,4 @@ function setInterceptor(Obj) {
   )
 }
 
-export { serviceOne, serviceTwo, serviceThree, serviceFour }
+export { serviceOne, serviceTwo, serviceThree, serviceFour, serviceFive }

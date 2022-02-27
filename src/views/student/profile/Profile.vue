@@ -263,7 +263,7 @@ export default {
       },
     // 上传图片前的过滤
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpg'
+      const isJPG = file.type === 'image/jpg' || file.type === 'image/jpeg'
       const isLt5M = (file.size / 1024 / 1024) < 5
 
       if (!isJPG) {

@@ -15,7 +15,6 @@ import './permission'
 Vue.config.productionTip = false
 Vue.use(Element)
 
-require('./mock')
 
 new Vue({
   el: '#app',
