@@ -39,8 +39,7 @@ import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import Select from "./components/Select";
 
-import { getSingleSubjectPerformanceCurve, getGeneralExaminationData } from '@/api/examData/student'
-import { getMajorList } from "@/api/common";
+import { getGeneralExaminationData, getSubjectGrades } from '@/api/examData/student'
 import {formatDate} from "utils/timeFormat";
 
 export default {
@@ -55,31 +54,26 @@ export default {
     return {
       subjects: [],
       lineChartData: {},
-      majorIds: [],
       raddarData: [],
       raddarIndicator: [],
       pieData: [],
       subjectData: [],
-      subjectShow: {}
+      subjectShow: {},
+      majorIdMapMajorName: {}
     }
   },
   created() {
-    getMajorList()
-    .then(res => {
-      console.log(res)
-    })
-
-    let majorIds = { majorIds: [1, 2, 3, 4, 5] }
-    for (let i=0;i<majorIds.majorIds.length;i++) {
-      let majorId = new window.FormData()
-      majorId.append('majorId', majorIds.majorIds[i].toString())
-      getSingleSubjectPerformanceCurve(majorId)
-      .then(res => {
-        this.majorIds.push(majorIds.majorIds[i])
-        this.subjects.push(i+1)
-        this.subjectData.push( {name: i+1, xAxisData: res.chapters, yAxisData: res.grades} )
-      })
+    let majors = {
+      majors: [1, 2, 3, 4, 5, 6]
     }
+    getSubjectGrades(majors)
+    .then(res => {
+      res = res.data
+      for (let i=0;i<res.length;i++) {
+        this.subjects.push(res[i].majorName)
+        this.subjectData.push({ name: res[i].majorName, xAxisData: res[i].chapters, yAXisData: res[i].grades })
+      }
+    })
 
     getGeneralExaminationData()
     .then(res => {
@@ -94,19 +88,6 @@ export default {
       }
 
     })
-
-    // getChartData(this.$store.getters.studentId)
-    // .then(res => {
-    //   res = res.data
-    //   this.raddarData = res.raddarData.raddarData
-    //   this.raddarIndicator = res.raddarData.raddarIndicator
-    //   this.lineChartData = res.lineData
-    //   this.pieData = res.pieData
-    //   this.subjectData = res.subjectData
-    //   this.subjectData.forEach(item => {
-    //     this.subjects.push(item.name)
-    //   })
-    // })
   },
   methods: {
     changeOption(type) {

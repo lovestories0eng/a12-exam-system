@@ -1,18 +1,22 @@
 <template>
   <div>
     <div v-show="getExam"
-         class="camera_outer">
+         class="camera_outer"
+    >
       <video id="videoCamera"
              :width="videoWidth"
              :height="videoHeight"
-             autoplay></video>
+             autoplay
+      ></video>
       <canvas id="canvasCamera"
               style="display:none;"
               :width="videoWidth"
-              :height="videoHeight"></canvas>
+              :height="videoHeight"
+      ></canvas>
     </div>
     <Screen ref="screen"
-            @filterExamLists="filterExamLists">
+            @filterExamLists="filterExamLists"
+    >
       <template v-if="device!=='mobile'">
         <div class="right-menu">
           <search class="right-menu-item"
@@ -21,13 +25,15 @@
                   :searcher-label="searcherLabel"
                   :searcher-method="searcherMethod"
                   :fuse-keys="fuseKeys"
-                  @change="searcherMethod">
+                  @change="searcherMethod"
+          >
           </search>
         </div>
       </template>
     </Screen>
     <div v-for="(item, index) in tags"
-         :key="item">
+         :key="item"
+    >
       <el-card v-if="examsShow[index].length !== 0">
         <span>
           <strong>{{ item }}</strong>
@@ -35,7 +41,8 @@
         <!-- 不同种类（进行中、待开始、已完成）的考试点击的事件不同 -->
         <ExamClassification :operation="operations[index]"
                             :handle-click="rowClicks[index]"
-                            :exam-list="examsShow[index]">
+                            :exam-list="examsShow[index]"
+        >
         </ExamClassification>
       </el-card>
     </div>

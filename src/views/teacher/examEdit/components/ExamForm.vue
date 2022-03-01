@@ -22,21 +22,27 @@
         </el-col>
       </el-form-item>
       <el-form-item label="班级">
-
+        <el-select v-model="form.classBelonging" @change="changeClassBelonging">
+          <el-option v-for="item in classInfo" :key="item.classId" :label="item.className" :value="item.classId"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="学生列表">
-        <el-checkbox-group v-model="form.studentChosenList">
+        <div v-if="form.studentList.length === 0 && form.classBelonging === ''" style="color: red">
+          请先选择班级
+        </div>
+        <div v-else-if="form.studentList.length === 0 && form.classBelonging !== ''" style="color: red">
+          该班暂无学生
+        </div>
+        <el-checkbox-group v-else v-model="form.studentChosenList">
           <el-checkbox
             v-for="(item, index) in form.studentList"
             :key="index"
             :label="item"
+            :value="form.studentChosenId[index]"
             name="type"
           >
           </el-checkbox>
         </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="考试时长">
-        <el-input-number v-model="form.examLastTime" :min="1" :max="300" @change="handleChange"></el-input-number> 分钟
       </el-form-item>
       <el-form-item label="学科">
         <el-input v-model="form.major" style="width: 25%;" placeholder="请输入学科"></el-input>
@@ -57,81 +63,151 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="id"
+          prop="exerciseId"
           label="id"
           width="180"
         >
         </el-table-column>
         <el-table-column
-          prop="type"
+          prop="exerciseType"
           label="题型"
           width="180"
         >
         </el-table-column>
         <el-table-column
-          prop="content"
+          prop="question"
           label="题干"
         >
         </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+        >
+          <template slot-scope="scope">
+            <div v-if="scope.row.status === '未选择'" style="color: red;">
+              {{ scope.row.status }}
+            </div>
+            <div v-else>
+              {{ scope.row.status }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              @click="handleClick(scope.$index, tableData)"
+            >
+              选择
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-form>
-
-    <el-form v-show="active === 2"></el-form>
-
+    <el-form v-show="active === 2">
+      <el-button @click="createExam">创建试卷</el-button>
+    </el-form>
     <el-button style="margin-top: 12px;" @click="previous">上一步</el-button>
     <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
   </div>
 </template>
 
 <script>
-import {getClassList} from "@/api/common";
+import {getClassList, getClassStudentList} from "@/api/common"
+import { getExerciseByMajorIdAndChapterId } from "@/api/exercises"
+import {questionMap} from "utils/questionMap";
+import {createExam} from "@/api/exam/publishPaper";
 export default {
   name: "ExamForm",
   data() {
     return {
       active: 0,
-      tableData: [{
-        id: '1',
-        type: '选择题',
-        content: '数据库三级模式中，真正存在的是（ ）。'
-      }, {
-        id: '2',
-        type: '选择题',
-        content: '关系数据库中的关键字是指（ ）。'
-      }, {
-        id: '3',
-        type: '选择题',
-        content: '数据库的三级模式之间存在的映象关系正确的是（ ）。 数据库三级结构从内到外的三个层次为（ ）。'
-      }, {
-        id: '4',
-        type: '判断题',
-        content: '这道编的题目答案是错的。'
-      }],
+      tableData: [],
       form: {
         name: '',
         examType: '',
         startEndDate: '',
         major: '',
         chapter: '',
-        studentList: ['ycl', 'psh', 'wsy', 'syt', 'czk'],
+        studentList: [],
         studentChosenList: [],
-        examLastTime: 0,
-        note: ''
-      }
+        studentChosenId: [],
+        note: '',
+        classBelonging: '',
+      },
+      classInfo: [],
+      classIdMapStudentId: {},
+      chosenExerciseId: []
     }
   },
   created() {
     getClassList()
     .then(res => {
-      console.log(res)
+      this.classInfo = res.data
     })
   },
   methods: {
-    onSubmit() {
-      console.log(this.form)
+    handleClick(index, scope) {
+      if (scope[index].status === '未选择') {
+        scope[index].status = '已选择'
+        this.chosenExerciseId.push(scope[index].exerciseId)
+      }
+      else {
+        scope[index].status = '未选择'
+        let tempData = scope[index].exerciseId
+        this.chosenExerciseId.splice(this.chosenExerciseId.indexOf(tempData), 1)
+      }
     },
-    handleChange() {
-      console.log('value changed')
+    createExam() {
+      let Obj = {
+        examName: this.form.name,
+        examBeginTime: this.form.startEndDate[0],
+        examEndTime: this.form.startEndDate[1],
+        majorId: this.form.major,
+        chapterId: this.form.chapter,
+        userId: this.form.studentChosenId,
+        exerciseId: this.chosenExerciseId
+      }
+      createExam(Obj)
+      .then(res => {
+        console.log(Obj)
+        console.log(res)
+      })
+    },
+    changeClassBelonging(classId) {
+      let formData = new window.FormData()
+      formData.append('classId', classId)
+      getClassStudentList(formData)
+      .then(res => {
+        this.form.studentChosenList = []
+        this.form.studentList = []
+        this.form.studentChosenId = []
+        res = res.students
+        for (let i=0;i<res.length;i++) {
+          this.form.studentChosenId.push(res[i].userId)
+          this.form.studentList.push(res[i].name)
+        }
+      })
+    },
+    onSubmit() {
+      let formData  = new window.FormData()
+      formData.append('majorId', this.form.major)
+      formData.append('chapterId', this.form.chapter)
+      getExerciseByMajorIdAndChapterId(formData)
+      .then(res => {
+        res = res.data
+        this.tableData = []
+        for (let i=0;i<res.length;i++) {
+          let exerciseType = res[i].exerciseType
+          res[i][exerciseType + 'Tea'].exerciseType = questionMap(exerciseType)
+          res[i][exerciseType + 'Tea'].status = '未选择'
+          this.tableData.push(res[i][exerciseType + 'Tea'])
+        }
+      })
     },
     next() {
       if (this.active > 2) {

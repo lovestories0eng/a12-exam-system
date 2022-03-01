@@ -15,3 +15,11 @@ export function getGeneralExaminationData() {
     method: 'get'
   })
 }
+
+export function getSubjectGrades(data) {
+  return serviceOne({
+    url: '/user/grade/majors',
+    method: 'post',
+    data
+  })
+}

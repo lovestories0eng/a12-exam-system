@@ -4,14 +4,16 @@
       <video id="videoCamera"
              :width="videoWidth"
              :height="videoHeight"
-             autoplay></video>
+             autoplay
+      ></video>
       <canvas id="canvasCamera"
               style="display:none;"
               :width="videoWidth"
-              :height="videoHeight"></canvas>
+              :height="videoHeight"
+      ></canvas>
     </div>
     <div class="vButton">
-      <span >
+      <span>
         <el-button @click="upload()">录入人脸信息</el-button>
       </span>
     </div>

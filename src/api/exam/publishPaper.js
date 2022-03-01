@@ -1,9 +1,9 @@
-import { serviceFive } from "utils/request"
+import { serviceTwo } from "utils/request"
 
-export function getExercciseAllitem(data) {
-  return serviceFive({
-    url: '/exercise/allItem',
+export function createExam(data) {
+  return serviceTwo({
+    url: '/exam/setExam',
     method: 'post',
-    data: data
+    data
   })
 }

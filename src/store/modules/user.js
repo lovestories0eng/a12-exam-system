@@ -90,7 +90,6 @@ const actions = {
           reject('认证失败，请重新登录')
         }
         const { image, role, sex, address, phoneNumber, name, userId, email, avatar, introduction,  className } = data
-        console.log(data);
         commit('SET_IMAGE', image)
         commit('SET_ROLE', role)
         commit('SET_SEX', sex)

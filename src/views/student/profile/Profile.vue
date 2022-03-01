@@ -3,19 +3,27 @@
     <el-card>
       <el-form ref="form"
                :model="form"
-               :rules="rules">
+               :rules="rules"
+      >
         <el-descriptions class="descriptions"
                          title="用户信息"
                          :column="columns"
                          :size="size"
-                         border>
+                         border
+        >
           <template slot="extra">
             <el-button type="info"
                        size="small"
-                       @click="handleFaceInfo">人脸信息</el-button>
+                       @click="handleFaceInfo"
+            >
+              人脸信息
+            </el-button>
             <el-button type="primary"
                        size="small"
-                       @click="handleClick">{{ buttonContent }}</el-button>
+                       @click="handleClick"
+            >
+              {{ buttonContent }}
+            </el-button>
           </template>
           <el-descriptions-item>
             <template slot="label">
@@ -25,7 +33,8 @@
             <span v-if="edit">
               <el-form-item prop="name">
                 <el-input ref="name"
-                          v-model="form.name"></el-input>
+                          v-model="form.name"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -40,7 +49,8 @@
             <span v-if="edit">
               <el-form-item prop="phoneNumber">
                 <el-input ref="phoneNumber"
-                          v-model="form.phoneNumber"></el-input>
+                          v-model="form.phoneNumber"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -55,7 +65,8 @@
             <span v-if="edit">
               <el-form-item prop="address">
                 <el-input ref="address"
-                          v-model="form.address"></el-input>
+                          v-model="form.address"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -70,7 +81,8 @@
             <span v-if="edit">
               <el-form-item prop="userId">
                 <el-input ref="userId"
-                          v-model="form.userId"></el-input>
+                          v-model="form.userId"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -85,7 +97,8 @@
             <span v-if="edit">
               <el-form-item prop="email">
                 <el-input ref="email"
-                          v-model="form.email"></el-input>
+                          v-model="form.email"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -99,7 +112,8 @@
             </template><span v-if="edit">
               <el-form-item prop="sex">
                 <el-input ref="sex"
-                          v-model="form.sex"></el-input>
+                          v-model="form.sex"
+                ></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -112,7 +126,8 @@
       <div style="text-align:center; margin: 10px;">
         <el-button :disabled="!edit"
                    :loading="btnLoad"
-                   @click="submitForm">
+                   @click="submitForm"
+        >
           提交
         </el-button>
       </div>
@@ -123,21 +138,28 @@
           <img v-if="!progressFlag"
                class="head-img"
                :src="image"
-               alt="" />
+               alt=""
+          />
           <div v-show="progressFlag"
-               class="head-img">
+               class="head-img"
+          >
             <el-progress :width="500"
                          type="circle"
-                         :percentage="progressPercent"></el-progress>
+                         :percentage="progressPercent"
+            ></el-progress>
           </div>
           <el-upload action="#"
                      :show-file-list="false"
                      :before-upload="beforeAvatarUpload"
-                     :http-request="uploadImg">
+                     :http-request="uploadImg"
+          >
             <el-button type="success"
                        plain
                        round
-                       size="big">更改头像</el-button>
+                       size="big"
+            >
+              更改头像
+            </el-button>
           </el-upload>
         </section>
       </div>
