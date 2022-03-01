@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import {getToken} from "utils/auth";
+import qs from 'qs'
 
 const serviceOne = axios.create({
   baseURL: 'http://47.97.51.81:8085',
@@ -26,6 +27,11 @@ const serviceFour = axios.create({
 
 const serviceFive = axios.create({
   baseURL: 'http://47.97.51.81:8081',
+  timeout: 5000
+})
+
+let faceService = axios.create({
+  baseURL: '',
   timeout: 5000
 })
 
@@ -93,4 +99,4 @@ function setInterceptor(Obj) {
   )
 }
 
-export { serviceOne, serviceTwo, serviceThree, serviceFour, serviceFive }
+export { serviceOne, serviceTwo, serviceThree, serviceFour, serviceFive, faceService }

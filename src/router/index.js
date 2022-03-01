@@ -172,6 +172,15 @@ export const studentRoutes = [
           icon: 'profile',
           breadcrumb: false
         },
+      },
+      {
+        path: '/profile/faceInfo',
+        component: () => import('@/views/student/profile/faceInfo'),
+        meta: {
+          title: '人脸信息',
+          icon: 'profile',
+          breadcrumb: false
+        },
       }
     ]
   },

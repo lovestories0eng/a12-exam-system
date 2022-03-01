@@ -1,10 +1,21 @@
 <template>
   <div>
     <el-card>
-      <el-form ref="form" :model="form" :rules="rules">
-        <el-descriptions class="descriptions" title="用户信息" :column="columns" :size="size" border>
+      <el-form ref="form"
+               :model="form"
+               :rules="rules">
+        <el-descriptions class="descriptions"
+                         title="用户信息"
+                         :column="columns"
+                         :size="size"
+                         border>
           <template slot="extra">
-            <el-button type="primary" size="small" @click="handleClick">{{ buttonContent }}</el-button>
+            <el-button type="info"
+                       size="small"
+                       @click="handleFaceInfo">人脸信息</el-button>
+            <el-button type="primary"
+                       size="small"
+                       @click="handleClick">{{ buttonContent }}</el-button>
           </template>
           <el-descriptions-item>
             <template slot="label">
@@ -13,7 +24,8 @@
             </template>
             <span v-if="edit">
               <el-form-item prop="name">
-                <el-input ref="name" v-model="form.name"></el-input>
+                <el-input ref="name"
+                          v-model="form.name"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -27,7 +39,8 @@
             </template>
             <span v-if="edit">
               <el-form-item prop="phoneNumber">
-                <el-input ref="phoneNumber" v-model="form.phoneNumber"></el-input>
+                <el-input ref="phoneNumber"
+                          v-model="form.phoneNumber"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -41,7 +54,8 @@
             </template>
             <span v-if="edit">
               <el-form-item prop="address">
-                <el-input ref="address" v-model="form.address"></el-input>
+                <el-input ref="address"
+                          v-model="form.address"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -55,7 +69,8 @@
             </template>
             <span v-if="edit">
               <el-form-item prop="userId">
-                <el-input ref="userId" v-model="form.userId"></el-input>
+                <el-input ref="userId"
+                          v-model="form.userId"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -69,7 +84,8 @@
             </template>
             <span v-if="edit">
               <el-form-item prop="email">
-                <el-input ref="email" v-model="form.email"></el-input>
+                <el-input ref="email"
+                          v-model="form.email"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -82,7 +98,8 @@
               性别
             </template><span v-if="edit">
               <el-form-item prop="sex">
-                <el-input ref="sex" v-model="form.sex"></el-input>
+                <el-input ref="sex"
+                          v-model="form.sex"></el-input>
               </el-form-item>
             </span>
             <span v-else>
@@ -93,11 +110,9 @@
       </el-form>
 
       <div style="text-align:center; margin: 10px;">
-        <el-button
-          :disabled="!edit"
-          :loading="btnLoad"
-          @click="submitForm"
-        >
+        <el-button :disabled="!edit"
+                   :loading="btnLoad"
+                   @click="submitForm">
           提交
         </el-button>
       </div>
@@ -105,15 +120,24 @@
     <el-card>
       <div>
         <section style="text-align: center; display: block">
-          <img v-if="!progressFlag" class="head-img" :src="image" alt="" />
-          <div v-show="progressFlag" class="head-img">
-            <el-progress :width="500" type="circle" :percentage="progressPercent"></el-progress>
+          <img v-if="!progressFlag"
+               class="head-img"
+               :src="image"
+               alt="" />
+          <div v-show="progressFlag"
+               class="head-img">
+            <el-progress :width="500"
+                         type="circle"
+                         :percentage="progressPercent"></el-progress>
           </div>
           <el-upload action="#"
-                     :show-file-list="false" :before-upload="beforeAvatarUpload"
-                     :http-request="uploadImg"
-          >
-            <el-button type="success" plain round size="big">更改头像</el-button>
+                     :show-file-list="false"
+                     :before-upload="beforeAvatarUpload"
+                     :http-request="uploadImg">
+            <el-button type="success"
+                       plain
+                       round
+                       size="big">更改头像</el-button>
           </el-upload>
         </section>
       </div>
@@ -122,12 +146,12 @@
 </template>
 
 <script>
-import {updateImage, updateInfo} from "@/api/user";
-import {mapGetters} from "vuex";
+import { updateImage, updateInfo } from "@/api/user";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Profile",
-  data() {
+  data () {
     let validateName = (rule, value, callback) => {
       if (value === "") {
         return false
@@ -216,7 +240,7 @@ export default {
     }
   },
   computed: {
-    columns() {
+    columns () {
       return this.$store.getters.device === 'desktop' ? 2 : 1
     },
     ...mapGetters([
@@ -229,11 +253,11 @@ export default {
       'sex'
     ]),
   },
-  created() {
+  created () {
     this.dataInit()
   },
   methods: {
-    dataInit() {
+    dataInit () {
       this.form.name = this.$store.getters.name
       this.form.userId = this.$store.getters.userId
       this.form.phoneNumber = this.$store.getters.phoneNumber
@@ -260,7 +284,7 @@ export default {
           this.$message.error('提交失败')
           console.log(error)
         })
-      },
+    },
     // 上传图片前的过滤
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpg' || file.type === 'image/jpeg'
@@ -274,7 +298,7 @@ export default {
       }
       return isJPG && isLt5M
     },
-    handleClick() {
+    handleClick () {
       this.dataInit()
       if (this.edit === false) {
         this.buttonContent = '查看'
@@ -285,7 +309,11 @@ export default {
       }
       // store.dispatch('user/getInfo')
     },
-    submitForm() {
+    handleFaceInfo () {
+      //跳转face
+      this.$router.push("/profile/faceInfo")
+    },
+    submitForm () {
       this.$refs.form.validate(valid => {
         this.btnLoad = true
         if (valid) {
@@ -315,41 +343,41 @@ export default {
 </script>
 
 <style scoped>
-  /deep/ .el-input__inner {
-    height: 30px !important;
-    padding: 0 !important;
-  }
+/deep/ .el-input__inner {
+  height: 30px !important;
+  padding: 0 !important;
+}
 
-  /deep/ .el-form-item__content {
-    height: 28px !important;
-    line-height: 28px !important;
-  }
+/deep/ .el-form-item__content {
+  height: 28px !important;
+  line-height: 28px !important;
+}
 
-  /deep/ .el-form-item {
-    margin-bottom: 10px;
-  }
+/deep/ .el-form-item {
+  margin-bottom: 10px;
+}
 
-  @media only screen and (max-width: 560px) {
-    .head-img {
-      height: 200px;
-    }
+@media only screen and (max-width: 560px) {
+  .head-img {
+    height: 200px;
   }
+}
 
-  @media only screen and (min-width: 561px) and (max-width: 760px) {
-    .head-img {
-      height: 300px;
-    }
+@media only screen and (min-width: 561px) and (max-width: 760px) {
+  .head-img {
+    height: 300px;
   }
+}
 
-  @media only screen and (min-width: 761px) and (max-width: 1000px) {
-    .head-img {
-      height: 400px;
-    }
+@media only screen and (min-width: 761px) and (max-width: 1000px) {
+  .head-img {
+    height: 400px;
   }
+}
 
-  @media only screen and (min-width: 1001px) {
-    .head-img {
-      height: 500px;
-    }
+@media only screen and (min-width: 1001px) {
+  .head-img {
+    height: 500px;
   }
+}
 </style>
