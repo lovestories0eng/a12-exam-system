@@ -174,8 +174,12 @@ export default {
       }
       createExam(Obj)
       .then(res => {
-        console.log(Obj)
-        console.log(res)
+        if (res.status === 100) {
+          this.$message.success('发布成功')
+        }
+      })
+      .catch(error => {
+        this.$message.error(error || '发布失败')
       })
     },
     changeClassBelonging(classId) {
@@ -199,14 +203,20 @@ export default {
       formData.append('chapterId', this.form.chapter)
       getExerciseByMajorIdAndChapterId(formData)
       .then(res => {
-        res = res.data
-        this.tableData = []
-        for (let i=0;i<res.length;i++) {
-          let exerciseType = res[i].exerciseType
-          res[i][exerciseType + 'Tea'].exerciseType = questionMap(exerciseType)
-          res[i][exerciseType + 'Tea'].status = '未选择'
-          this.tableData.push(res[i][exerciseType + 'Tea'])
+        if (res.status === 100) {
+          this.$message.success('创建成功')
+          res = res.data
+          this.tableData = []
+          for (let i=0;i<res.length;i++) {
+            let exerciseType = res[i].exerciseType
+            res[i][exerciseType + 'Tea'].exerciseType = questionMap(exerciseType)
+            res[i][exerciseType + 'Tea'].status = '未选择'
+            this.tableData.push(res[i][exerciseType + 'Tea'])
+          }
         }
+      })
+      .catch(error => {
+        this.$message.error(error || '创建失败')
       })
     },
     next() {

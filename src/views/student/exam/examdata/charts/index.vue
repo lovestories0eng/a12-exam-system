@@ -69,10 +69,12 @@ export default {
     getSubjectGrades(majors)
     .then(res => {
       res = res.data
+      console.log(res)
       for (let i=0;i<res.length;i++) {
         this.subjects.push(res[i].majorName)
-        this.subjectData.push({ name: res[i].majorName, xAxisData: res[i].chapters, yAXisData: res[i].grades })
+        this.subjectData.push({ name: res[i].majorName, xAxisData: res[i].chapterId, yAxisData: res[i].grades })
       }
+      console.log(this.subjectData)
     })
 
     getGeneralExaminationData()

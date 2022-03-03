@@ -9,7 +9,7 @@
       <div v-if="qTypeStr==='choice4'">
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          <el-radio-group disabled>
+          <el-radio-group :value="answer.studentAnswer" disabled>
             <el-radio v-for="index in 4" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
               <span class="question-prefix"> {{ choice4Options[index - 1] }}.</span>
               <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
@@ -20,7 +20,7 @@
       <div v-if="qTypeStr==='choice5'">
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          <el-radio-group disabled>
+          <el-radio-group :value="answer.studentAnswer" disabled>
             <el-radio v-for="index in 5" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
               <span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>
               <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
@@ -30,38 +30,29 @@
       </div>
       <div v-if="qTypeStr==='fill'">
         <div class="q-title" v-html="questionOverview.question" />
-        <!--<div class="q-content">-->
-        <!--  {{ studentAnswer }}-->
-        <!--</div>-->
       </div>
       <div v-if="qTypeStr==='judge'">
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          {{ studentAnswer }}
+          <el-radio-group :value="answer.studentAnswer" disabled>
+            <el-radio v-for="index in 2" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
+              <span class="question-prefix"> {{ judgeOptions[index - 1] }}.</span>
+              <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
+            </el-radio>
+          </el-radio-group>
         </div>
-      </div>
-      <div class="question-answer-show-item" style="margin-top: 15px">
-        <span class="question-show-item">结果：</span>
-        <el-tag :type="doRightTagFormatter(studentAnswer === questionOverview.rightAnswer)">
-          {{ doRightTextFormatter(studentAnswer === questionOverview.rightAnswer) }}
-        </el-tag>
       </div>
       <div class="question-answer-show-item">
         <span class="question-show-item">题目分数：</span>
         <span>{{ exerciseValue }}</span>
       </div>
       <div class="question-answer-show-item">
-        <span class="question-show-item">学生得分：</span>
-        <span>{{ studentValue }}</span>
-      </div>
-
-      <div class="question-answer-show-item">
         <span class="question-show-item">难度：</span>
         <el-rate v-model="questionOverview.difficult" disabled class="question-show-item"></el-rate>
       </div>
       <br />
       <div class="question-answer-show-item">
-        <span class="question-show-item">学生答案：{{ studentAnswer }}</span>
+        <span class="question-show-item">学生答案：{{ answer.studentAnswer }}</span>
         <br>
         <span class="question-show-item">正确答案：</span>
         <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'" class="q-item-span-content" v-html="questionOverview.rightAnswer" />
@@ -71,7 +62,15 @@
       <div class="question-answer-show-item" style="line-height: 1.8">
         <span class="question-show-item">解析：</span>
         <span class="q-item-span-content" v-html="questionOverview.analyze" /> <br>
-        <span class="q-item-span-content" v-html="teacherMessage" />
+        <span class="q-item-span-content" v-html="questionOverview.analyze" />
+        <span class="q-item-span-content">
+          老师评分：
+          <el-input-number v-model="answer.studentValue"></el-input-number>
+        </span> <br>
+        <span class="q-item-span-content">
+          老师批语：
+          <el-input v-model="answer.teacherMessage" type="textarea" style="width: 50%; margin-top: 10px"></el-input>
+        </span>
       </div>
     </el-card>
     <div v-else>
@@ -84,7 +83,7 @@ import { mapState, mapGetters } from 'vuex'
 import {questionMap} from "utils/questionMap";
 
 export default {
-  name: 'QuestionAnswerGrade',
+  name: 'QuestionGrade',
   props: {
     questionOverview: {
       type: Object,
@@ -104,15 +103,11 @@ export default {
         return ''
       }
     },
-    studentAnswer: {
-      type: String,
+    answer: {
+      type: Object,
       default() {
-        return ''
+        return {}
       }
-    },
-    studentValue: {
-      type: Number,
-      default: 0
     },
     exerciseValue: {
       type: Number,
@@ -130,10 +125,6 @@ export default {
       type: String,
       default: ""
     },
-    teacherMessage: {
-      type: String,
-      default: ''
-    },
     cardStyle: {
       type: String,
       default: 'box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);'
@@ -143,7 +134,10 @@ export default {
     return {
       questionMap: questionMap,
       choice4Options: ['A', 'B', 'C', 'D'],
-      choice5Options: ['A', 'B', 'C', 'D', 'E']
+      choice5Options: ['A', 'B', 'C', 'D', 'E'],
+      judgeOptions: ['对', '错'],
+      teacherMessage: '',
+      studentValue: 0
     }
   },
   computed: {
@@ -171,17 +165,17 @@ export default {
 </script>
 
 <style scoped>
-  .bar {
-    width: 100%;
-    height: 30px;
-    background-color: #fff;
-    margin-bottom: 20px;
-    font-weight: 700;
-  }
+.bar {
+  width: 100%;
+  height: 30px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
 
-  .desc {
-    height: inherit;
-    line-height: 30px;
-    margin-right: 30px;
-  }
+.desc {
+  height: inherit;
+  line-height: 30px;
+  margin-right: 30px;
+}
 </style>

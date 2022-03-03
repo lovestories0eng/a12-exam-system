@@ -227,7 +227,7 @@ export const teacherRoutes = [
         }
       },
       {
-        path: 'exam/question-edit',
+        path: '/exam/question-edit',
         component: () => import('@/views/teacher/questionEdit'),
         name: '试题创编',
         meta: {
@@ -236,7 +236,7 @@ export const teacherRoutes = [
         }
       },
       {
-        path: 'exam/grading-paper',
+        path: '/exam/grading-paper',
         component: () => import('@/views/teacher/gradingPaper'),
         name: '试卷批阅',
         meta: {
@@ -245,15 +245,20 @@ export const teacherRoutes = [
         }
       },
       {
-        path: 'exam/exam-data',
+        path: '/exam/exam-data',
         component: () => import('@/views/teacher/examData'),
         name: '考试数据',
         meta: {
           title: '考试数据',
           icon: 'cuotiben'
         }
-      }
+      },
     ]
+  },
+  {
+    path: '/exam/grade',
+    hidden: true,
+    component: () => import('@/views/teacher/gradingPaper/components/grade')
   },
   {
     path: '/info',

@@ -74,7 +74,7 @@ export default {
             createFaceSet(_this.$store.getters.userId, res.data.faces[0].face_token)
               .then((res) => {
                 console.log(_this.faceTokenadded);
-                if (res.data.face_added == 1) {
+                if (res.data.face_added === 1) {
                   _this.faceTokenadded++;
                 }
                 if (_this.faceTokenadded > 3) {
@@ -203,7 +203,7 @@ export default {
 
 <style>
 .camera_outer {
-  margin: 16 16 16 16;
+  margin: 16px;
   overflow: hidden;
   display: flex;
   align-items: center;

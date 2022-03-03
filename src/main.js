@@ -18,7 +18,7 @@ Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
 Vue.use(Element)
 
-require('./mock')
+// require('./mock')
 
 new Vue({
   el: '#app',
