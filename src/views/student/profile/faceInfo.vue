@@ -62,7 +62,7 @@ export default {
         _this.videoHeight
       );
       // 获取图片base64链接
-      var image = this.thisCancas.toDataURL("image/png");
+      let image = this.thisCancas.toDataURL("image/png");
       //轮询上传人脸信息
       setTimeout(() => {
         let face = new FormData()
@@ -101,7 +101,7 @@ export default {
     },
     // 调用权限（打开摄像头功能）
     getCompetence () {
-      var _this = this;
+      let _this = this;
       _this.opencamera = true;
       _this.thisCancas = document.getElementById("canvasCamera");
       _this.thisContext = this.thisCancas.getContext("2d");
@@ -117,7 +117,7 @@ export default {
       if (navigator.mediaDevices.getUserMedia === undefined) {
         navigator.mediaDevices.getUserMedia = function (constraints) {
           // 首先获取现存的getUserMedia(如果存在)
-          var getUserMedia =
+          let getUserMedia =
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
             navigator.getUserMedia;
@@ -134,7 +134,7 @@ export default {
           });
         };
       }
-      var constraints = {
+      let constraints = {
         audio: false,
         video: {
           width: this.videoWidth,
@@ -167,7 +167,7 @@ export default {
     },
     //图片base64转2进制
     dataURLtoBlob (dataurl) {
-      var arr = dataurl.split(','),
+      let arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]),
         n = bstr.length,
@@ -187,11 +187,11 @@ export default {
     },
     // base64转文件，此处没用到
     dataURLtoFile (dataurl, filename) {
-      var arr = dataurl.split(",");
-      var mime = arr[0].match(/:(.*?);/)[1];
-      var bstr = atob(arr[1]);
-      var n = bstr.length;
-      var u8arr = new Uint8Array(n);
+      let arr = dataurl.split(",");
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
       }

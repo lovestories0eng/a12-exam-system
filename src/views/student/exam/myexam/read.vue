@@ -20,7 +20,7 @@
               </span>
               <!-- item.completed判断题目是否做完 -->
               <el-tag
-                :type="questionDoRightTag(item.student === item[item.exerciseType + 'Tea'].rightAnswer)"
+                :type="questionDoRightTag(item.studentAnswer === item[item.exerciseType + 'Tea'].rightAnswer)"
                 class="do-exam-title-tag"
                 style="display:inline-block;"
                 @click="goAnchor('#question-'+item.itemOrder)"
@@ -130,6 +130,8 @@ export default {
       return formatSeconds(theTime)
     },
     questionDoRightTag (status) {
+      console.log(this.doRightTag)
+      console.log(status)
       return this.enumFormat(this.doRightTag, status)
     },
     goAnchor (selector) {

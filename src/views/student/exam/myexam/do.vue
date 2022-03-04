@@ -1,5 +1,6 @@
 <template>
   <div id="do">
+    <SoundDetection></SoundDetection>
     <el-container class="app-item-contain">
       <div id="left">
         <div class="student-info">
@@ -80,6 +81,7 @@
 import { mapState, mapGetters } from 'vuex'
 import { formatSeconds } from '@/utils/timeFormat'
 import QuestionAnswerEdit from 'components/exam/QuestionAnswerEdit'
+import SoundDetection from "components/SoundDetection"
 
 import {submitAnswer} from "@/api/exam/paper"
 
@@ -89,7 +91,7 @@ import {questionMap} from "utils/questionMap"
 import screenfull from 'screenfull'
 
 export default {
-  components: { QuestionAnswerEdit },
+  components: { QuestionAnswerEdit, SoundDetection },
   data () {
     return {
       // 是否在试卷数据未完全获取时进行加载样式
@@ -221,6 +223,13 @@ export default {
     },
     // 全屏
     Screenfull() {
+      if (!screenfull.enabled) {
+        this.$message({
+          message: 'you browser can not work',
+          type: 'warning'
+        })
+        return false
+      }
       screenfull.request()
     },
     commit() {

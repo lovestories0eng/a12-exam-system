@@ -67,7 +67,7 @@ export default {
   components: {
     Screen,
     ExamClassification,
-    Search
+    Search,
   },
   data () {
     return {
@@ -179,7 +179,7 @@ export default {
       }, 1000)
     },
     getCompetence () {
-      var _this = this;
+      let _this = this;
       _this.getExam = true;
       _this.thisCancas = document.getElementById("canvasCamera");
       _this.thisContext = this.thisCancas.getContext("2d");
@@ -195,7 +195,7 @@ export default {
       if (navigator.mediaDevices.getUserMedia === undefined) {
         navigator.mediaDevices.getUserMedia = function (constraints) {
           // 首先获取现存的getUserMedia(如果存在)
-          var getUserMedia =
+          let getUserMedia =
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
             navigator.getUserMedia;
@@ -212,8 +212,8 @@ export default {
           });
         };
       }
-      var constraints = {
-        audio: false,
+      let constraints = {
+        audio: true,
         video: {
           width: this.videoWidth,
           height: this.videoHeight,
@@ -223,6 +223,7 @@ export default {
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then(function (stream) {
+          console.log(stream)
           // 旧的浏览器可能没有srcObject
           if ("srcObject" in _this.thisVideo) {
             _this.thisVideo.srcObject = stream;

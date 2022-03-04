@@ -31,7 +31,7 @@ const serviceFive = axios.create({
 })
 
 let faceService = axios.create({
-  baseURL: '',
+  baseURL: 'https://api-cn.faceplusplus.com/faceapp/v3',
   timeout: 5000
 })
 

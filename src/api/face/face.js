@@ -1,10 +1,10 @@
 import { faceService } from "utils/request";
-let api_key = 'kyI1fEFtdNyAMVbJiCCh6s3JwUvBTo19';
-let api_secret = 'RebXttV4Lw3tQ4cO8DhHudr8f_Q2kEVb'
+let api_key = 'f9S-zYrsYIU9-BsjpycpVgjfLl3R_fpH';
+let api_secret = 'U7yQA_cR8IsIwrdfGt5YFHGPePZyNyAL'
 // 传图片解析faceinfo
 export function detectFaceInfo (data) {
   return faceService({
-    url: `/facepp/v3/detect`,
+    url: `/detect`,
     method: 'POST',
     params: {
       api_key,
@@ -17,7 +17,7 @@ export function detectFaceInfo (data) {
 //给人脸集添加faceToken
 export function createFaceSet (outer_id, face_tokens) {
   return faceService({
-    url: `/facepp/v3/faceset/create`,
+    url: `/faceset/create`,
     method: 'POST',
     params: {
       api_key,
@@ -32,7 +32,7 @@ export function createFaceSet (outer_id, face_tokens) {
 //人脸比对
 export function compareFaceInfo (outer_id, data) {
   return faceService({
-    url: `/facepp/v3/search`,
+    url: `/search`,
     method: 'POST',
     params: {
       api_key,
