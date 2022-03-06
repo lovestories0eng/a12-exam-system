@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div>
+  <div id="play" class="btn">开启摄像</div>
+  <div id="take" class="btn">拍照</div>
+  <video id="video"></video>
+  <!-- 尽量在canvas标签上设置宽高 -->
+  <canvas id="canvas" width="300px" height="300px"></canvas>
+</div>
+<script>
+  // 开启摄像
+  document.getElementById('play').onclick = () => {
+    let constraints = {
+      // video属性设置
+      video: {
+        width: 300,
+        height: 300
+      },
+      // audio属性设置
+      audio: true
+    }
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(mediaStream => {
+          // 成功返回promise对象，接收一个mediaStream参数与video标签进行对接
+          document.getElementById('video').srcObject = mediaStream
+          document.getElementById('video').play()
+        })
+    // 失败就失败了
+  }
+  // 拍照、canvas绘制
+  document.getElementById('take').onclick = () => {
+    let ctx = document.getElementById("canvas").getContext('2d')
+    ctx.drawImage(document.getElementById("video"), 0, 0, 300, 300)
+  }
+</script>
+
+</body>
+</html>

@@ -110,7 +110,8 @@ export default {
       questionName: [],
       tableData: [],
       examName: '',
-      totalScore: 0
+      totalScore: 0,
+      isFullScreen: false
     }
   },
   computed: {
@@ -119,14 +120,13 @@ export default {
       doCompletedTag: state => state.exam.question.answer.doCompletedTag
     })
   },
-  created () {
+  async created() {
     let examId = this.$route.query.examId
     let _this = this
     // 得到数据
     if (examId && parseInt(examId) !== 0) {
       _this.formLoading = true
-      getOnGoingPaper(examId).then(re => {
-        console.log(re);
+      await getOnGoingPaper(examId).then(re => {
         this.examName = re.data.examName
         this.examId = re.data.examId
         let exerciseItems = re.exerciseItems
@@ -149,17 +149,13 @@ export default {
         _this.initAnswer()
         _this.timeReduce()
       })
+      document.addEventListener('click', this.Screenfull)
+      this.ban()
     }
-    this.ban()
-    this.Screenfull()
   },
   // 清除考试时间的定时器
   beforeDestroy () {
     window.clearInterval(this.timer)
-  },
-  // 全局点击事件监听
-  mounted() {
-    document.addEventListener('click', this.Screenfull)
   },
   methods: {
     // 时间格式标准化
@@ -218,10 +214,10 @@ export default {
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){
-      document.body.oncontextmenu = document.body.ondragstart = document.body.onselectstart=document.body.onbeforecopy = function(){ return false }
+      document.body.oncontextmenu = document.body.ondragstart = document.body.onselectstart = document.body.onbeforecopy = function(){ return false }
       document.body.oncopy = document.body.oncut = function(){ return false }
     },
-    // 全屏
+    // 全屏，此操作只能由用户点击触发，由于安全性不允许JS主动触发
     Screenfull() {
       if (!screenfull.enabled) {
         this.$message({

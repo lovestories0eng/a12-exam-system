@@ -1,13 +1,13 @@
 <template>
   <div class="camera_outer">
-    <div v-show="opencamera">
+    <div v-show="openCamera">
       <video id="videoCamera"
              :width="videoWidth"
              :height="videoHeight"
              autoplay
       ></video>
       <canvas id="canvasCamera"
-              style="display:none;"
+              style="display:block;"
               :width="videoWidth"
               :height="videoHeight"
       ></canvas>
@@ -20,91 +20,133 @@
   </div>
 </template>
 <script>
-import { detectFaceInfo, createFaceSet } from '@/api/face/face.js';
+import {detectFaceInfo, addFace, compareFaceInfoByImageBase64} from '@/api/face/face.js';
 export default {
   data () {
     return {
-      videoWidth: 540,
-      videoHeight: 540,
+      videoWidth: 200,
+      videoHeight: 200,
       imgSrc: "",
-      thisCancas: null,
+      thisCanvas: null,
       thisContext: null,
       thisVideo: null,
       openVideo: false,
       dialogVisible: false,
-      opencamera: false,
+      openCamera: false,
       time: 0,
-      faceTokenadded: 0,
+      // 是否位第一次上传图片
+      faceFirstAdded: true,
+      imageBase64: '',
+      imageBase64History: '',
+      face_token: '',
+      face_token_history: '',
+      // 图片是否上传成功
+      faceUploadSuccess: false
     };
   },
   methods: {
-    //轮询上传人脸信息
-    upload () {
+    // 人脸信息上传整体逻辑：
+    // 先上传一张照片到服务器上面，然后在拍一张照片进行比对，如果能够识别则上传成功，否则重新上传
+    upload() {
+      this.time = 0
       //打开摄像头
       this.getCompetence();
       this.$notify.info({
         title: '消息',
         message: '人脸信息录入中，请稍候'
       })
-      //每1s拍照一次
-      let timer = setInterval(() => {
-        this.uploadFaceInfo(timer)
-      }, 1000)
+      this.uploadFaceInfo()
     },
-    uploadFaceInfo (timer) {
-      let _this = this;
-      // canvas画图
-      _this.thisContext.drawImage(
-        _this.thisVideo,
-        0,
-        0,
-        _this.videoWidth,
-        _this.videoHeight
-      );
-      // 获取图片base64链接
-      let image = this.thisCancas.toDataURL("image/png");
-      //轮询上传人脸信息
-      setTimeout(() => {
-        let face = new FormData()
-        face.append('image_file', _this.dataURLtoBlob(image))
-        //解析faceToken
-        detectFaceInfo(face)
-          .then(function (res) {
-            //将faceToken存入以学号为标识的人脸集
-            createFaceSet(_this.$store.getters.userId, res.data.faces[0].face_token)
-              .then((res) => {
-                console.log(_this.faceTokenadded);
-                if (res.data.face_added === 1) {
-                  _this.faceTokenadded++;
-                }
-                if (_this.faceTokenadded > 3) {
-                  _this.$notify({
-                    title: '成功',
-                    message: '您已成功录入人脸信息',
-                    type: 'success'
-                  })
-                  _this.faceTokenadded = 0;
-                }
-              })
-              .catch((error) => console.log(error))
-          })
-          .catch((error) => console.log(error));
-        this.time++;
-        if (this.time > 5) {
-          clearInterval(timer)
-          this.thisVideo.srcObject.getTracks()[0].stop();
-          this.camera = false;
-          this.opencamera = false;
-          this.time = 0;
+    async uploadFaceInfo() {
+      setTimeout(async () => {
+        if (this.faceUploadSuccess) {
+          this.faceUploadSuccess = false
+          this.thisVideo.srcObject.getTracks()[0].stop()
+          this.camera = false
+          this.openCamera = false
+          this.time = 0
+          this.faceFirstAdded = true
+          return
         }
-      }, 0)
+        if (this.time >= 5) {
+          this.thisVideo.srcObject.getTracks()[0].stop()
+          this.camera = false
+          this.openCamera = false
+          this.time = 0
+          this.$message.error('人脸校验失败，请对准屏幕')
+          this.faceFirstAdded = true
+          return
+        }
+        let _this = this;
+        // canvas画图
+        _this.thisContext.drawImage(
+            _this.thisVideo,
+            0,
+            0,
+            _this.videoWidth,
+            _this.videoHeight
+        );
+
+        let image = document.createElement('img')
+        image.src = this.thisCanvas.toDataURL("image/png")
+        // 如果不是第一次上传图片
+        if (!this.faceFirstAdded) {
+          // 存储上一张照片和上一张图片的face_token
+          this.face_token_history = this.face_token
+          this.imageBase64History = this.imageBase64
+        }
+        this.imageBase64 = this.thisCanvas.toDataURL("image/png")
+
+        // 解析faceToken
+        await detectFaceInfo(this.imageBase64)
+        .then(async (res) => {
+          let face_token = res.data.faces[0].face_token
+          this.face_token = face_token
+          if (this.imageBase64History !== '' && this.face_token_history !== '') {
+            await compareFaceInfoByImageBase64(this.imageBase64History, this.imageBase64)
+            .then(async res => {
+              if (res.data.confidence >= 85) {
+                // 将faceToken存入人脸集以供验证
+                await addFace(face_token)
+                .then((res) => {
+                  localStorage.setItem(this.$store.getters.userId + "face_token", face_token)
+                  this.faceUploadSuccess = true
+                  if (res.data.face_added === 1) {
+                    _this.$notify({
+                      title: '成功',
+                      message: '人脸上传成功',
+                      type: 'success'
+                    })
+                  }
+                })
+                .catch((error) => {
+                  this.$message.error('服务器异常，人脸添加失败，请稍后重试')
+                  this.time = 1000
+                })
+              } else {
+                this.$message.warning('人脸比对失败，请将人脸对准屏幕')
+              }
+            })
+          }
+        })
+        .catch((error) => {
+          this.$message.error('服务器异常，人脸检测失败，请稍后重试')
+          this.time = 1000
+        });
+
+        this.faceFirstAdded = false
+        this.time++
+        await this.uploadFaceInfo()
+      }, 5000)
     },
+
+
     // 调用权限（打开摄像头功能）
-    getCompetence () {
+    async getCompetence () {
       let _this = this;
-      _this.opencamera = true;
-      _this.thisCancas = document.getElementById("canvasCamera");
-      _this.thisContext = this.thisCancas.getContext("2d");
+      _this.openCamera = true;
+      _this.thisCanvas = document.getElementById("canvasCamera");
+      _this.thisContext = this.thisCanvas.getContext("2d");
       _this.thisVideo = document.getElementById("videoCamera");
       _this.thisVideo.style.display = 'block';
       // 获取媒体属性，旧版本浏览器可能不支持mediaDevices，我们首先设置一个空对象
@@ -134,68 +176,51 @@ export default {
           });
         };
       }
+
+
       let constraints = {
         audio: false,
         video: {
           width: this.videoWidth,
           height: this.videoHeight,
-          transform: "scaleX(-1)"
+          // transform: "scaleX(-1)"
         }
       };
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function (stream) {
-          // 旧的浏览器可能没有srcObject
-          if ("srcObject" in _this.thisVideo) {
-            _this.thisVideo.srcObject = stream;
-          } else {
-            // 避免在新的浏览器中使用它，因为它正在被弃用。
-            _this.thisVideo.src = window.URL.createObjectURL(stream);
-          }
-          _this.thisVideo.onloadedmetadata = function (e) {
-            _this.thisVideo.play();
-          };
-          _this.camera = true;
+      await navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then((stream) => {
+        // 旧的浏览器可能没有srcObject
+        if ("srcObject" in _this.thisVideo) {
+          _this.thisVideo.srcObject = stream;
+        } else {
+          _this.thisVideo.src = window.URL.createObjectURL(stream);
+        }
+
+        _this.thisVideo.onloadedmetadata = e => {
+          _this.thisVideo.play();
+          // canvas画图
+          _this.thisContext.drawImage(
+              _this.thisVideo,
+              0,
+              0,
+              _this.videoWidth,
+              _this.videoHeight
+          );
+        };
+        _this.camera = true;
+      })
+      .catch(err => {
+        _this.$notify.error({
+          title: '错误',
+          message: '相机调用失败' + err
         })
-        .catch(err => {
-          _this.$notify.error({
-            title: '错误',
-            message: '相机调用失败' + err
-          })
-          console.log(err);
-        });
-    },
-    //图片base64转2进制
-    dataURLtoBlob (dataurl) {
-      let arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], {
-        type: mime
       });
     },
     // 关闭摄像头
     stopNavigator () {
       this.thisVideo.srcObject.getTracks()[0].stop();
       this.camera = false;
-      this.opencamera = false;
-    },
-    // base64转文件，此处没用到
-    dataURLtoFile (dataurl, filename) {
-      let arr = dataurl.split(",");
-      let mime = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]);
-      let n = bstr.length;
-      let u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, { type: mime });
+      this.openCamera = false;
     },
   }
 };

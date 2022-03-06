@@ -2,37 +2,37 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import {getToken} from "utils/auth";
-import qs from 'qs'
+
+const timeout = 5000
 
 const serviceOne = axios.create({
   baseURL: 'http://47.97.51.81:8085',
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: timeout // request timeout
 })
 
 const serviceTwo = axios.create({
   baseURL: 'http://47.97.51.81:8083',
-  timeout: 5000 // request timeout
+  timeout: timeout // request timeout
 })
 
 const serviceThree = axios.create({
   baseURL: 'http://47.97.51.81:8084',
-  timeout: 5000
+  timeout: timeout
 })
 
 const serviceFour = axios.create({
   baseURL: 'http://47.97.51.81:8082',
-  timeout: 5000
+  timeout: timeout
 })
 
 const serviceFive = axios.create({
   baseURL: 'http://47.97.51.81:8081',
-  timeout: 5000
+  timeout: timeout
 })
 
 let faceService = axios.create({
-  baseURL: 'https://api-cn.faceplusplus.com/faceapp/v3',
-  timeout: 5000
+  baseURL: 'https://api-cn.faceplusplus.com/facepp/v3',
+  timeout: timeout
 })
 
 setInterceptor(serviceOne)
