@@ -155,6 +155,7 @@ export default {
   },
   // 清除考试时间的定时器
   beforeDestroy () {
+    document.removeEventListener('click', this.Screenfull)
     window.clearInterval(this.timer)
   },
   methods: {

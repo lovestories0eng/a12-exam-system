@@ -57,8 +57,8 @@ export default {
   },
   methods: {
     checkFaceInfo (row) {
-      this.face_token = localStorage.getItem(this.$store.getters.userId + 'face_token')
-      if (this.face_token === '' || this.face_token === undefined) {
+      this.face_token = this.$store.getters.faceToken
+      if (this.face_token === '' || this.face_token === undefined || this.face_token === null) {
         this.$message.error('您还未注册人脸信息，请前往注册人脸信息')
         return
       }

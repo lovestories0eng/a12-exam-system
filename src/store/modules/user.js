@@ -44,14 +44,8 @@ const mutations = {
   SET_EMAIL: (state, email) => {
     state.email = email
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  },
-  SET_CLASS_NAME: (state, className) => {
-    state.className = className
+  SET_FACE_TOKEN: (state, faceToken) => {
+    state.faceToken = faceToken
   }
 }
 
@@ -89,7 +83,8 @@ const actions = {
         if (!data) {
           reject('认证失败，请重新登录')
         }
-        const { image, role, sex, address, phoneNumber, name, userId, email, avatar, introduction,  className } = data
+        console.log(data);
+        const { image, role, sex, address, phoneNumber, name, userId, email, faceToken } = data
         commit('SET_IMAGE', image)
         commit('SET_ROLE', role)
         commit('SET_SEX', sex)
@@ -98,9 +93,7 @@ const actions = {
         commit('SET_NAME', name)
         commit('SET_USERID', userId)
         commit('SET_EMAIL', email)
-        // commit('SET_AVATAR', avatar)
-        // commit('SET_INTRODUCTION', introduction)
-        // commit('SET_CLASS_NAME', className)
+        commit('SET_FACE_TOKEN', faceToken)
         resolve(data)
       }).catch(error => {
         reject(error)

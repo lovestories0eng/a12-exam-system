@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-import {detectFaceInfo, addFace, compareFaceInfoByImageBase64} from '@/api/face/face.js';
+import {detectFaceInfo, addFace, compareFaceInfoByImageBase64, resetFaceToken} from '@/api/face/face.js';
 export default {
   data () {
     return {
@@ -108,8 +108,8 @@ export default {
               if (res.data.confidence >= 85) {
                 // 将faceToken存入人脸集以供验证
                 await addFace(face_token)
-                .then((res) => {
-                  localStorage.setItem(this.$store.getters.userId + "face_token", face_token)
+                .then(async (res) => {
+                  await resetFaceToken(face_token)
                   this.faceUploadSuccess = true
                   if (res.data.face_added === 1) {
                     _this.$notify({

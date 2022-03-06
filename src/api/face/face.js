@@ -1,8 +1,7 @@
-import { faceService } from "utils/request"
+import {faceService, serviceOne} from "utils/request"
 const api_key = 'f9S-zYrsYIU9-BsjpycpVgjfLl3R_fpH'
 const api_secret = 'U7yQA_cR8IsIwrdfGt5YFHGPePZyNyAL'
 const outer_id = 'panshihuang'
-let faceInfo = new window.FormData()
 
 // 传图片解析faceInfo
 export function detectFaceInfo (image_base64) {
@@ -90,5 +89,13 @@ export function compareFaceInfoByFaceToken (face_token1, face_token2) {
   })
 }
 
-
-
+// 重置face_token
+export function resetFaceToken (face_token) {
+  return serviceOne({
+    url: '/user/information/faceToken',
+    method: 'post',
+    data: {
+      faceToken: face_token
+    }
+  })
+}
