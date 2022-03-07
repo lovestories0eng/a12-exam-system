@@ -7,14 +7,14 @@
     </div>
     <div class="confirm">
       <div class="tips">确认注意事项并在输入以下内容</div>
-      <strong>{{'/*' + studentNeedingInput + '*/' }}</strong>
+      <strong>{{ '/*' + studentNeedingInput + '*/' }}</strong>
       <input v-model="confirmInfo" type="text" :placeholder="studentNeedingInput">
     </div>
     <div
-        :style="{
-         visibility:showInputError?'visible':'hidden'
-        }"
-        class="error"
+      :style="{
+        visibility:showInputError?'visible':'hidden'
+      }"
+      class="error"
     >
       !输入错误请仔细检查
     </div>

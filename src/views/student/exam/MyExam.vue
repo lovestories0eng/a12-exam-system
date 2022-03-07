@@ -1,8 +1,8 @@
 <template>
   <div>
     <MattersNeedingAttention
-        @beforeEntryExam='beforeEntryExam'
-        v-if="showNotice"
+      v-if="showNotice"
+      @beforeEntryExam="beforeEntryExam"
     ></MattersNeedingAttention>
     <Screen ref="screen"
             @filterExamLists="filterExamLists"
@@ -138,16 +138,17 @@ export default {
     ])
   },
   created() {
-    examClassification().then(response => {
-          this.allExams = response.data
-          for (let i of this.allExams) {
-            i.processedBeginTime = formatDate(new Date(i.examBeginTime), 'yyyy-MM-dd hh:ss')
-            i.processedEndTime = formatDate(new Date(i.examEndTime), 'yyyy-MM-dd hh:ss')
-            let index = this.parseCategory(i.examBeginTime, i.examEndTime)
-            this.examLists[index].push(i)
-          }
-          this.examsShow = this.examLists
+    examClassification()
+      .then(response => {
+        this.allExams = response.data
+        for (let i of this.allExams) {
+          i.processedBeginTime = formatDate(new Date(i.examBeginTime), 'yyyy-MM-dd hh:ss')
+          i.processedEndTime = formatDate(new Date(i.examEndTime), 'yyyy-MM-dd hh:ss')
+          let index = this.parseCategory(i.examBeginTime, i.examEndTime)
+          this.examLists[index].push(i)
         }
+        this.examsShow = this.examLists
+      }
     )
   },
   methods: {

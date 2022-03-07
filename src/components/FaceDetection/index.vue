@@ -19,6 +19,7 @@
 
 <script>
 import {compareFaceInfoByFaceToken, detectFaceInfo} from "@/api/face/face";
+import screenfull from "screenfull";
 
 export default {
   name: "index",
@@ -201,7 +202,7 @@ export default {
                 }
               })
               window.location.href = routeUrl.href
-              // window.open(routeUrl.href, '_blank');
+              screenfull.request()
             } else {
               this.$notify.info({
                 title: '人脸校验',
