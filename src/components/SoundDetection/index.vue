@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import detectionLargeSound from "utils/detectionLargeSound";
+import {Message} from "element-ui";
 export default {
   name: "index",
   data() {
@@ -83,9 +85,8 @@ export default {
         node.port.onmessage = event => {
           let _volume = 0
           let _sensibility = 5
-          if (event.data.volume)
-            _volume = event.data.volume;
-          console.log(_volume)
+          if (event.data.volume)  _volume = event.data.volume;
+          if(this.judgeLargeSound(_volume * 100)) Message.error('请保持安静')
           this.leads((_volume * 100) / _sensibility)
         }
         microphone.connect(node).connect(this.audioContext.destination)
@@ -105,7 +106,8 @@ export default {
       }
 
       this.listening = !this.listening
-    }
+    },
+    judgeLargeSound:detectionLargeSound(.1)
   }
 }
 </script>

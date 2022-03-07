@@ -1,5 +1,6 @@
 const SMOOTHING_FACTOR = 0.8;
 const MINIMUM_VALUE = 0.00001;
+
 registerProcessor(
     'vumeter',
     class extends AudioWorkletProcessor {
