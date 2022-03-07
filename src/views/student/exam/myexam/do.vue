@@ -111,7 +111,8 @@ export default {
       tableData: [],
       examName: '',
       totalScore: 0,
-      isFullScreen: false
+      isFullScreen: true,
+      confirming: false
     }
   },
   computed: {
@@ -121,6 +122,7 @@ export default {
     })
   },
   async created() {
+    this.isFullScreen = document.fullscreenElement !== null
     let examId = this.$route.query.examId
     let _this = this
     // 得到数据
@@ -149,16 +151,49 @@ export default {
         _this.initAnswer()
         _this.timeReduce()
       })
-      document.addEventListener('click', this.Screenfull)
       this.ban()
     }
   },
   // 清除考试时间的定时器
   beforeDestroy () {
-    document.removeEventListener('click', this.Screenfull)
+    window.onresize = () => {}
     window.clearInterval(this.timer)
   },
+  mounted() {
+    this.addMyEventListener()
+    this.screenFullNotice()
+  },
   methods: {
+    addMyEventListener() {
+      let _this = this
+      // 监听按键事件
+      window.addEventListener("keydown", (event) => {
+        _this.KeyDown(event)
+      })
+      window.onresize = () => {
+        _this.isFullScreen = document.fullscreenElement !== null
+        if (!_this.isFullScreen)
+          _this.screenFullNotice()
+      };
+    },
+    KeyDown(event) {
+      if (event.keyCode === 122 && this.isFullScreen === false) {
+        event.returnValue = false
+        // 如果已经进行了$confirm则F11无效
+        if (this.confirming !== true) {
+          screenfull.request()
+          this.isFullScreen = true
+        }
+
+      } else if (event.keyCode === 122 && this.isFullScreen === true) {
+        event.returnValue = false
+        // 如果已经进行了$confirm则F11无效
+        if (this.confirming !== true) {
+          screenfull.exit()
+          this.isFullScreen = false
+        }
+      }
+    },
     // 时间格式标准化
     formatSeconds (theTime) {
       return formatSeconds(theTime)
@@ -195,7 +230,6 @@ export default {
       let _this = this
       window.clearInterval(_this.timer)
       _this.formLoading = true
-      console.log(this.answer.answerItems)
       submitAnswer(this.examId, this.answer.answerItems).then(re => {
         if (re.status === 100) {
           _this.$alert('试卷得分：' + re.response + '分', '考试结果', {
@@ -219,20 +253,38 @@ export default {
       document.body.oncopy = document.body.oncut = function(){ return false }
     },
     // 全屏，此操作只能由用户点击触发，由于安全性不允许JS主动触发
-    Screenfull() {
+    screenFullNotice() {
       if (!screenfull.enabled) {
         this.$message({
-          message: 'you browser can not work',
+          message: 'you browser can not work, screen full is not allowed!',
           type: 'warning'
         })
         return false
       }
-      screenfull.request()
+      this.isFullScreen = document.fullscreenElement !== null
+      if (!this.isFullScreen) {
+        this.confirming = true
+        this.$confirm('请注意，考试需要保持全屏考试', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.confirming = false
+          screenfull.request()
+          this.isFullScreen = true
+        }).catch(() => {
+          this.$message.error('请点击确定进入全屏考试')
+          this.isFullScreen = false
+          // 如果用户不同意则递归执行函数直到用户同意全屏
+          this.screenFullNotice()
+        })
+      }
+
     },
     commit() {
       //提交试卷，退出全屏
-      screenfull.exit();
-      document.removeEventListener('click', this.Screenfull)
+      screenfull.exit()
+      window.onresize = () => {}
     },
   }
 }
