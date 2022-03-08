@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <FaceDetection
+        :isOpenCamera = 'isOpenCamera'
+    ></FaceDetection>
     <span>Microphone</span>
     <div class="volumen-wrapper">
       <div class="led"></div>
@@ -15,7 +18,7 @@
     </div>
 
     <div class="control-audio-wrapper">
-      <div id="audio" class="audio-control">&#127908;</div>
+      <div id="audio" class="audio-control" @click = 'isOpenCamera = true'>&#127908;</div>
     </div>
   </div>
 </template>
@@ -23,10 +26,13 @@
 <script>
 import detectionLargeSound from "utils/detectionLargeSound";
 import {Message} from "element-ui";
+import FaceDetection from '../FaceDetection/index'
 export default {
   name: "index",
+  components:{FaceDetection},
   data() {
     return {
+      isOpenCamera:false,
       leadColor: [
         "#064dac",
         "#064dac",
