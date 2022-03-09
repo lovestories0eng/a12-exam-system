@@ -17,8 +17,8 @@
       <div class="led"></div>
     </div>
 
-    <div class="control-audio-wrapper">
-      <div id="audio" class="audio-control" @click="isOpenCamera = true">&#127908;</div>
+    <div class="control-audio-wrapper" style="visibility: hidden">
+      <div id="audio" class="audio-control" @click="openSoundTest">&#127908;</div>
     </div>
   </div>
 </template>
@@ -32,6 +32,8 @@ export default {
   components:{FaceDetection},
   data() {
     return {
+      leftTimes:5,
+      switchTimes:0,
       isOpenCamera:false,
       leadColor: [
         "#064dac",
@@ -54,6 +56,11 @@ export default {
     document.getElementById('audio').addEventListener('click', () => {
       this.activeSound()
     })
+    let e = document.querySelector('#audio')
+    e.click()
+  },
+  beforeDestroy() {
+    document.removeEventListener('visibilitychange',this.switchListener)
   },
   methods: {
     activeSound () {
@@ -113,7 +120,38 @@ export default {
 
       this.listening = !this.listening
     },
-    judgeLargeSound:detectionLargeSound(.1)
+    judgeLargeSound:detectionLargeSound(.1),
+    openSoundTest(){
+      console.log('i click')
+      this.isOpenCamera = true
+      this.switchTimes = 0
+      document.addEventListener('visibilitychange',this.switchListener)
+    },
+    switchListener (){
+      function CloseWebPage(){
+        if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Chrome") !==-1) {
+          window.location.href="about:blank";
+          window.close();
+        } else {
+          window.opener = null;
+          window.open("", "_self");
+          window.close();
+        }
+      }
+      this.switchTimes++;
+      if(document.visibilityState === "hidden") Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
+      if(this.leftTimes<0 && document.visibilityState === "hidden"){
+        Message.error('您已被记为作弊，5S后将自动关闭页面')
+        //发送作弊信息
+
+
+
+
+        setTimeout(()=>{
+          CloseWebPage()
+        },5000)
+      }
+    }
   }
 }
 </script>
