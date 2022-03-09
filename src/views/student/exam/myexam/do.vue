@@ -1,6 +1,11 @@
 <template>
   <div id="do">
     <SoundDetection></SoundDetection>
+    <MattersNeedingAttention
+      v-if="showNotice"
+      @beforeEntryExam="beforeEntryExam"
+    >
+    </MattersNeedingAttention>
     <el-container class="app-item-contain">
       <div id="left">
         <div class="student-info">
@@ -82,6 +87,7 @@ import { mapState, mapGetters } from 'vuex'
 import { formatSeconds } from '@/utils/timeFormat'
 import QuestionAnswerEdit from 'components/exam/QuestionAnswerEdit'
 import SoundDetection from "components/SoundDetection"
+import MattersNeedingAttention from "components/exam/MattersNeedingAttention";
 
 import {submitAnswer} from "@/api/exam/paper"
 
@@ -91,9 +97,10 @@ import {questionMap} from "utils/questionMap"
 import screenfull from 'screenfull'
 
 export default {
-  components: { QuestionAnswerEdit, SoundDetection },
+  components: { QuestionAnswerEdit, SoundDetection, MattersNeedingAttention },
   data () {
     return {
+      showNotice: true,
       // 是否在试卷数据未完全获取时进行加载样式
       formLoading: false,
       answer: {
@@ -161,9 +168,14 @@ export default {
   },
   mounted() {
     this.addMyEventListener()
-    this.screenFullNotice()
   },
   methods: {
+    beforeEntryExam(flag) {
+      if (flag) {
+        this.showNotice = false
+        this.screenFullNotice()
+      }
+    },
     addMyEventListener() {
       let _this = this
       // 监听按键事件

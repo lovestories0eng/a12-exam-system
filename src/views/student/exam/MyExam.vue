@@ -1,9 +1,5 @@
 <template>
   <div>
-    <MattersNeedingAttention
-      v-if="showNotice"
-      @beforeEntryExam="beforeEntryExam"
-    ></MattersNeedingAttention>
     <Screen ref="screen"
             @filterExamLists="filterExamLists"
     >
@@ -52,7 +48,6 @@ import {examClassification} from "@/api/user"
 import {mapGetters} from "vuex"
 
 import {formatDate} from "utils/timeFormat"
-import MattersNeedingAttention from "components/exam/MattersNeedingAttention";
 
 export default {
   name: "MyExam",
@@ -61,7 +56,6 @@ export default {
     ExamClassification,
     Search,
     FaceDetection,
-    MattersNeedingAttention
   },
   data() {
     return {
@@ -102,21 +96,7 @@ export default {
       // 点击进行中、待开始、已完成的考试分别触发的回调函数
       rowClicks: [
         (row) => {
-          const _this = this
-          this.showNotice = true
-          let timer = setInterval(()=>{
-            if(!_this.showNotice){
-              _this.examChosen = row
-              clearInterval(timer)
-            }
-          })
-          // let routeUrl = this.$router.resolve({
-          //   path: '/exam/do',
-          //   query: {
-          //     examId: row.examId
-          //   }
-          // })
-          // window.open(routeUrl.href, '_blank')
+          this.examChosen = row
         },
         () => {
           Message.error('考试未开始，无法查看')
@@ -171,9 +151,6 @@ export default {
       } else {
         this.examsShow = this.examLists
       }
-    },
-    beforeEntryExam(flag) {
-      this.showNotice = !flag
     }
   },
 }

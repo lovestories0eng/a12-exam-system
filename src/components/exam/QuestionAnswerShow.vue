@@ -30,9 +30,18 @@
       </div>
       <div v-if="qTypeStr==='fill'">
         <div class="q-title" v-html="questionOverview.question" />
-        <!--<div class="q-content">-->
-        <!--  {{ studentAnswer }}-->
-        <!--</div>-->
+        <mavon-editor
+          :value="studentAnswer"
+          :toolbars="false"
+          :autofocus="false"
+          default-open="preview"
+          :editable="false"
+          :subfield="false"
+          :style="{'width': '100%', 'margin-top': '10px'}"
+        />
+        <div class="q-content">
+          {{ studentAnswer }}
+        </div>
       </div>
       <div v-if="qTypeStr==='judge'">
         <div class="q-title" v-html="questionOverview.question" />

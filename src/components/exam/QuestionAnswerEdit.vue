@@ -30,16 +30,17 @@
       </div>
       <div v-if="qTypeStr==='fill'">
         <div class="q-title" v-html="questionOverview.question" />
-        <div style="width: 50%;">
-          <el-input v-model="answer.answer" @change="answer.completed = true" />
-          <!--<mavon-editor-->
-          <!--  v-model="answer.answer"-->
-          <!--  :toolbars="toolbars"-->
-          <!--  :autofocus="false"-->
-          <!--  default-open="preview"-->
-          <!--  :editable="true"-->
-          <!--  :style="{'width': '100%', 'margin-top': '10px'}"-->
-          <!--/>-->
+        <div>
+          <!--<el-input v-model="answer.answer" style="width: 50%;" @change="answer.completed = true" />-->
+          <mavon-editor
+            v-model="answer.answer"
+            :toolbars="toolbars"
+            :autofocus="false"
+            default-open="preview"
+            :editable="true"
+            :subfield="true"
+            :style="{'width': '100%', 'margin-top': '10px'}"
+          />
         </div>
       </div>
       <div v-if="qTypeStr==='judge'">
@@ -162,7 +163,7 @@ export default {
     })
   },
   mounted() {
-    // console.log(this.questionOverview)
+    console.log(this.questionOverview)
   },
   methods: {
     trueFalseFormatter (question) {

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-show="getExam"
-         class="camera_outer"
          id="do-camera"
+         class="camera_outer"
     >
       <video id="videoCamera"
              :width="videoWidth"
@@ -20,7 +20,6 @@
 
 <script>
 import {compareFaceInfoByFaceToken, detectFaceInfo} from "@/api/face/face";
-import screenfull from "screenfull";
 import openCamera from "utils/openCamera";
 export default {
   name: "index",
@@ -40,6 +39,7 @@ export default {
   },
   data() {
     return {
+      showNotice: false,
       videoWidth: 200,
       videoHeight: 200,
       imgSrc: "",
@@ -164,7 +164,6 @@ export default {
                         }
                       })
                       window.location.href = routeUrl.href
-                      screenfull.request()
                     } else {
                       this.$notify.info({
                         title: '人脸校验',

@@ -1,6 +1,6 @@
 <template>
   <div v-if="showNeedingAttention" class="matters-needing-attention">
-    <span @click="$emit('hiddenAttentions',false)">&CircleTimes;</span>
+    <!--<span @click="$emit('hiddenAttentions',false)">&CircleTimes;</span>-->
     <header class="m-n-a-header">请仔细阅读以下注意事项</header>
     <div class="m-n-a-content">
       <p v-for="(item,index) of attentions" :key="index">{{ index + 1 + '.' + item }}</p>
@@ -8,7 +8,7 @@
     <div class="confirm">
       <div class="tips">确认注意事项并在输入以下内容</div>
       <strong>{{ '/*' + studentNeedingInput + '*/' }}</strong>
-      <input v-model="confirmInfo" type="text" :placeholder="studentNeedingInput">
+      <input v-model="confirmInfo" type="text" :placeholder="studentNeedingInput" />
     </div>
     <div
       :style="{
@@ -41,7 +41,8 @@ export default {
     eConfirm() {
       let reg = /已知晓相关注意事项，一切后果由自己承担/
       const flag = reg.test(this.confirmInfo)
-      if (!flag) this.showInputError = true
+      if (!flag)
+        this.showInputError = true
       this.$emit('beforeEntryExam', flag)
     }
   }

@@ -50,11 +50,12 @@
               <QuestionAnswerGrade
                 :id="'question-'+ item.itemOrder"
                 :q-type-str="item.exerciseType"
+                :student-answer="item.studentAnswer"
                 :chapter-id="item.chapterId"
                 :chapter-name="item.chapterName"
                 :major-name="item.majorName"
                 :question-overview="item[item.exerciseType + 'Tea']"
-                :answer="answer.answerItems[item.itemOrder - 1]"
+                :answer="studentAnswerAll[item.itemOrder - 1]"
                 :exercise-value="item.exerciseValue"
                 class="record-answer-info"
               />
@@ -86,11 +87,6 @@ export default {
     return {
       // 是否在试卷数据未完全获取时进行加载样式
       formLoading: false,
-      answer: {
-        // 试卷编号
-        examId: null,
-        answerItems: []
-      },
       examId: 0,
       timer: null,
       questionOrder: [],
@@ -115,7 +111,7 @@ export default {
     if (examId && parseInt(examId) !== 0) {
       _this.formLoading = true
       await getOnGoingPaper(examId).then(re => {
-        console.log(re);
+        // console.log(re);
         this.examName = re.data.examName
         this.examId = re.data.examId
         let exerciseItems = re.exerciseItems
@@ -143,8 +139,11 @@ export default {
   beforeDestroy () {
     window.clearInterval(this.timer)
   },
-  // 全局点击事件监听
   mounted() {
+    // for debug
+    // setTimeout(() => {
+    //   console.log(this.tableData)
+    // }, 1000)
   },
   methods: {
     // 时间格式标准化
@@ -166,32 +165,22 @@ export default {
       await getStudentAnswer({examId, userId})
         .then(res => {
           this.studentAnswerAll = res.answers
+          for (let i=0;i<this.studentAnswerAll.length;i++) {
+            if (this.studentAnswerAll[i].studentAnswer === null)
+              this.studentAnswerAll[i].studentAnswer = ''
+          }
           console.log(this.studentAnswerAll)
         })
-
-      let exerciseItems = this.tableData
-      for (let index in exerciseItems) {
-        let tempAnswer = exerciseItems[index]
-        this.answer.answerItems.push({
-          completed: false,
-          exerciseId: tempAnswer.exerciseId,
-          exerciseType: tempAnswer.exerciseType,
-          studentAnswer: this.studentAnswerAll.studentAnswer,
-          rightAnswer: this.studentAnswerAll.rightAnswer,
-          studentValue: this.studentAnswerAll.studentValue,
-          teacherMessage: this.studentAnswerAll.teacherMessage
-        })
-      }
     },
     submitForm () {
       let Obj = {}
-      Obj.answers = this.answer.answerItems
+      Obj.answers = this.studentAnswerAll
       Obj.userId = this.$store.getters.userId
       Obj.examId = this.examId
       console.log(Obj)
       let _this = this
       _this.formLoading = true
-      console.log(this.answer.answerItems)
+      // console.log(this.answer.answerItems)
       uploadGradingScore(Obj).then(re => {
         if (re.status === 100) {
           this.$message.success('批改成功')

@@ -30,6 +30,14 @@
       </div>
       <div v-if="qTypeStr==='fill'">
         <div class="q-title" v-html="questionOverview.question" />
+        <mavon-editor
+          :value="(answer.studentAnswer === undefined || answer.studentAnswer === null) ? answer.studentAnswer : ''"
+          :autofocus="false"
+          default-open="preview"
+          :editable="false"
+          :subfield="false"
+          :style="{'width': '100%', 'margin-top': '10px'}"
+        />
       </div>
       <div v-if="qTypeStr==='judge'">
         <div class="q-title" v-html="questionOverview.question" />
@@ -54,15 +62,14 @@
       <div class="question-answer-show-item">
         <span class="question-show-item">学生答案：{{ answer.studentAnswer }}</span>
         <br>
-        <span class="question-show-item">正确答案：</span>
+        <span class="question-show-item">正确答案：{{ answer.rightAnswer }}</span>
         <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'" class="q-item-span-content" v-html="questionOverview.rightAnswer" />
         <!--<span v-if="qType===3" class="q-item-span-content" v-html="trueFalseFormatter(question)" />-->
         <!--<span v-if="qType===4">{{ question.correctArray }}</span>-->
       </div>
       <div class="question-answer-show-item" style="line-height: 1.8">
         <span class="question-show-item">解析：</span>
-        <span class="q-item-span-content" v-html="questionOverview.analyze" /> <br>
-        <span class="q-item-span-content" v-html="questionOverview.analyze" />
+        <span class="q-item-span-content" v-html="questionOverview.analyze || questionOverview.analyse" /> <br>
         <span class="q-item-span-content">
           老师评分：
           <el-input-number v-model="answer.studentValue"></el-input-number>
@@ -83,7 +90,7 @@ import { mapState, mapGetters } from 'vuex'
 import {questionMap} from "utils/questionMap";
 
 export default {
-  name: 'QuestionGrade',
+  name: 'QuestionAnswerGrade',
   props: {
     questionOverview: {
       type: Object,
@@ -137,7 +144,8 @@ export default {
       choice5Options: ['A', 'B', 'C', 'D', 'E'],
       judgeOptions: ['对', '错'],
       teacherMessage: '',
-      studentValue: 0
+      studentValue: 0,
+      studentAnswerData: {}
     }
   },
   computed: {
@@ -147,8 +155,10 @@ export default {
       doRightTag: state => state.exam.question.answer.doRightTag
     })
   },
-  mounted() {
-    // console.log(this.questionOverview)
+  watch: {
+    answer(newValue) {
+      this.studentAnswer = newValue
+    }
   },
   methods: {
     trueFalseFormatter (question) {

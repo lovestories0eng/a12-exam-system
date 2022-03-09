@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <FaceDetection
-        :isOpenCamera = 'isOpenCamera'
+      :is-open-camera="isOpenCamera"
     ></FaceDetection>
     <span>Microphone</span>
     <div class="volumen-wrapper">
@@ -18,7 +18,7 @@
     </div>
 
     <div class="control-audio-wrapper">
-      <div id="audio" class="audio-control" @click = 'isOpenCamera = true'>&#127908;</div>
+      <div id="audio" class="audio-control" @click="isOpenCamera = true">&#127908;</div>
     </div>
   </div>
 </template>
