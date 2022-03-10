@@ -20,18 +20,27 @@
 
 <script>
 import {compareFaceInfoByFaceToken, detectFaceInfo} from "@/api/face/face";
+import sendCheatPicture from "@/api/cheatData/sendCheatPicture";
 import openCamera from "utils/openCamera";
+import {serviceTwo} from "utils/request";
+
 export default {
   name: "index",
   props: {
+    examId: {
+      type: Number,
+      default() {
+        return 123
+      }
+    },
     examChosen: {
       type: Object,
       default() {
         return {}
       }
     },
-    isOpenCamera:{
-      type:Boolean,
+    isOpenCamera: {
+      type: Boolean,
       default() {
         return false;
       }
@@ -62,12 +71,12 @@ export default {
         return
       this.checkFaceInfo(newValue)
     },
-    isOpenCamera(newValue){
-      if(newValue){
+    isOpenCamera(newValue) {
+      if (newValue) {
         let v = document.querySelector('#do-camera')
         v.style.visibility = 'hidden'
         this.getCompetence()
-        setTimeout(()=>{
+        setTimeout(async () => {
           let _this = this;
           // canvas画图
           _this.thisContext.drawImage(
@@ -79,14 +88,26 @@ export default {
           );
           // 获取图片base64链接
           this.imageBase64 = this.thisCanvas.toDataURL("image/png")
-          console.log(this.imageBase64)
+          // let img = new Image()
+          // img.src = this.imageBase64
+          function dataURLtoFile(dataurl, filename) {
+            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+              u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type: mime});
+          }
 
-        },1000)
+          await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
+            console.log(res)
+          })
+        }, 5000)
       }
     }
   },
   methods: {
-    checkFaceInfo (row) {
+    checkFaceInfo(row) {
       this.face_token = this.$store.getters.faceToken
       if (this.face_token === '' || this.face_token === undefined || this.face_token === null) {
         this.$message.error('您还未注册人脸信息，请前往注册人脸信息')
@@ -96,9 +117,9 @@ export default {
       this.getCompetence();
       this.compareFaceInfo(row)
     },
-    getCompetence:openCamera,
+    getCompetence: openCamera,
     // 与人脸集信息进行比较
-    async compareFaceInfo (row) {
+    async compareFaceInfo(row) {
       // 递归对比人脸
       setTimeout(async () => {
         if (this.faceComparedSuccess) {
@@ -180,7 +201,7 @@ export default {
         await this.compareFaceInfo(row)
       }, 3000)
     },
-    stopNavigator () {
+    stopNavigator() {
       this.thisVideo.srcObject.getTracks()[0].stop();
       this.camera = false;
     },

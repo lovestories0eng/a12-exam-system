@@ -2,6 +2,7 @@
   <div class="container">
     <FaceDetection
       :is-open-camera="isOpenCamera"
+      :exam-id="examId"
     ></FaceDetection>
     <span>Microphone</span>
     <div class="volumen-wrapper">
@@ -24,12 +25,18 @@
 </template>
 
 <script>
-import detectionLargeSound from "utils/detectionLargeSound.js";
+import detectionLargeSound from "utils/detectionLargeSound";
 import {Message} from "element-ui";
 import FaceDetection from '../FaceDetection/index'
 export default {
   name: "index",
   components:{FaceDetection},
+  props:{
+    examId:{
+      type:Number,
+      default: ()=> 123
+    }
+  },
   data() {
     return {
       leftTimes:5,
