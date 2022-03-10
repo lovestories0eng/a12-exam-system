@@ -13,7 +13,9 @@ import '@/styles/index.scss' // 全局样式
 import '@/styles/element-variables.scss'
 import './permission'
 
+import {externalLink} from "utils/markdownExternalLink";
 
+Vue.prototype.$externalLink = externalLink
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
 Vue.use(Element)

@@ -7,6 +7,14 @@ export function getMajorList() {
   })
 }
 
+export function getChapterByMajorId(data) {
+  return serviceFour({
+    url: '/major/chapter',
+    method: 'post',
+    data
+  })
+}
+
 export function getClassList() {
   return serviceThree({
     url: '/class/list',

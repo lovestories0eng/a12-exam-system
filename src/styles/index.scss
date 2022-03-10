@@ -3,6 +3,9 @@
 @import './mixin.scss';
 @import './sidebar.scss';
 @import './head-searcher.scss';
+@import './markdown.scss';
+// mavon-editor插件所需要的样式
+@import url(./github-markdown.min.css);
 
 body {
   height: 100%;
