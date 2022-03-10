@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import detectionLargeSound from "utils/detectionLargeSound";
+import detectionLargeSound from "utils/detectionLargeSound.js";
 import {Message} from "element-ui";
 import FaceDetection from '../FaceDetection/index'
 export default {
