@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item label="章节  ">
         <el-select v-model="form.chapterId" style="width: 25%;" placeholder="请先选择学科" :disabled="form.majorId === ''">
-          <el-option v-for="(item, index) in chaptersShow" :key="index" :value="item.majorId" :label="item.chapterName"></el-option>
+          <el-option v-for="(item, index) in chaptersShow" :key="index" :value="item.chapterId" :label="item.chapterName"></el-option>
         </el-select>
         <!--<el-input v-model="form.chapterId" style="width: 25%;" placeholder="请选择章节"></el-input>-->
       </el-form-item>
