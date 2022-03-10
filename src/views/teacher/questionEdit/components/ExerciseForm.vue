@@ -87,23 +87,14 @@
           :style="{'width': '100%', 'margin-top': '10px'}"
         >
         </mavon-editor>
-        <mavon-editor
-          v-else-if="form.exerciseType === 'judge'"
-          v-model="variable.rightAnswer"
-          :external-link="externalLink"
-          class="mavon-editor-object-answer"
-          :autofocus="false"
-          default-open="preview"
-          :editable="true"
-          :subfield="true"
-          :style="{'width': '100%', 'margin-top': '10px'}"
-        >
-        </mavon-editor>
         <el-select v-else-if="form.exerciseType === 'choice4'" v-model="variable.rightAnswer" style="width: 25%;">
           <el-option v-for="item in choice4Objects" :key="item" :label="item" :value="item"></el-option>
         </el-select>
         <el-select v-else-if="form.exerciseType === 'choice5'" v-model="variable.rightAnswer" style="width: 25%;">
           <el-option v-for="item in choice5Objects" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+        <el-select v-else-if="form.exerciseType === 'judge'" v-model="variable.rightAnswer" style="width: 25%;">
+          <el-option v-for="item in judgeObjects" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="题目解析">
@@ -141,6 +132,7 @@ export default {
       subjectiveQuestion: ['fill', 'solve'],
       choice4Objects: ['A', 'B', 'C', 'D'],
       choice5Objects: ['A', 'B', 'C', 'D', 'E'],
+      judgeObjects: ['对', '错'],
       questionMap: questionMap,
       form: {
         exerciseType: 'choice4',
@@ -150,14 +142,14 @@ export default {
         exerciseValue: 1,
       },
       variable: {
-        question: "test",
+        question: "请输入题目",
         rightAnswer: "",
-        option1: "test",
-        option2: "test",
-        option3: "test",
-        option4: "test",
-        option5: "test",
-        analyse: "test"
+        option1: "选项A内容",
+        option2: "选项B内容",
+        option3: "选项C内容",
+        option4: "选项D内容",
+        option5: "选项E内容",
+        analyse: "题目解析"
       },
       majors: [],
       chapters: {},
