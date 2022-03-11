@@ -6,9 +6,9 @@
       <button class="updateStatus" @click="updateStatus">更新考试状态</button>
     </div>
     <oneStudentItem
-        v-for="item of replaceArray"
-        :key="item.id"
-        :student-info="item"
+      v-for="item of replaceArray"
+      :key="item.id"
+      :student-info="item"
     ></oneStudentItem>
   </div>
 </template>

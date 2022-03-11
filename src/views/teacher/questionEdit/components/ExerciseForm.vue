@@ -39,6 +39,7 @@
           :editable="true"
           :subfield="true"
           :style="{'width': '100%', 'margin-top': '10px'}"
+          @change="consoles"
         >
         </mavon-editor>
       </el-form-item>
@@ -163,6 +164,9 @@ export default {
     })
   },
   methods: {
+    consoles() {
+      console.log(this.variable.question)
+    },
     loadChapterData(majorId) {
       if (this.chapters[majorId] === undefined) {
         let formData = new window.FormData()

@@ -6,3 +6,7 @@ export const externalLink = {
   katex_js: () => './mavon-editor/katex/katex.min.js',
   markdown_css: false
 }
+
+export const markdownOptionSetting = {
+  // navigation: true
+}

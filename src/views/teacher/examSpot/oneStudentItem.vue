@@ -10,15 +10,15 @@
       </div>
     </div>
     <div class="status">
-        <span
-            v-if="studentInfo.isReady"
-            style="color: red"
-        >
-          &circleddash;
-        </span>
       <span
-          v-if="!studentInfo.isReady"
-          style="color: green"
+        v-if="studentInfo.isReady"
+        style="color: red"
+      >
+        &circleddash;
+      </span>
+      <span
+        v-if="!studentInfo.isReady"
+        style="color: green"
       >
         &circledcirc;
       </span>

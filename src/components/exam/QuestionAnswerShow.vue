@@ -10,9 +10,23 @@
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group disabled>
-            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
-              <span class="question-prefix"> {{ choice4Options[index - 1] }}.</span>
-              <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
+            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" style="display: flex;align-items: center; margin: 10px" :label="questionOverview['option' + index]">
+              <div>
+                <mavon-editor
+                  :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
+                >
+                </mavon-editor>
+              </div>
+              <!--<span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>-->
+              <!--<span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>-->
             </el-radio>
           </el-radio-group>
         </div>
@@ -21,9 +35,23 @@
         <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group disabled>
-            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
-              <span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>
-              <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
+            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" style="display: flex;align-items: center; margin: 10px" :label="questionOverview['option' + index]">
+              <div>
+                <mavon-editor
+                  :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
+                >
+                </mavon-editor>
+              </div>
+              <!--<span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>-->
+              <!--<span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>-->
             </el-radio>
           </el-radio-group>
         </div>
@@ -91,6 +119,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import {questionMap} from "utils/questionMap";
+import {externalLink} from "utils/markdownExternalLink";
+import {markdownOptionSetting} from "utils/markdownExternalLink";
 
 export default {
   name: 'QuestionAnswerGrade',
@@ -150,6 +180,8 @@ export default {
   },
   data() {
     return {
+      externalLink: externalLink,
+      markdownOptionSetting: markdownOptionSetting,
       questionMap: questionMap,
       choice4Options: ['A', 'B', 'C', 'D'],
       choice5Options: ['A', 'B', 'C', 'D', 'E']

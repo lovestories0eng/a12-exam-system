@@ -1,7 +1,7 @@
 <template>
   <div id="do">
     <SoundDetection
-    :exam-id="answer.examId"
+      :exam-id="answer.examId"
     ></SoundDetection>
     <MattersNeedingAttention
       v-if="showNotice"
