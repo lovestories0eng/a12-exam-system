@@ -56,10 +56,10 @@ export default {
   margin-top: 20px;
   margin-right: 20px;
   img {
-    margin-left: 50%;
+    margin-left: 70%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
+    width: 125px;
+    height: 125px;
   }
 
   .basicInfo {
