@@ -11,15 +11,6 @@
          }"
     >
       <div class="stretch"
-           :style="{
-             width: '100%',
-             height:'50px',
-             backgroundColor:'#666',
-             textAlign:'center',
-             lineHeight:'50px',
-             marginBottom:'20px',
-             marginTop:'20px'
-           }"
       >
         <span @click="isShowStatus">查看学生状态 &downarrow;</span>
       </div>
@@ -37,15 +28,6 @@
          }"
     >
       <div class="stretch"
-           :style="{
-             width: '100%',
-             height:'50px',
-             backgroundColor:'#666',
-             textAlign:'center',
-             lineHeight:'50px',
-             marginBottom:'20px',
-             marginTop:'20px'
-           }"
       >
         <span @click="isShowImages">查看异常照片 &downarrow;</span>
       </div>
@@ -62,17 +44,11 @@
          }"
     >
       <div class="stretch"
-           :style="{
-             width: '100%',
-             height:'50px',
-             backgroundColor:'#666',
-             textAlign:'center',
-             lineHeight:'50px',
-             marginBottom:'20px',
-             marginTop:'20px'
-           }"
       >
-        <span>查看表格数据 &downarrow;</span>
+        <span @click = 'isShowTable'>查看表格数据 &downarrow;</span>
+        <div class="tableArea">
+          <StatisticalTable></StatisticalTable>
+        </div>
       </div>
     </div>
   </div>
@@ -81,15 +57,17 @@
 <script>
 import oneStudentItem from "views/teacher/examSpot/oneStudentItem";
 import oneImgItem from "views/teacher/examSpot/oneImgItem";
-
+import StatisticalTable from "views/teacher/examSpot/table";
 export default {
   name: "index",
-  components: {oneStudentItem,oneImgItem},
+  components: {oneStudentItem,oneImgItem,StatisticalTable},
   data() {
     return {
+      isTable:false,
       isStatus: false,
       isImages:false,
       imgAreaHeight:0,
+      tableAreaHeight:0,
       statusHeight: 0,
       searchKeyWord: '',
       studentInfo: [
@@ -238,8 +216,14 @@ export default {
       let oImgArea = document.querySelector('.imgArea')
       this.imgAreaHeight = this.imgAreaHeight === 0? oImgArea.clientHeight : this.imgAreaHeight
       oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
-      console.log(oImgArea.style.height)
       this.isImages = !this.isImages
+    },
+    isShowTable()
+    {
+      let oTableArea = document.querySelector('.tableArea')
+      this.tableAreaHeight = this.tableAreaHeight === 0? oTableArea.clientHeight : this.tableAreaHeight
+      oTableArea.style.height = this.isTable ? '0':this.tableAreaHeight + 'px'
+      this.isTable = !this.isTable
     }
   }
 }
@@ -271,19 +255,6 @@ export default {
       outline: none;
       border: none;
     }
-
-    .stretch {
-      span {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
   }
   .imgDisplay{
     position: relative;
@@ -301,6 +272,7 @@ export default {
       height: auto;
       justify-content: flex-start;
     }
+
   }
 
   .exam-spot-search {
@@ -356,5 +328,31 @@ export default {
 :hover::-webkit-scrollbar-track {
   background: hsla(0, 0%, 53%, 0.1);
 }
-
+.stretch{
+  span{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+}
+.tableArea{
+  transition-duration: .5s;
+  transition-property: all;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+  overflow: hidden;
+}
+.stretch{
+  width: 100%;
+  height:50px;
+  background-color:#999;
+  text-align:center;
+  line-height:50px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
 </style>
