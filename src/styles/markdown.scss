@@ -1,6 +1,11 @@
 // 题目高度
 .mavon-editor-question {
-  min-height: 200px !important;
+  min-height: 150px !important;
+}
+
+// 实际上的题目高度
+.mavon-editor-question-show {
+  min-height: 50px !important;
 }
 
 // 选项高度
@@ -13,6 +18,11 @@
   min-height: 150px !important;
 }
 
+// 主观题答案实际高度
+.mavon-editor-subject-answer-show {
+  min-height: 80px !important;
+}
+
 //客观题答案高度
 .mavon-editor-object-answer {
   min-height: 150px !important;
@@ -21,4 +31,9 @@
 // 题目的解析高度
 .mavon-editor-analyze {
   min-height: 200px !important;
+}
+
+// 题目的解析实际高度
+.mavon-editor-analyze-show {
+  min-height: 80px;
 }

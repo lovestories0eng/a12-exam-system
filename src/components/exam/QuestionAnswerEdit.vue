@@ -6,45 +6,87 @@
         <span class="desc">题型：{{ questionMap(qTypeStr) }}</span>
         <span v-if="chapterId !== 0" class="desc">章节：{{ chapterId }} {{ chapterName }}</span>
       </div>
+      <div class="q-title">
+        <mavon-editor
+          :value="questionOverview.question"
+          class="mavon-editor-question-show q-item-span-content"
+          :external-link="externalLink"
+          :subfield="false"
+          :default-open="'preview'"
+          :toolbars-flag="false"
+          :editable="false"
+          :scroll-style="true"
+          :ishljs="true"
+        ></mavon-editor>
+      </div>
       <div v-if="qTypeStr==='choice4'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group v-model="answer.answer" @change="answer.completed = true">
-            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
-              <span class="question-prefix"> {{ choice4Options[index - 1] }}.</span>
-              <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
+            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" class="answer-show-el-radio" :label="choice4Options[index]">
+              <div>
+                <mavon-editor
+                  :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
+                >
+                </mavon-editor>
+              </div>
             </el-radio>
           </el-radio-group>
         </div>
       </div>
       <div v-if="qTypeStr==='choice5'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group v-model="answer.answer" @change="answer.completed = true">
-            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" :label="questionOverview['option' + index]">
-              <span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>
-              <span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>
+            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" class="answer-show-el-radio" :label="choice5Options[index]">
+              <div>
+                <mavon-editor
+                  :value="choice5Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
+                >
+                </mavon-editor>
+              </div>
             </el-radio>
           </el-radio-group>
         </div>
       </div>
       <div v-if="qTypeStr==='fill'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div>
           <!--<el-input v-model="answer.answer" style="width: 50%;" @change="answer.completed = true" />-->
           <mavon-editor
             v-model="answer.answer"
+            class="mavon-editor-subject-answer"
             :toolbars="toolbars"
             :autofocus="false"
             default-open="preview"
             :editable="true"
             :subfield="true"
-            :style="{'width': '100%', 'margin-top': '10px'}"
           />
         </div>
       </div>
       <div v-if="qTypeStr==='judge'">
-        <div class="q-title" v-html="questionOverview.question" />
+        <div class="q-content">
+          <el-radio-group
+            v-model="answer.answer"
+            @change="answer.completed = true"
+          >
+            <el-radio label="对">正确</el-radio>
+            <el-radio label="错">错误</el-radio>
+          </el-radio-group>
+        </div>
       </div>
       <div class="question-answer-show-item">
         <span class="question-show-item">题目分数：</span>
@@ -52,8 +94,6 @@
       </div>
       <div class="question-answer-show-item">
         <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'" class="q-item-span-content" v-html="questionOverview.rightAnswer" />
-        <!--<span v-if="qType===3" class="q-item-span-content" v-html="trueFalseFormatter(question)" />-->
-        <!--<span v-if="qType===4">{{ question.correctArray }}</span>-->
       </div>
     </el-card>
     <div v-else>
@@ -64,6 +104,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import {questionMap} from "utils/questionMap"
+import {externalLink} from "utils/markdownExternalLink";
 
 export default {
   name: 'QuestionAnswerEdit',
@@ -123,6 +164,7 @@ export default {
   },
   data() {
     return {
+      externalLink: externalLink,
       questionMap: questionMap,
       choice4Options: ['A', 'B', 'C', 'D'],
       choice5Options: ['A', 'B', 'C', 'D', 'E'],
@@ -163,7 +205,8 @@ export default {
     })
   },
   mounted() {
-    console.log(this.questionOverview)
+    // for debug
+    // console.log(this.questionOverview)
   },
   methods: {
     trueFalseFormatter (question) {

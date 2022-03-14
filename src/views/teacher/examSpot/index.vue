@@ -10,8 +10,7 @@
            // position:'absolute'
          }"
     >
-      <div class="stretch"
-      >
+      <div class="stretch">
         <span @click="isShowStatus">查看学生状态 &downarrow;</span>
       </div>
       <div class="dataArea">
@@ -27,8 +26,7 @@
            width:'90%',
          }"
     >
-      <div class="stretch"
-      >
+      <div class="stretch">
         <span @click="isShowImages">查看异常照片 &downarrow;</span>
       </div>
       <div class="imgArea">
@@ -43,9 +41,8 @@
            width:'90%',
          }"
     >
-      <div class="stretch"
-      >
-        <span @click = 'isShowTable'>查看表格数据 &downarrow;</span>
+      <div class="stretch">
+        <span @click="isShowTable">查看表格数据 &downarrow;</span>
         <div class="tableArea">
           <StatisticalTable></StatisticalTable>
         </div>

@@ -6,11 +6,24 @@
         <span class="desc">题型：{{ questionMap(qTypeStr) }}</span>
         <span v-if="chapterId !== 0" class="desc">章节：{{ chapterId }} {{ chapterName }}</span>
       </div>
+      <div class="q-title">
+        <mavon-editor
+          :value="questionOverview.question"
+          class="mavon-editor-question-show q-item-span-content"
+          :external-link="externalLink"
+          :subfield="false"
+          :default-open="'preview'"
+          :toolbars-flag="false"
+          :editable="false"
+          :scroll-style="true"
+          :ishljs="true"
+        >
+        </mavon-editor>
+      </div>
       <div v-if="qTypeStr==='choice4'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group disabled>
-            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" style="display: flex;align-items: center; margin: 10px" :label="questionOverview['option' + index]">
+            <el-radio v-for="index in 4" :key="questionOverview['option' + index]" class="answer-show-el-radio" :label="questionOverview['option' + index]">
               <div>
                 <mavon-editor
                   :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
@@ -25,20 +38,17 @@
                 >
                 </mavon-editor>
               </div>
-              <!--<span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>-->
-              <!--<span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>-->
             </el-radio>
           </el-radio-group>
         </div>
       </div>
       <div v-if="qTypeStr==='choice5'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
           <el-radio-group disabled>
-            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" style="display: flex;align-items: center; margin: 10px" :label="questionOverview['option' + index]">
+            <el-radio v-for="index in 5" :key="questionOverview['option' + index]" class="answer-show-el-radio" :label="questionOverview['option' + index]">
               <div>
                 <mavon-editor
-                  :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
+                  :value="choice5Options[index - 1] + '.' + questionOverview['option' + index]"
                   class="mavon-editor-choice-option q-item-span-content"
                   :external-link="externalLink"
                   :subfield="false"
@@ -50,32 +60,88 @@
                 >
                 </mavon-editor>
               </div>
-              <!--<span class="question-prefix"> {{ choice5Options[index - 1] }}.</span>-->
-              <!--<span class="q-item-span-content" v-html="questionOverview['option' + index]"></span>-->
             </el-radio>
           </el-radio-group>
         </div>
       </div>
       <div v-if="qTypeStr==='fill'">
-        <div class="q-title" v-html="questionOverview.question" />
         <mavon-editor
           :value="studentAnswer"
-          :toolbars="false"
-          :autofocus="false"
-          default-open="preview"
-          :editable="false"
+          class="mavon-editor-subject-answer-show"
           :subfield="false"
-          :style="{'width': '100%', 'margin-top': '10px'}"
+          :default-open="'preview'"
+          :toolbars-flag="false"
+          :editable="false"
+          :scroll-style="true"
+          :ishljs="true"
         />
-        <div class="q-content">
-          {{ studentAnswer }}
-        </div>
       </div>
       <div v-if="qTypeStr==='judge'">
-        <div class="q-title" v-html="questionOverview.question" />
         <div class="q-content">
-          {{ studentAnswer }}
+          <el-radio-group :value="studentAnswer">
+            <el-radio label="对">正确</el-radio>
+            <el-radio label="错">错误</el-radio>
+          </el-radio-group>
         </div>
+      </div>
+      <br />
+      <div class="question-answer-show-item">
+        <span
+          v-if="qTypeStr==='choice4' || qTypeStr==='choice5' || qTypeStr==='judge'"
+          class="question-show-item"
+        >学生答案：{{ studentAnswer }} <br>
+        </span>
+        <span class="question-show-item">正确答案：</span>
+        <span
+          v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='judge'"
+          class="q-item-span-content"
+          v-html="questionOverview.rightAnswer"
+        >
+        </span>
+        <span
+          v-else-if="qTypeStr==='fill' || qTypeStr==='solve'"
+          class="q-item-span-content"
+        >
+          <mavon-editor
+            :value="questionOverview.rightAnswer"
+            class="mavon-editor-subject-answer-show"
+            :subfield="false"
+            :default-open="'preview'"
+            :toolbars-flag="false"
+            :editable="false"
+            :scroll-style="true"
+            :ishljs="true"
+          >
+          </mavon-editor>
+        </span>
+      </div>
+      <div class="question-answer-show-item" style="line-height: 1.8">
+        <span>解析：</span>
+        <span class="q-item-span-content">
+          <mavon-editor
+            :value="questionOverview.analyze"
+            class="mavon-editor-subject-answer-show"
+            :subfield="false"
+            :default-open="'preview'"
+            :toolbars-flag="false"
+            :editable="false"
+            :scroll-style="true"
+            :ishljs="true"
+          >
+          </mavon-editor>
+        </span> <br>
+        <span>评语：</span>
+        <mavon-editor
+          :value="teacherMessage"
+          class="mavon-editor-subject-answer-show"
+          :subfield="false"
+          :default-open="'preview'"
+          :toolbars-flag="false"
+          :editable="false"
+          :scroll-style="true"
+          :ishljs="true"
+        >
+        </mavon-editor>
       </div>
       <div class="question-answer-show-item" style="margin-top: 15px">
         <span class="question-show-item">结果：</span>
@@ -95,20 +161,6 @@
       <div class="question-answer-show-item">
         <span class="question-show-item">难度：</span>
         <el-rate v-model="questionOverview.difficult" disabled class="question-show-item"></el-rate>
-      </div>
-      <br />
-      <div class="question-answer-show-item">
-        <span class="question-show-item">学生答案：{{ studentAnswer }}</span>
-        <br>
-        <span class="question-show-item">正确答案：</span>
-        <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'" class="q-item-span-content" v-html="questionOverview.rightAnswer" />
-        <!--<span v-if="qType===3" class="q-item-span-content" v-html="trueFalseFormatter(question)" />-->
-        <!--<span v-if="qType===4">{{ question.correctArray }}</span>-->
-      </div>
-      <div class="question-answer-show-item" style="line-height: 1.8">
-        <span class="question-show-item">解析：</span>
-        <span class="q-item-span-content" v-html="questionOverview.analyze" /> <br>
-        <span class="q-item-span-content" v-html="teacherMessage" />
       </div>
     </el-card>
     <div v-else>
