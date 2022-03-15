@@ -15,3 +15,11 @@ export function createExercise(data) {
     data
   })
 }
+
+export function createExercisePicture(data) {
+  return serviceFive({
+    url: '/exercise/picture',
+    method: 'post',
+    data
+  })
+}

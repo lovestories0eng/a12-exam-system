@@ -58,55 +58,21 @@
       </el-form-item>
     </el-form>
     <el-form v-show="active === 1">
-      <el-table
-        :data="tableData"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="exerciseId"
-          label="id"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="exerciseType"
-          label="题型"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="question"
-          label="题干"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="status"
-          label="状态"
-        >
-          <template slot-scope="scope">
-            <div v-if="scope.row.status === '未选择'" style="color: red;">
-              {{ scope.row.status }}
-            </div>
-            <div v-else>
-              {{ scope.row.status }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              @click="handleClick(scope.$index, tableData)"
-            >
-              选择
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-form ref="form" label-width="100px">
+        <el-form-item v-for="(item, index) in tableData" :key="index">
+          <QuestionAnswerCreate
+            :id="'question-'+ item.itemOrder"
+            :q-type-str="item.exerciseType"
+            :chapter-id="item.chapterId"
+            :chapter-name="item.chapterName"
+            :major-name="item.majorName"
+            :question-overview="item[item.exerciseType + 'Tea']"
+            :exercise-value="item.exerciseValue"
+            class="record-answer-info"
+            @getExerciseId="getExerciseId"
+          />
+        </el-form-item>
+      </el-form>
     </el-form>
     <el-form v-show="active === 2">
       <el-button @click="createExam">创建试卷</el-button>
@@ -119,12 +85,20 @@
 <script>
 import {getClassList, getClassStudentList} from "@/api/common"
 import { getExerciseByMajorIdAndChapterId } from "@/api/exercises"
-import {questionMap} from "utils/questionMap";
-import {createExam} from "@/api/exam/publishPaper";
+import {questionMap} from "utils/questionMap"
+import {createExam} from "@/api/exam/publishPaper"
+import QuestionAnswerShow from "components/exam/QuestionAnswerShow"
+import QuestionAnswerCreate from "components/exam/QuestionAnswerCreate"
+
 export default {
   name: "ExamForm",
+  components: {
+    QuestionAnswerShow,
+    QuestionAnswerCreate
+  },
   data() {
     return {
+      questionMap: questionMap,
       active: 0,
       tableData: [],
       form: {
@@ -151,16 +125,14 @@ export default {
     })
   },
   methods: {
-    handleClick(index, scope) {
-      if (scope[index].status === '未选择') {
-        scope[index].status = '已选择'
-        this.chosenExerciseId.push(scope[index].exerciseId)
+    getExerciseId(exerciseIdAndFlag) {
+      if (exerciseIdAndFlag.flag === 1) {
+        this.chosenExerciseId.push(exerciseIdAndFlag.exerciseId)
+      } else if (exerciseIdAndFlag.flag === 2) {
+        this.chosenExerciseId.splice(this.chosenExerciseId.indexOf(exerciseIdAndFlag.exerciseId), 1)
       }
-      else {
-        scope[index].status = '未选择'
-        let tempData = scope[index].exerciseId
-        this.chosenExerciseId.splice(this.chosenExerciseId.indexOf(tempData), 1)
-      }
+      // for debug
+      // console.log(this.chosenExerciseId)
     },
     createExam() {
       let Obj = {
@@ -181,6 +153,7 @@ export default {
       .catch(error => {
         this.$message.error(error || '发布失败')
       })
+      this.chosenExerciseId = []
     },
     changeClassBelonging(classId) {
       let formData = new window.FormData()
@@ -204,14 +177,16 @@ export default {
       getExerciseByMajorIdAndChapterId(formData)
       .then(res => {
         if (res.status === 100) {
-          this.$message.success('创建成功')
+          this.$message.success('创建成功，请进行下一步操作')
           res = res.data
           this.tableData = []
           for (let i=0;i<res.length;i++) {
             let exerciseType = res[i].exerciseType
             res[i][exerciseType + 'Tea'].exerciseType = questionMap(exerciseType)
             res[i][exerciseType + 'Tea'].status = '未选择'
-            this.tableData.push(res[i][exerciseType + 'Tea'])
+            res[i][exerciseType + 'Tea'].itemOrder = i + 1
+            this.tableData.push(res[i])
+            // this.tableData.push(res[i][exerciseType + 'Tea'])
           }
         }
       })

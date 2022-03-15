@@ -31,6 +31,7 @@
       <el-form-item label="题目">
         <!--<el-input v-model="variable.question" style="width: 25%;"></el-input>-->
         <mavon-editor
+          ref="md"
           v-model="variable.question"
           :external-link="externalLink"
           class="mavon-editor-question"
@@ -39,6 +40,7 @@
           :editable="true"
           :subfield="true"
           :style="{'width': '100%', 'margin-top': '10px'}"
+          @imgAdd="imgAdd"
           @change="consoles"
         >
         </mavon-editor>
@@ -119,7 +121,7 @@
 
 <script>
 import {questionMap} from "utils/questionMap"
-import { createExercise } from "@/api/exercises"
+import { createExercise, createExercisePicture } from "@/api/exercises"
 import { getMajorList, getChapterByMajorId } from "@/api/common";
 
 export default {
@@ -164,6 +166,24 @@ export default {
     })
   },
   methods: {
+    imgAdd(pos, $file){
+      // 第一步.将图片上传到服务器.
+      let formData = new FormData();
+      formData.append('picture', $file);
+      createExercisePicture(formData).then(response => {
+        if (response.status === 100) {
+          // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+          // $vm.$img2Url 详情见本页末尾
+          this.$refs.md.$img2Url(pos, response.pictureUrl);
+        } else {
+          this.$message.error(response.message || 'Error');
+        }
+      });
+    },
+    imgDel(pos, url) {
+      console.log(pos)
+      console.log(url)
+    },
     consoles() {
       console.log(this.variable.question)
     },
@@ -195,5 +215,10 @@ export default {
 .wrapper {
   margin: 20px auto;
   width: 85%;
+}
+
+/deep/ img {
+  margin: auto;
+  width: 25%;
 }
 </style>
