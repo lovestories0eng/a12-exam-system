@@ -12,5 +12,5 @@ export default {
 </script>
 
 <style>
-
+html { overflow: scroll; }
 </style>

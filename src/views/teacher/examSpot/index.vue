@@ -1,50 +1,57 @@
 <template>
-  <div class="exam-spot">
-    <div class="exam-spot-search">
-      <input v-model="searchKeyWord" type="text" placeholder="学号/姓名" @input="inputEvent">
-      <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>
+  <div>
+    <div v-if="!isEntry" class="beforeEntry">
+      <span>请输入考试ID</span>
+      <br>
+      <input v-model="selectId" type="text" class="inputExamId" @keyup.enter="entry">
     </div>
-    <div class="students-status"
-         :style="{
-           width:'90%',
-           // position:'absolute'
-         }"
-    >
-      <div class="stretch">
-        <span @click="isShowStatus">查看学生状态 &downarrow;</span>
+    <div v-else class="exam-spot">
+      <div class="exam-spot-search">
+        <input v-model="searchKeyWord" type="text" placeholder="学号/姓名" @input="inputEvent">
+        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>
       </div>
-      <div class="dataArea">
-        <oneStudentItem
-          v-for="item of replaceArray"
-          :key="item.id"
-          :student-info="item"
-        ></oneStudentItem>
+      <div class="students-status"
+           :style="{
+             width:'90%',
+             // position:'absolute'
+           }"
+      >
+        <div class="stretch">
+          <span @click="isShowStatus">查看学生状态 &downarrow;</span>
+        </div>
+        <div class="dataArea">
+          <oneStudentItem
+            v-for="item of replaceArray"
+            :key="item.id"
+            :student-info="item"
+          ></oneStudentItem>
+        </div>
       </div>
-    </div>
-    <div class="imgDisplay"
-         :style="{
-           width:'90%',
-         }"
-    >
-      <div class="stretch">
-        <span @click="isShowImages">查看异常照片 &downarrow;</span>
+      <div class="imgDisplay"
+           :style="{
+             width:'90%',
+           }"
+      >
+        <div class="stretch">
+          <span @click="isShowImages">查看异常照片 &downarrow;</span>
+        </div>
+        <div class="imgArea">
+          <oneImgItem
+            v-for="item of imgArea" :key="item.userId"
+            :img-item="item"
+          ></oneImgItem>
+        </div>
       </div>
-      <div class="imgArea">
-        <oneImgItem
-          v-for="item of imgArea" :key="item.userId"
-          :img-item="item"
-        ></oneImgItem>
-      </div>
-    </div>
-    <div class="StatisticalTable"
-         :style="{
-           width:'90%',
-         }"
-    >
-      <div class="stretch">
-        <span @click="isShowTable">查看表格数据 &downarrow;</span>
-        <div class="tableArea">
-          <StatisticalTable></StatisticalTable>
+      <div class="StatisticalTable"
+           :style="{
+             width:'90%',
+           }"
+      >
+        <div class="stretch">
+          <span @click="isShowTable">查看表格数据 &downarrow;</span>
+          <div class="tableArea">
+            <StatisticalTable></StatisticalTable>
+          </div>
         </div>
       </div>
     </div>
@@ -55,11 +62,14 @@
 import oneStudentItem from "views/teacher/examSpot/oneStudentItem";
 import oneImgItem from "views/teacher/examSpot/oneImgItem";
 import StatisticalTable from "views/teacher/examSpot/table";
+import getCheatPic from "@/api/cheatData/getCheatPic";
 export default {
   name: "index",
   components: {oneStudentItem,oneImgItem,StatisticalTable},
   data() {
     return {
+      selectId:'',
+      isEntry:false,
       isTable:false,
       isStatus: false,
       isImages:false,
@@ -169,10 +179,56 @@ export default {
           isReady: false,
         },
       ],
-      imgArea:[{
-        picUrl:'',
-        userId:'2010923'
-      }],
+      imgArea:[
+          {
+        picUrl:'watch_img/P1.jpg',
+        userId:'123'
+      },
+        {
+          picUrl:'watch_img/P2.jpg',
+          userId:'234'
+        },
+        {
+          picUrl:'watch_img/P3.jpg',
+          userId:'345'
+        },
+        {
+          picUrl:'watch_img/P4.jpg',
+          userId:'456'
+        },
+        {
+          picUrl:'watch_img/P5.jpg',
+          userId:'567'
+        },
+        {
+          picUrl:'watch_img/P6.jpg',
+          userId:'678'
+        },
+        {
+          picUrl:'watch_img/P7.jpg',
+          userId:'789'
+        },
+        {
+          picUrl:'watch_img/P8.jpg',
+          userId:'890'
+        },
+        {
+          picUrl:'watch_img/P9.jpg',
+          userId:'901'
+        },
+        {
+          picUrl:'watch_img/P10.jpg',
+          userId:'012'
+        },
+        {
+          picUrl:'watch_img/P2.jpg',
+          userId:'222'
+        },
+        {
+          picUrl:'watch_img/P1.jpg',
+          userId:'333'
+        }
+      ],
       replaceArray: []
     }
   },
@@ -203,6 +259,14 @@ export default {
     updateStatus() {
 
     },
+    entry(){
+      this.isEntry = !this.isEntry
+      this.getPictures()
+    },
+    async getPictures(){
+      let res = await getCheatPic(this.selectId)
+      console.log(res)
+    },
     isShowStatus() {
       let oDataArea = document.querySelector('.dataArea')
       this.statusHeight = this.statusHeight === 0 ? oDataArea.clientHeight : this.statusHeight
@@ -227,6 +291,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.beforeEntry{
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translateX(-50%) translateY(-50%);
+  span{
+    width: 300px;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .inputExamId{
+    height: 50px;
+    width: 300px;
+  }
+}
 .exam-spot {
   width: 100%;
   margin-left: 50px;
@@ -346,7 +426,8 @@ export default {
 .stretch{
   width: 100%;
   height:50px;
-  background-color:#999;
+  background-color:white;
+  box-shadow: whitesmoke 4px 4px 4px 4px;
   text-align:center;
   line-height:50px;
   margin-bottom:20px;

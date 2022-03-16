@@ -18,8 +18,8 @@
       <div class="led"></div>
     </div>
 
-    <div class="control-audio-wrapper" style="visibility: hidden">
-      <div id="audio" class="audio-control" @click="openSoundTest">&#127908;</div>
+    <div class="control-audio-wrapper">
+      <div id="audio" class="audio-control" style="visibility: hidden" @click="openSoundTest">&#127908;</div>
     </div>
   </div>
 </template>
@@ -132,7 +132,7 @@ export default {
       console.log('i click')
       this.isOpenCamera = true
       this.switchTimes = 0
-      document.addEventListener('visibilitychange',this.switchListener)
+      window.addEventListener('visibilitychange',this.switchListener)
     },
     switchListener (){
       function CloseWebPage(){
@@ -146,13 +146,12 @@ export default {
         }
       }
       this.switchTimes++;
-      if(document.visibilityState === "hidden") Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
+      console.log(1)
+      if(document.visibilityState === "hidden")
+        Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
       if(this.leftTimes<0 && document.visibilityState === "hidden"){
         Message.error('您已被记为作弊，5S后将自动关闭页面')
         //发送作弊信息
-
-
-
 
         setTimeout(()=>{
           CloseWebPage()
