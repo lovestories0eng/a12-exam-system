@@ -44,12 +44,27 @@
           </el-checkbox>
         </el-checkbox-group>
       </el-form-item>
+
+      <!--<el-form-item label="学科">-->
+      <!--  <el-input v-model="form.major" style="width: 25%;" placeholder="请输入学科"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="章节">-->
+      <!--  <el-input v-model="form.chapter" style="width: 25%;" placeholder="请输入章节"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item label="学科">
-        <el-input v-model="form.major" style="width: 25%;" placeholder="请输入学科"></el-input>
+        <el-select v-model="form.majorId" style="width: 25%;" placeholder="请选择学科" @change="loadChapterData">
+          <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="章节">
-        <el-input v-model="form.chapter" style="width: 25%;" placeholder="请输入章节"></el-input>
+
+
+      <el-form-item label="章节  ">
+        <el-select v-model="form.chapterId" style="width: 25%;" placeholder="请先选择学科" :disabled="form.majorId === ''">
+          <el-option v-for="(item, index) in chaptersShow" :key="index" :label="item.chapterName" :value="item.chapterId"></el-option>
+        </el-select>
       </el-form-item>
+
+
       <el-form-item label="备注">
         <el-input v-model="form.note" type="textarea"></el-input>
       </el-form-item>
@@ -83,7 +98,7 @@
 </template>
 
 <script>
-import {getClassList, getClassStudentList} from "@/api/common"
+import {getChapterByMajorId, getClassList, getClassStudentList, getMajorList} from "@/api/common"
 import { getExerciseByMajorIdAndChapterId } from "@/api/exercises"
 import {questionMap} from "utils/questionMap"
 import {createExam} from "@/api/exam/publishPaper"
@@ -115,7 +130,10 @@ export default {
       },
       classInfo: [],
       classIdMapStudentId: {},
-      chosenExerciseId: []
+      chosenExerciseId: [],
+      majors: [],
+      chapters: {},
+      chaptersShow: []
     }
   },
   created() {
@@ -123,8 +141,27 @@ export default {
     .then(res => {
       this.classInfo = res.data
     })
+    getMajorList()
+    .then(res => {
+      this.majors = res.data
+      console.log(this.majors)
+    })
   },
   methods: {
+    loadChapterData(majorId) {
+      if (this.chapters[majorId] === undefined) {
+        let formData = new window.FormData()
+        formData.append('majorId', majorId)
+        getChapterByMajorId(formData)
+        .then(res => {
+          console.log(res);
+          this.chapters[majorId] = res.chapters
+          this.chaptersShow = res.chapters
+        })
+      } else {
+        this.chaptersShow = this.chapters[majorId]
+      }
+    },
     getExerciseId(exerciseIdAndFlag) {
       if (exerciseIdAndFlag.flag === 1) {
         this.chosenExerciseId.push(exerciseIdAndFlag.exerciseId)
@@ -139,8 +176,8 @@ export default {
         examName: this.form.name,
         examBeginTime: this.form.startEndDate[0],
         examEndTime: this.form.startEndDate[1],
-        majorId: this.form.major,
-        chapterId: this.form.chapter,
+        majorId: this.form.majorId,
+        chapterId: this.form.chapterId,
         userId: this.form.studentChosenId,
         exerciseId: this.chosenExerciseId
       }
@@ -172,8 +209,8 @@ export default {
     },
     onSubmit() {
       let formData  = new window.FormData()
-      formData.append('majorId', this.form.major)
-      formData.append('chapterId', this.form.chapter)
+      formData.append('majorId', this.form.majorId)
+      formData.append('chapterId', this.form.chapterId)
       getExerciseByMajorIdAndChapterId(formData)
       .then(res => {
         if (res.status === 100) {
