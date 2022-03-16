@@ -30,6 +30,20 @@
       </el-form-item>
       <el-form-item label="题目">
         <!--<el-input v-model="variable.question" style="width: 25%;"></el-input>-->
+        <el-upload
+          action="#"
+          :show-file-list="false"
+          :http-request="uploadImg"
+        >
+          <el-button
+            type="success"
+            plain
+            round
+            size="big"
+          >
+            上传题目图片
+          </el-button>
+        </el-upload>
         <mavon-editor
           ref="md"
           v-model="variable.question"
@@ -41,7 +55,6 @@
           :subfield="true"
           :style="{'width': '100%', 'margin-top': '10px'}"
           @imgAdd="imgAdd"
-          @change="consoles"
         >
         </mavon-editor>
       </el-form-item>
@@ -123,6 +136,7 @@
 import {questionMap} from "utils/questionMap"
 import { createExercise, createExercisePicture } from "@/api/exercises"
 import { getMajorList, getChapterByMajorId } from "@/api/common";
+import {updateImage} from "@/api/user";
 
 export default {
   name: "ExerciseForm",
@@ -156,7 +170,8 @@ export default {
       },
       majors: [],
       chapters: {},
-      chaptersShow: []
+      chaptersShow: [],
+      imageFiles: []
     }
   },
   created() {
@@ -166,6 +181,26 @@ export default {
     })
   },
   methods: {
+    uploadImg(f){
+      let formData = new window.FormData()
+      formData.append('picture', f.file)
+      createExercisePicture(formData)
+        .then(res => {
+          if (res.status === 100){
+            this.$message.success('上传成功')
+            this.imageFiles.push(res.pictureUrl)
+            if (this.imageFiles.length === 1)
+              this.variable.question += '\n' + "![]" + '(' + res.pictureUrl + ')'
+            else
+              this.variable.question += "![]" + '(' + res.pictureUrl + ')'
+          }
+        })
+        .catch(error => {
+          this.$message.error('提交失败')
+          console.log(error)
+        })
+
+    },
     imgAdd(pos, $file){
       // 第一步.将图片上传到服务器.
       let formData = new FormData();
@@ -184,9 +219,6 @@ export default {
       console.log(pos)
       console.log(url)
     },
-    consoles() {
-      console.log(this.variable.question)
-    },
     loadChapterData(majorId) {
       if (this.chapters[majorId] === undefined) {
         let formData = new window.FormData()
@@ -204,6 +236,8 @@ export default {
       this.form[this.form.exerciseType + 'Tea'] = this.variable
       createExercise(this.form)
       .then(res => {
+        this.$message.success('题目成功创建')
+        window.location.reload()
         console.log(res)
       })
     }
