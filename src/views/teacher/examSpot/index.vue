@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div v-if="!isEntry" class="beforeEntry">
-      <span>请输入考试ID</span>
-      <br>
-      <input v-model="selectId" type="text" class="inputExamId" @keyup.enter="entry">
-    </div>
+    <!--    <div v-if="!isEntry" class="beforeEntry">-->
+    <!--      <span>请输入考试ID</span>-->
+    <!--      <br>-->
+    <!--      <input v-model="selectId" type="text" class="inputExamId" @keyup.enter="entry">-->
+    <!--    </div>-->
+    <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot">
       <div class="exam-spot-search">
         <input v-model="searchKeyWord" type="text" placeholder="学号/姓名" @input="inputEvent">
@@ -63,9 +64,11 @@ import oneStudentItem from "views/teacher/examSpot/oneStudentItem";
 import oneImgItem from "views/teacher/examSpot/oneImgItem";
 import StatisticalTable from "views/teacher/examSpot/table";
 import getCheatPic from "@/api/cheatData/getCheatPic";
+import getAllExamId from "@/api/cheatData/getAllExamId";
+import examTable from "views/teacher/examSpot/examTable";
 export default {
   name: "index",
-  components: {oneStudentItem,oneImgItem,StatisticalTable},
+  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable},
   data() {
     return {
       selectId:'',
@@ -279,12 +282,21 @@ export default {
       oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
       this.isImages = !this.isImages
     },
-    isShowTable()
-    {
+    isShowTable() {
       let oTableArea = document.querySelector('.tableArea')
       this.tableAreaHeight = this.tableAreaHeight === 0? oTableArea.clientHeight : this.tableAreaHeight
       oTableArea.style.height = this.isTable ? '0':this.tableAreaHeight + 'px'
       this.isTable = !this.isTable
+    },
+    async beforeEntryWatch(scoped){
+      const {data:res} = await getCheatPic(scoped.examId)
+      res.forEach((item)=>{
+        this.imgArea.push({userId:item.userId,picUrl: item.picUrl})
+      })
+      this.imgArea.pop()
+      this.imgArea.pop()
+      this.imgArea.pop()
+      this.isEntry = !this.isEntry
     }
   }
 }
