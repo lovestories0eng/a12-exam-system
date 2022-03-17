@@ -1,6 +1,6 @@
 <template>
   <div v-if="allExamInfo" class="examTable"
-       style="width: 90%;margin: 0 auto"
+       style="width: 90%"
   >
     <el-table
       :data="allExamInfo"
@@ -95,6 +95,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.examTable{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
 
 </style>

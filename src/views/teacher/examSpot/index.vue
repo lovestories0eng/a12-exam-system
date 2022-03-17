@@ -1,14 +1,8 @@
 <template>
   <div>
-    <!--    <div v-if="!isEntry" class="beforeEntry">-->
-    <!--      <span>请输入考试ID</span>-->
-    <!--      <br>-->
-    <!--      <input v-model="selectId" type="text" class="inputExamId" @keyup.enter="entry">-->
-    <!--    </div>-->
     <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot">
       <div class="exam-spot-search">
-        <input v-model="searchKeyWord" type="text" placeholder="学号/姓名" @input="inputEvent">
         <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>
       </div>
       <div class="students-status"
@@ -38,7 +32,7 @@
         </div>
         <div class="imgArea">
           <oneImgItem
-            v-for="item of imgArea" :key="item.userId"
+            v-for="(item,index) of imgArea" :key="item.userId+index"
             :img-item="item"
           ></oneImgItem>
         </div>
@@ -182,6 +176,7 @@ export default {
           isReady: false,
         },
       ],
+      initImgArea:[],
       imgArea:[
           {
         picUrl:'watch_img/P1.jpg',
@@ -239,6 +234,7 @@ export default {
     this.replaceArray = this.studentInfo
     this.inputEvent = this.searchStudent()
     let o = document.querySelector('.stretch span')
+    this.initImgArea = this.imgArea
   },
   methods: {
     searchStudent() {
@@ -297,6 +293,15 @@ export default {
       this.imgArea.pop()
       this.imgArea.pop()
       this.isEntry = !this.isEntry
+      const _this = this
+      function watchPopEvent(){
+        _this.isEntry = ! _this.isEntry
+        _this.imgArea = _this.initImgArea
+        window.removeEventListener('popstate',watchPopEvent)
+      }
+
+      history.pushState(null, null, document.URL);
+      window.addEventListener("popstate", watchPopEvent,false)
     }
   }
 }
