@@ -1,10 +1,10 @@
 <template>
   <div>
-    <examTable v-if="!isEntry"  @beforeEntryWatch="beforeEntryWatch"></examTable>
+    <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot" style="visibility: hidden">
-<!--      <div class="exam-spot-search">-->
-<!--        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>-->
-<!--      </div>-->
+      <!--      <div class="exam-spot-search">-->
+      <!--        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>-->
+      <!--      </div>-->
       <div class="imgDisplay"
            :style="{
              width:'90%',
@@ -31,9 +31,9 @@
         </div>
         <div class="dataArea">
           <oneStudentItem
-              v-for="item of replaceArray"
-              :key="item.id"
-              :student-info="item"
+            v-for="item of replaceArray"
+            :key="item.id"
+            :student-info="item"
           ></oneStudentItem>
         </div>
       </div>
@@ -85,101 +85,101 @@ export default {
           id: '1',
           name: 'psh',
           avatar: 'avatar/p1.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '2',
           name: '',
           avatar: 'avatar/p2.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: 'xcvz',
           name: '',
           avatar: 'avatar/p3.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: 'asdasd',
           name: '',
           avatar: 'avatar/p4.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '4636346',
           name: '',
           avatar: 'avatar/p5.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '12346',
           name: '',
           avatar: 'avatar/p6.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '46',
           name: '',
           avatar: 'avatar/p7.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '6464',
           name: '',
           avatar: 'avatar/p8.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '235',
           name: '',
           avatar: 'avatar/p9.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '2435',
           name: '',
           avatar: 'avatar/p10.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '425',
           name: '',
           avatar: 'avatar/p11.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '1234',
           name: '',
           avatar: 'avatar/p12.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '536',
           name: '',
           avatar: 'avatar/p13.webp',
-          isReady: false,
+          studentCondition: '',
         }, {
           id: '134',
           name: '',
           avatar: 'avatar/p14.webp',
-          isReady: false,
+          studentCondition: '',
         }, {
           id: '232',
           name: '',
           avatar: 'avatar/p15.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '223',
           name: '',
           avatar: 'avatar/p16.webp',
-          isReady: false,
+          studentCondition: '',
         },
         {
           id: '22',
           name: '',
           avatar: 'avatar/p17.webp',
-          isReady: false,
+          studentCondition: '',
         },
       ],
       initImgArea:[],
@@ -238,8 +238,6 @@ export default {
   },
   mounted() {
     this.replaceArray = this.studentInfo
-    this.inputEvent = this.searchStudent()
-    let o = document.querySelector('.stretch span')
     this.initImgArea = this.imgArea
     let timer = setInterval(()=>{
       if(this.isEntry){
@@ -251,31 +249,12 @@ export default {
     },10)
   },
   methods: {
-    searchStudent() {
-      let t = null
-      const _this = this
-      return function () {
-        if (!t && _this.searchKeyWord) {
-          _this.replaceArray = _this.replaceArray.filter((item) => {
-            return !item.id.indexOf(_this.searchKeyWord) || !item.name.indexOf(_this.searchKeyWord)
-          })
-        } else if (!_this.searchKeyWord) {
-          _this.replaceArray = _this.studentInfo
-        }
-        t = setTimeout(() => {
-          t = null
-        }, 1000)
-      }
-    },
-    inputEvent: () => {
-    },
     entry(){
       this.isEntry = !this.isEntry
       this.getPictures()
     },
     async getPictures(){
       let res = await getCheatPic(this.selectId)
-      console.log(res)
     },
     isShowStatus() {
       let oDataArea = document.querySelector('.dataArea')
@@ -310,6 +289,8 @@ export default {
         this.isLoading = !this.isLoading
         document.querySelector('.exam-spot').style.visibility = 'visible'
       },2000)
+
+      //监听浏览器回退事件
       const _this = this
       function watchPopEvent(){
         _this.isEntry = ! _this.isEntry
@@ -321,6 +302,14 @@ export default {
       const {data:detailInfo} =  await getSwitchTimes(scoped.examId)
       console.log(detailInfo)
       this.dataOrigin = processData(detailInfo)
+      this.replaceArray = this.dataOrigin.map((item,index)=>{
+        return {
+          id:item['userId'],
+          name:item['name'],
+          avatar:`avatar/p${index+1}.webp`,
+          studentCondition:item['studentCondition']
+        }
+      })
     }
   }
 }

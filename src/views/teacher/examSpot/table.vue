@@ -28,7 +28,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop="condition"
+        prop="studentCondition"
         label="状态"
       >
       </el-table-column>

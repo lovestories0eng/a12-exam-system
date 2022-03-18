@@ -1,6 +1,6 @@
 <template>
   <div class="oneStudentItem">
-    <img :id="studentInfo.id"  alt="" class="avatar" @click="getAbnormalPicture" v-lazy="studentInfo.avatar">
+    <img :id="studentInfo.id" v-lazy="studentInfo.avatar" alt="" class="avatar" @click="getAbnormalPicture">
     <div class="basicInfo">
       <div class="studentName">
         {{ "名字: "+studentInfo.name }}
@@ -11,18 +11,18 @@
     </div>
     <div class="status">
       <span
-        v-if="studentInfo.isReady"
+        v-if="studentInfo.studentCondition"
         style="color: red"
       >
         &circleddash;
       </span>
       <span
-        v-if="!studentInfo.isReady"
+        v-if="!studentInfo.studentCondition"
         style="color: green"
       >
         &circledcirc;
       </span>
-      {{ studentInfo.isReady ? "考试中" : "未进入考试" }}
+      {{ studentInfo.studentCondition?studentInfo.studentCondition:'未进入考试' }}
     </div>
   </div>
 </template>
@@ -35,6 +35,9 @@ export default {
       type:Object,
       required: true
     }
+  },
+  mounted() {
+    console.log(this.$props.studentInfo)
   },
   data() {
     return {
@@ -56,7 +59,7 @@ export default {
   margin-top: 20px;
   margin-right: 20px;
   img {
-    margin-left: 70%;
+    margin-left: 50%;
     transform: translateX(-50%);
     width: 125px;
     height: 125px;
@@ -67,6 +70,7 @@ export default {
 
     div {
       text-align: center;
+      //margin-left: 30px;
     }
   }
 

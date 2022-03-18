@@ -66,7 +66,7 @@ export default {
     })
     let e = document.querySelector('#audio')
     e.click()
-    await sendSwitchTimes(this.$props.examId,0)
+    // await sendSwitchTimes(this.$props.examId,0)
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange',this.switchListener)
@@ -154,7 +154,6 @@ export default {
       if(this.leftTimes<0 && document.visibilityState === "hidden"){
         Message.error('您已被记为作弊，5S后将自动关闭页面')
         //发送作弊信息
-
         setTimeout(()=>{
           CloseWebPage()
         },5000)

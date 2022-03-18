@@ -97,6 +97,7 @@ import {getOnGoingPaper} from "@/api/exam/paper"
 import {questionMap} from "utils/questionMap"
 
 import screenfull from 'screenfull'
+import modifyStatus from "@/api/cheatData/modifyStatus";
 
 export default {
   components: { QuestionAnswerEdit, SoundDetection, MattersNeedingAttention },
@@ -240,7 +241,7 @@ export default {
         this.answer.answerItems.push({ completed: false, exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null })
       }
     },
-    submitForm () {
+    async submitForm () {
       let _this = this
       window.clearInterval(_this.timer)
       _this.formLoading = true
@@ -260,6 +261,8 @@ export default {
         _this.formLoading = false
       })
       this.commit()
+      const data = await modifyStatus(this.answer.examId,'考试结束,离开考场')
+      console.log(data)
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){

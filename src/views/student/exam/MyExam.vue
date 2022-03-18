@@ -48,6 +48,7 @@ import {examClassification} from "@/api/user"
 import {mapGetters} from "vuex"
 
 import {formatDate} from "utils/timeFormat"
+import modifyStatus from "@/api/cheatData/modifyStatus";
 
 export default {
   name: "MyExam",
@@ -95,8 +96,10 @@ export default {
       },
       // 点击进行中、待开始、已完成的考试分别触发的回调函数
       rowClicks: [
-        (row) => {
+        async (row) => {
           this.examChosen = row
+          const {data:res} = await modifyStatus(row.examId,'考试中')
+          console.log(res)
         },
         () => {
           Message.error('考试未开始，无法查看')
