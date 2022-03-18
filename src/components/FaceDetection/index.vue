@@ -166,7 +166,7 @@ export default {
               await compareFaceInfoByFaceToken(resultFaceToken, this.face_token)
                   .then((res) => {
                     //可信度大于85则进入考试
-                    if (res.data.confidence > 85) {
+                    if (res.data.confidence > 60) {
                       _this.faceComparedSuccess = true;
                       this.thisVideo.srcObject.getTracks()[0].stop();
                       this.camera = false;

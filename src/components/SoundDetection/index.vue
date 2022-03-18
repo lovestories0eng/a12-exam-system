@@ -28,6 +28,7 @@
 import detectionLargeSound from "utils/detectionLargeSound";
 import {Message} from "element-ui";
 import FaceDetection from '../FaceDetection/index'
+import sendSwitchTimes from "@/api/cheatData/sendSwitchTimes";
 export default {
   name: "index",
   components:{FaceDetection},
@@ -59,12 +60,13 @@ export default {
       audioContext: null
     }
   },
-  mounted() {
+  async mounted() {
     document.getElementById('audio').addEventListener('click', () => {
       this.activeSound()
     })
     let e = document.querySelector('#audio')
     e.click()
+    await sendSwitchTimes(this.$props.examId,0)
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange',this.switchListener)
@@ -134,7 +136,7 @@ export default {
       this.switchTimes = 0
       window.addEventListener('visibilitychange',this.switchListener)
     },
-    switchListener (){
+    async switchListener (){
       function CloseWebPage(){
         if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Chrome") !==-1) {
           window.location.href="about:blank";
@@ -146,7 +148,7 @@ export default {
         }
       }
       this.switchTimes++;
-      console.log(1)
+      if(this.switchTimes <= 5)  await sendSwitchTimes(this.$props.examId,this.switchTimes)
       if(document.visibilityState === "hidden")
         Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
       if(this.leftTimes<0 && document.visibilityState === "hidden"){

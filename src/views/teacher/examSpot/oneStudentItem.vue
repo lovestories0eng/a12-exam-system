@@ -1,6 +1,6 @@
 <template>
   <div class="oneStudentItem">
-    <img :id="studentInfo.id" :src="studentInfo.avatar" alt="" class="avatar" @click="getAbnormalPicture">
+    <img :id="studentInfo.id"  alt="" class="avatar" @click="getAbnormalPicture" v-lazy="studentInfo.avatar">
     <div class="basicInfo">
       <div class="studentName">
         {{ "名字: "+studentInfo.name }}

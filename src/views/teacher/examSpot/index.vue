@@ -1,9 +1,24 @@
 <template>
   <div>
-    <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
-    <div v-else class="exam-spot">
-      <div class="exam-spot-search">
-        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>
+    <examTable v-if="!isEntry"  @beforeEntryWatch="beforeEntryWatch"></examTable>
+    <div v-else class="exam-spot" style="visibility: hidden">
+<!--      <div class="exam-spot-search">-->
+<!--        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>-->
+<!--      </div>-->
+      <div class="imgDisplay"
+           :style="{
+             width:'90%',
+           }"
+      >
+        <div class="stretch">
+          <span class="isShowImages" @click="isShowImages">查看异常照片 &downarrow;</span>
+        </div>
+        <div class="imgArea">
+          <oneImgItem
+            v-for="(item,index) of imgArea" :key="item.userId+index"
+            :img-item="item"
+          ></oneImgItem>
+        </div>
       </div>
       <div class="students-status"
            :style="{
@@ -16,25 +31,10 @@
         </div>
         <div class="dataArea">
           <oneStudentItem
-            v-for="item of replaceArray"
-            :key="item.id"
-            :student-info="item"
+              v-for="item of replaceArray"
+              :key="item.id"
+              :student-info="item"
           ></oneStudentItem>
-        </div>
-      </div>
-      <div class="imgDisplay"
-           :style="{
-             width:'90%',
-           }"
-      >
-        <div class="stretch">
-          <span @click="isShowImages">查看异常照片 &downarrow;</span>
-        </div>
-        <div class="imgArea">
-          <oneImgItem
-            v-for="(item,index) of imgArea" :key="item.userId+index"
-            :img-item="item"
-          ></oneImgItem>
         </div>
       </div>
       <div class="StatisticalTable"
@@ -44,12 +44,13 @@
       >
         <div class="stretch">
           <span @click="isShowTable">查看表格数据 &downarrow;</span>
-          <div class="tableArea">
-            <StatisticalTable></StatisticalTable>
+          <div class="tableArea" style="position: relative">
+            <StatisticalTable :data-origin="dataOrigin"></StatisticalTable>
           </div>
         </div>
       </div>
     </div>
+    <loading v-if="isLoading"></loading>
   </div>
 </template>
 
@@ -60,11 +61,16 @@ import StatisticalTable from "views/teacher/examSpot/table";
 import getCheatPic from "@/api/cheatData/getCheatPic";
 import getAllExamId from "@/api/cheatData/getAllExamId";
 import examTable from "views/teacher/examSpot/examTable";
+import getSwitchTimes from "@/api/cheatData/getSwitchTimes";
+import processData from "@/api/cheatData/processData";
+import loading from "views/teacher/examSpot/loading";
 export default {
   name: "index",
-  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable},
+  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable,loading},
   data() {
     return {
+      isLoading:false,
+      dataOrigin: [],
       selectId:'',
       isEntry:false,
       isTable:false,
@@ -78,101 +84,101 @@ export default {
         {
           id: '1',
           name: 'psh',
-          avatar: '',
+          avatar: 'avatar/p1.webp',
           isReady: false,
         },
         {
           id: '2',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p2.webp',
           isReady: false,
         },
         {
           id: 'xcvz',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p3.webp',
           isReady: false,
         },
         {
           id: 'asdasd',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p4.webp',
           isReady: false,
         },
         {
           id: '4636346',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p5.webp',
           isReady: false,
         },
         {
           id: '12346',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p6.webp',
           isReady: false,
         },
         {
           id: '46',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p7.webp',
           isReady: false,
         },
         {
           id: '6464',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p8.webp',
           isReady: false,
         },
         {
           id: '235',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p9.webp',
           isReady: false,
         },
         {
           id: '2435',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p10.webp',
           isReady: false,
         },
         {
           id: '425',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p11.webp',
           isReady: false,
         },
         {
           id: '1234',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p12.webp',
           isReady: false,
         },
         {
           id: '536',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p13.webp',
           isReady: false,
         }, {
           id: '134',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p14.webp',
           isReady: false,
         }, {
           id: '232',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p15.webp',
           isReady: false,
         },
         {
           id: '223',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p16.webp',
           isReady: false,
         },
         {
           id: '22',
           name: '',
-          avatar: '',
+          avatar: 'avatar/p17.webp',
           isReady: false,
         },
       ],
@@ -235,6 +241,14 @@ export default {
     this.inputEvent = this.searchStudent()
     let o = document.querySelector('.stretch span')
     this.initImgArea = this.imgArea
+    let timer = setInterval(()=>{
+      if(this.isEntry){
+        this.isShowStatus()
+        this.isShowStatus()
+        this.isShowImages()
+        clearInterval(timer)
+      }
+    },10)
   },
   methods: {
     searchStudent() {
@@ -255,9 +269,6 @@ export default {
     },
     inputEvent: () => {
     },
-    updateStatus() {
-
-    },
     entry(){
       this.isEntry = !this.isEntry
       this.getPictures()
@@ -277,6 +288,7 @@ export default {
       this.imgAreaHeight = this.imgAreaHeight === 0? oImgArea.clientHeight : this.imgAreaHeight
       oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
       this.isImages = !this.isImages
+      console.log(oImgArea.style.height)
     },
     isShowTable() {
       let oTableArea = document.querySelector('.tableArea')
@@ -293,21 +305,29 @@ export default {
       this.imgArea.pop()
       this.imgArea.pop()
       this.isEntry = !this.isEntry
+      this.isLoading = !this.isLoading
+      setTimeout(()=>{
+        this.isLoading = !this.isLoading
+        document.querySelector('.exam-spot').style.visibility = 'visible'
+      },2000)
       const _this = this
       function watchPopEvent(){
         _this.isEntry = ! _this.isEntry
         _this.imgArea = _this.initImgArea
         window.removeEventListener('popstate',watchPopEvent)
       }
-
       history.pushState(null, null, document.URL);
       window.addEventListener("popstate", watchPopEvent,false)
+      const {data:detailInfo} =  await getSwitchTimes(scoped.examId)
+      console.log(detailInfo)
+      this.dataOrigin = processData(detailInfo)
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+
 .beforeEntry{
   position: absolute;
   left: 50%;

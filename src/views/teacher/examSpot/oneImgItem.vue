@@ -1,6 +1,6 @@
 <template>
   <div class="oneImgItem">
-    <img :src="imgItem.picUrl" alt="">
+    <img  alt="" v-lazy="imgItem.picUrl">
     <p class="userId">{{ "学号:"+imgItem.userId }}</p>
   </div>
 </template>
