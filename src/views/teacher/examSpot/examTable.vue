@@ -30,8 +30,8 @@
       >
       </el-table-column>
       <el-table-column
-          prop="isTimeOut"
-          label="考试状态"
+        prop="isTimeOut"
+        label="考试状态"
       >
       </el-table-column>
       <el-table-column
