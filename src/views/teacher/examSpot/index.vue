@@ -46,7 +46,7 @@
           </div>
         </div>
       </div>
-      <a  href="javascript:" data-title="同步数据" @click="clickReload"></a>
+      <a href="javascript:" data-title="同步数据" @click="clickReload"></a>
     </div>
     <loading v-if="isLoading"></loading>
   </div>
@@ -81,108 +81,7 @@ export default {
       tableAreaHeight:0,
       statusHeight: 0,
       searchKeyWord: '',
-      studentInfo: [
-        {
-          id: '1',
-          name: 'psh',
-          avatar: 'avatar/p1.webp',
-          studentCondition: '',
-        },
-        {
-          id: '2',
-          name: '',
-          avatar: 'avatar/p2.webp',
-          studentCondition: '',
-        },
-        {
-          id: 'xcvz',
-          name: '',
-          avatar: 'avatar/p3.webp',
-          studentCondition: '',
-        },
-        {
-          id: 'asdasd',
-          name: '',
-          avatar: 'avatar/p4.webp',
-          studentCondition: '',
-        },
-        {
-          id: '4636346',
-          name: '',
-          avatar: 'avatar/p5.webp',
-          studentCondition: '',
-        },
-        {
-          id: '12346',
-          name: '',
-          avatar: 'avatar/p6.webp',
-          studentCondition: '',
-        },
-        {
-          id: '46',
-          name: '',
-          avatar: 'avatar/p7.webp',
-          studentCondition: '',
-        },
-        {
-          id: '6464',
-          name: '',
-          avatar: 'avatar/p8.webp',
-          studentCondition: '',
-        },
-        {
-          id: '235',
-          name: '',
-          avatar: 'avatar/p9.webp',
-          studentCondition: '',
-        },
-        {
-          id: '2435',
-          name: '',
-          avatar: 'avatar/p10.webp',
-          studentCondition: '',
-        },
-        {
-          id: '425',
-          name: '',
-          avatar: 'avatar/p11.webp',
-          studentCondition: '',
-        },
-        {
-          id: '1234',
-          name: '',
-          avatar: 'avatar/p12.webp',
-          studentCondition: '',
-        },
-        {
-          id: '536',
-          name: '',
-          avatar: 'avatar/p13.webp',
-          studentCondition: '',
-        }, {
-          id: '134',
-          name: '',
-          avatar: 'avatar/p14.webp',
-          studentCondition: '',
-        }, {
-          id: '232',
-          name: '',
-          avatar: 'avatar/p15.webp',
-          studentCondition: '',
-        },
-        {
-          id: '223',
-          name: '',
-          avatar: 'avatar/p16.webp',
-          studentCondition: '',
-        },
-        {
-          id: '22',
-          name: '',
-          avatar: 'avatar/p17.webp',
-          studentCondition: '',
-        },
-      ],
+      studentInfo: [],
       initImgArea:[],
       imgArea:[
           {
@@ -240,14 +139,6 @@ export default {
   mounted() {
     this.replaceArray = this.studentInfo
     this.initImgArea = this.imgArea
-    let timer = setInterval(()=>{
-      if(this.isEntry){
-        this.isShowStatus()
-        this.isShowStatus()
-        this.isShowImages()
-        clearInterval(timer)
-      }
-    },10)
   },
   created() {
     awesomeButton()
@@ -274,7 +165,6 @@ export default {
       this.imgAreaHeight = this.imgAreaHeight === 0? oImgArea.clientHeight : this.imgAreaHeight
       oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
       this.isImages = !this.isImages
-
     },
     isShowTable() {
       let oTableArea = document.querySelector('.tableArea')
@@ -309,6 +199,15 @@ export default {
       window.addEventListener("popstate", watchPopEvent,false)
 
       await this.getInfo(this.selectId)
+      setTimeout(()=>{
+        this.isShowStatus()
+        this.isShowStatus()
+        this.isShowTable()
+        this.isShowImages()
+      },50)
+      setInterval(async ()=>{
+        await this.getInfo(scoped.examId)
+      },60000)
     },
     async getInfo(id){
       const {data:detailInfo} =  await getSwitchTimes(id)
@@ -318,7 +217,7 @@ export default {
           id:item['userId'],
           name:item['name'],
           avatar:`avatar/p${index+1}.webp`,
-          studentCondition:item['studentCondition']
+          studentCondition:item['studentCondition']?item['studentCondition']:'未进入考试'
         }
       })
     }
@@ -484,7 +383,7 @@ export default {
 a {
   position: absolute;
   top: 180%;
-  left:40%;
+  left:45%;
   transform: translateX(-50%);
   display: inline-block;
   padding: 1.2em 2em;

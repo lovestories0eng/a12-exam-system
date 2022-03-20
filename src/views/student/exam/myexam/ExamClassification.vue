@@ -37,6 +37,9 @@
 </template>
 
 <script>
+import modifyStatus from "@/api/cheatData/modifyStatus";
+import sendSwitchTimes from "@/api/cheatData/sendSwitchTimes";
+
 export default {
   name: "ExamClassification",
   props: {
@@ -60,6 +63,18 @@ export default {
       type: String,
       default() {
         return ''
+      }
+    }
+  },
+  async mounted() {
+    if(this.$props.examList){
+      for(let i = 0;i<this.$props.examList.length;i++){
+        try {
+          await modifyStatus(this.$props.examList[i]['examId'],'未进入考试')
+          await sendSwitchTimes(this.$props.examList[i]['examId'],0)
+        }catch (e){
+          console.log(e.message)
+        }
       }
     }
   }

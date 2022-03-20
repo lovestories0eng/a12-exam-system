@@ -11,16 +11,16 @@
     </div>
     <div class="status">
       <span
-        v-if="studentInfo.studentCondition"
+        v-if="studentInfo.studentCondition === '未进入考试' "
         style="color: red"
       >
         &circleddash;
       </span>
       <span
-        v-if="!studentInfo.studentCondition"
-        style="color: green"
+        v-else
+        style="color: greenyellow"
       >
-        &circledcirc;
+        √
       </span>
       {{ studentInfo.studentCondition?studentInfo.studentCondition:'未进入考试' }}
     </div>
@@ -36,12 +36,12 @@ export default {
       required: true
     }
   },
-  mounted() {
-    console.log(this.$props.studentInfo)
-  },
   data() {
     return {
     }
+  },
+  mounted() {
+    console.log(this.$props.studentInfo)
   },
   methods: {
     //获取异常接口

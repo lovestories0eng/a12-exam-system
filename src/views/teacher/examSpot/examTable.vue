@@ -59,11 +59,9 @@ export default {
   },
   async mounted() {
     let res = await getAllExamId()
-    console.log(res.data)
     for(let i = 0;i<res.data.length;i++) {
       res.data[i]['examBeginTime'] = this.processTimeTamp(res.data[i]['examBeginTime'])
       res.data[i]['examEndTime'] = this.processTimeTamp(res.data[i]['examEndTime'])
-      console.log(Date.parse(res.data[i]['examEndTime']))
       // console.log(Date.now())
       if(Date.parse(res.data[i]['examEndTime']) < Date.now()){
         res.data[i]['isTimeOut'] = '考试结束'

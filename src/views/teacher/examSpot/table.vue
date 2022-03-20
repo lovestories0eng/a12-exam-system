@@ -42,17 +42,6 @@ export default {
   props:{
     dataOrigin:{type:Array,default(){return []}}
   },
-  data(){
-    return {
-      tableData:[{
-        name:'psh',
-        userId:'GGG',
-        switchTimes:'2',
-        description:'切屏超过五次',
-        status:'离开考场'
-      }]
-    }
-  }
 }
 </script>
 

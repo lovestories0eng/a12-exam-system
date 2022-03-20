@@ -49,6 +49,7 @@ import {mapGetters} from "vuex"
 
 import {formatDate} from "utils/timeFormat"
 import modifyStatus from "@/api/cheatData/modifyStatus";
+import sendSwitchTimes from "@/api/cheatData/sendSwitchTimes";
 
 export default {
   name: "MyExam",
@@ -100,8 +101,12 @@ export default {
         async (row) => {
           this.row = row
           this.examChosen = row
-          const {data:res} = await modifyStatus(row.examId,'考试中')
-          console.log(res)
+          try {
+            await sendSwitchTimes(row.examId,0)
+            await modifyStatus(row.examId,'考试中')
+          }catch (e) {
+            console.log(e.message)
+          }
         },
         () => {
           Message.error('考试未开始，无法查看')
