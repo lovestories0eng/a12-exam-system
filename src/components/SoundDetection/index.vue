@@ -149,10 +149,16 @@ export default {
         }
       }
       this.switchTimes++;
-      if(this.switchTimes <= 5)  await sendSwitchTimes(this.$props.examId,this.switchTimes)
-      if(document.visibilityState === "hidden")
+      if(this.switchTimes <= 5)  {
+        try {
+          await sendSwitchTimes(this.$props.examId,this.switchTimes)
+        }catch (e) {
+          console.log(e.message)
+        }
+      }
+      if(document.visibilityState === 'hidden' && this.leftTimes>=0)
         Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
-      if(this.leftTimes<0 && document.visibilityState === "hidden"){
+      if(this.leftTimes<0 && document.visibilityState === 'hidden'){
         Message.error('您已被记为作弊，5S后将自动关闭页面')
         //发送作弊信息
         await modifyStatus(this.$props.examId,'作弊取消考试资格')

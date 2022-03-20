@@ -98,6 +98,8 @@ import {questionMap} from "utils/questionMap"
 
 import screenfull from 'screenfull'
 import modifyStatus from "@/api/cheatData/modifyStatus";
+import getWarning from "@/api/cheatData/getWarning";
+import {Message} from "element-ui";
 
 export default {
   components: { QuestionAnswerEdit, SoundDetection, MattersNeedingAttention },
@@ -169,8 +171,8 @@ export default {
     window.onresize = () => {}
     window.clearInterval(this.timer)
   },
-  mounted() {
-    this.addMyEventListener()
+  async mounted() {
+    await this.addMyEventListener()
   },
   methods: {
     beforeEntryExam(flag) {
@@ -179,7 +181,7 @@ export default {
         this.screenFullNotice()
       }
     },
-    addMyEventListener() {
+   async addMyEventListener() {
       let _this = this
       // 监听按键事件
       window.addEventListener("keydown", (event) => {
@@ -190,6 +192,14 @@ export default {
         if (!_this.isFullScreen)
           _this.screenFullNotice()
       };
+      setInterval(async ()=>{
+        try{
+          let data = await this.getWarning(this.examId)
+          console.log(data)
+        }catch (e){
+          console.log(1)
+        }
+      },1000)
     },
     KeyDown(event) {
       if (event.keyCode === 122 && this.isFullScreen === false) {
@@ -262,7 +272,6 @@ export default {
       })
       this.commit()
       const data = await modifyStatus(this.answer.examId,'考试正常结束')
-      console.log(data)
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){
@@ -305,6 +314,10 @@ export default {
     },
     beforeDestroy() {
 
+    },
+    async getWarning(){
+      const data = await getWarning(this.examId)
+      console.log(data)
     }
   }
 }

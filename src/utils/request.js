@@ -60,11 +60,11 @@ function setInterceptor(Obj) {
         const res = response.data
         // 设置发送成功的status为100，具体的设置以自己用的后台为准
         if (res.status !== 100) {
-          Message({
-            message: res.message || 'Error',
-            type: 'error',
-            duration: 5 * 1000
-          })
+          // Message({
+          //   message: res.message || 'Error',
+          //   type: 'error',
+          //   duration: 5 * 1000
+          // })
 
           if (res.status === 200) {
             MessageBox.confirm('密码错误或者token失效', '强制登出', {
@@ -79,7 +79,7 @@ function setInterceptor(Obj) {
           } else if (res.status === 300) {
             Message.error('查询失败（数据不存在）')
           } else if (res.status === 400) {
-            Message.error('意外失败')
+            // Message.error('意外失败')
           }
 
           return Promise.reject(new Error(res.message || 'Error'))

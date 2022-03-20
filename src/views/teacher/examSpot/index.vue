@@ -14,6 +14,7 @@
           <oneImgItem
             v-for="(item,index) of imgArea" :key="item.userId+index"
             :img-item="item"
+            :selected-id = 'selectId'
           ></oneImgItem>
         </div>
       </div>
