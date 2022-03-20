@@ -14,7 +14,7 @@
           <oneImgItem
             v-for="(item,index) of imgArea" :key="item.userId+index"
             :img-item="item"
-            :selected-id = 'selectId'
+            :selectId = 'selectId'
           ></oneImgItem>
         </div>
       </div>
@@ -179,9 +179,6 @@ export default {
       res.forEach((item)=>{
         this.imgArea.push({userId:item.userId,picUrl: item.picUrl})
       })
-      this.imgArea.pop()
-      this.imgArea.pop()
-      this.imgArea.pop()
       this.isEntry = !this.isEntry
       this.isLoading = !this.isLoading
       setTimeout(()=>{

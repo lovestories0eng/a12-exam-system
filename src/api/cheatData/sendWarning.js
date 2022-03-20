@@ -7,6 +7,10 @@ export default function sendWarning(examId,userId,studentMessage){
     return serviceTwo({
         url:'/exam/studentMessage',
         method:'post',
-        data:form
-    })
+        data:{
+        examId,
+            userId,
+            studentMessage
+    }
+})
 }

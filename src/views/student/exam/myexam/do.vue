@@ -195,7 +195,7 @@ export default {
       setInterval(async ()=>{
         try{
           let data = await this.getWarning(this.examId)
-          console.log(data)
+          Message.warning(data + '')
         }catch (e){
           console.log(1)
         }
