@@ -2,9 +2,6 @@
   <div>
     <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot" style="visibility: hidden">
-      <!--      <div class="exam-spot-search">-->
-      <!--        <p class="tips">/*考生如有异常行为将在此页面通知您*/</p>-->
-      <!--      </div>-->
       <div class="imgDisplay"
            :style="{
              width:'90%',
@@ -49,6 +46,7 @@
           </div>
         </div>
       </div>
+      <a  href="javascript:" data-title="同步数据" @click="clickReload"></a>
     </div>
     <loading v-if="isLoading"></loading>
   </div>
@@ -64,11 +62,14 @@ import examTable from "views/teacher/examSpot/examTable";
 import getSwitchTimes from "@/api/cheatData/getSwitchTimes";
 import processData from "@/api/cheatData/processData";
 import loading from "views/teacher/examSpot/loading";
+import awesomeButton from "utils/awesomeButton";
 export default {
   name: "index",
   components: {oneStudentItem,oneImgItem,StatisticalTable,examTable,loading},
+  inject: ['reload'],
   data() {
     return {
+      selectExamId:'',
       isLoading:false,
       dataOrigin: [],
       selectId:'',
@@ -248,7 +249,13 @@ export default {
       }
     },10)
   },
+  created() {
+    awesomeButton()
+  },
   methods: {
+    clickReload(){
+      this.getInfo(this.selectId)
+    },
     entry(){
       this.isEntry = !this.isEntry
       this.getPictures()
@@ -267,7 +274,7 @@ export default {
       this.imgAreaHeight = this.imgAreaHeight === 0? oImgArea.clientHeight : this.imgAreaHeight
       oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
       this.isImages = !this.isImages
-      console.log(oImgArea.style.height)
+
     },
     isShowTable() {
       let oTableArea = document.querySelector('.tableArea')
@@ -276,6 +283,7 @@ export default {
       this.isTable = !this.isTable
     },
     async beforeEntryWatch(scoped){
+      this.selectId = scoped.examId
       const {data:res} = await getCheatPic(scoped.examId)
       res.forEach((item)=>{
         this.imgArea.push({userId:item.userId,picUrl: item.picUrl})
@@ -299,8 +307,11 @@ export default {
       }
       history.pushState(null, null, document.URL);
       window.addEventListener("popstate", watchPopEvent,false)
-      const {data:detailInfo} =  await getSwitchTimes(scoped.examId)
-      console.log(detailInfo)
+
+      await this.getInfo(this.selectId)
+    },
+    async getInfo(id){
+      const {data:detailInfo} =  await getSwitchTimes(id)
       this.dataOrigin = processData(detailInfo)
       this.replaceArray = this.dataOrigin.map((item,index)=>{
         return {
@@ -336,7 +347,7 @@ export default {
 .exam-spot {
   width: 100%;
   margin-left: 50px;
-
+  position: relative;
   .students-status {
     position: relative;
     height: 100%;
@@ -447,7 +458,10 @@ export default {
   transition-property: all;
   transition-timing-function: ease;
   transition-delay: 0s;
-  overflow: hidden;
+
+  height: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 .stretch{
   width: 100%;
@@ -458,5 +472,72 @@ export default {
   line-height:50px;
   margin-bottom:20px;
   margin-top:20px;
+}
+.reload{
+  width: 300px;
+  height: 50px;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+a {
+  position: absolute;
+  top: 180%;
+  left:40%;
+  transform: translateX(-50%);
+  display: inline-block;
+  padding: 1.2em 2em;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  color: white;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border-radius: 4px;
+    transition: box-shadow .5s ease, transform .2s ease;
+    will-change: transform;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+    transform:
+        translateY(var(--ty, 0))
+        rotateX(var(--rx, 0))
+        rotateY(var(--ry, 0))
+        translateZ(var(--tz, -12px));
+  }
+
+  &:hover::before {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+  }
+
+  &::after {
+    position: relative;
+    display: inline-block;
+    content: attr(data-title);
+    transition: transform .2s ease;
+    font-weight: bold;
+    letter-spacing: .01em;
+    will-change: transform;
+    transform:
+        translateY(var(--ty, 0))
+        rotateX(var(--rx, 0))
+        rotateY(var(--ry, 0));
+  }
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  transform-style: preserve-3d;
+  transform: perspective(800px);
 }
 </style>

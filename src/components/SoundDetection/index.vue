@@ -29,6 +29,7 @@ import detectionLargeSound from "utils/detectionLargeSound";
 import {Message} from "element-ui";
 import FaceDetection from '../FaceDetection/index'
 import sendSwitchTimes from "@/api/cheatData/sendSwitchTimes";
+import modifyStatus from "@/api/cheatData/modifyStatus";
 export default {
   name: "index",
   components:{FaceDetection},
@@ -154,6 +155,7 @@ export default {
       if(this.leftTimes<0 && document.visibilityState === "hidden"){
         Message.error('您已被记为作弊，5S后将自动关闭页面')
         //发送作弊信息
+        await modifyStatus(this.$props.examId,'作弊取消考试资格')
         setTimeout(()=>{
           CloseWebPage()
         },5000)

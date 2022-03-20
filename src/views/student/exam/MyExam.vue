@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      row:null,
       showNotice: false,
       tags: ["进行中", "待开始", "已完成"],
       operations: ["进入考试", "", "查看原卷"],
@@ -97,6 +98,7 @@ export default {
       // 点击进行中、待开始、已完成的考试分别触发的回调函数
       rowClicks: [
         async (row) => {
+          this.row = row
           this.examChosen = row
           const {data:res} = await modifyStatus(row.examId,'考试中')
           console.log(res)

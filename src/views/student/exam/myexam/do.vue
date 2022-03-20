@@ -261,7 +261,7 @@ export default {
         _this.formLoading = false
       })
       this.commit()
-      const data = await modifyStatus(this.answer.examId,'考试结束,离开考场')
+      const data = await modifyStatus(this.answer.examId,'考试正常结束')
       console.log(data)
     },
     //禁止右键，复制，粘贴，拖拽
@@ -303,6 +303,9 @@ export default {
       screenfull.exit()
       window.onresize = () => {}
     },
+    beforeDestroy() {
+
+    }
   }
 }
 </script>
