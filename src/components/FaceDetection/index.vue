@@ -98,10 +98,10 @@ export default {
             }
             return new File([u8arr], filename, {type: mime});
           }
-          //发送照片
-          // await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
-          //   console.log(res)
-          // })
+          // 发送照片
+          await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
+            console.log(res)
+          })
         }, 5000)
       }
     }
@@ -166,7 +166,7 @@ export default {
               await compareFaceInfoByFaceToken(resultFaceToken, this.face_token)
                   .then((res) => {
                     //可信度大于85则进入考试
-                    if (res.data.confidence > 60) {
+                    if (res.data.confidence > 20) {
                       _this.faceComparedSuccess = true;
                       this.thisVideo.srcObject.getTracks()[0].stop();
                       this.camera = false;
