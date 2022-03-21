@@ -99,9 +99,9 @@ export default {
             return new File([u8arr], filename, {type: mime});
           }
           // 发送照片
-          await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
-            console.log(res)
-          })
+          // await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
+          //   console.log(res)
+          // })
         }, 5000)
       }
     }

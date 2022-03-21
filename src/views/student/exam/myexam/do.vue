@@ -60,6 +60,7 @@
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <QuestionAnswerEdit
+                @doing="doing"
                 :id="'question-'+ item.itemOrder"
                 :q-type-str="item.exerciseType"
                 :chapter-id="item.chapterId"
@@ -71,6 +72,7 @@
                 :exercise-value="item.exerciseValue"
                 :teacher-message="item.teacherMessage"
                 class="record-answer-info"
+                :container="container"
               />
             </el-form-item>
             <el-row class="do-align-center">
@@ -85,29 +87,32 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import { formatSeconds } from '@/utils/timeFormat'
+
+import {mapGetters, mapState} from 'vuex'
+import {formatSeconds} from '@/utils/timeFormat'
 import QuestionAnswerEdit from 'components/exam/QuestionAnswerEdit'
 import SoundDetection from "components/SoundDetection"
 import MattersNeedingAttention from "components/exam/MattersNeedingAttention";
 
-import {submitAnswer} from "@/api/exam/paper"
-
-import {getOnGoingPaper} from "@/api/exam/paper"
+import {getOnGoingPaper, submitAnswer} from "@/api/exam/paper"
 import {questionMap} from "utils/questionMap"
 
 import screenfull from 'screenfull'
 import modifyStatus from "@/api/cheatData/modifyStatus";
 import getWarning from "@/api/cheatData/getWarning";
-import {Message} from "element-ui";
+import judgmentOfQuestionMakingSpeed from "@/api/cheatData/JudgmentOfQuestionMakingSpeed";
 
 export default {
   components: { QuestionAnswerEdit, SoundDetection, MattersNeedingAttention },
   data () {
     return {
+      container:[],
+      lastTime:null,
+      gap:null,
       showNotice: true,
       // 是否在试卷数据未完全获取时进行加载样式
       formLoading: false,
+      timeSeries: [],
       answer: {
         // 试卷编号
         examId: null,
@@ -176,6 +181,9 @@ export default {
     await this.addMyEventListener()
   },
   methods: {
+    doing(val) {
+      judgmentOfQuestionMakingSpeed()['doing'](this.container)
+    },
     beforeEntryExam(flag) {
       if (flag) {
         this.showNotice = false
@@ -197,8 +205,11 @@ export default {
         try{
           let data = await this.getWarning(this.examId)
           if(data!=='暂无消息') this.$message.warning(data.studentMessage + '')
-        }catch (e){
-          console.log(1)
+        }catch (e) {
+          // eslint-disable-next-line no-inner-declarations
+          function a (){
+            console.log('a')
+          }
         }
       },1000)
     },
@@ -249,8 +260,9 @@ export default {
       let exerciseItems = this.tableData
       for (let index in exerciseItems) {
         let tempAnswer = exerciseItems[index]
-        this.answer.answerItems.push({ completed: false, exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null })
+        this.answer.answerItems.push({ completed: false, exerciseId: tempAnswer.exerciseId, exerciseType: tempAnswer.exerciseType, answer: null})
       }
+
     },
     async submitForm () {
       let _this = this
@@ -273,6 +285,7 @@ export default {
       })
       this.commit()
       await modifyStatus(this.answer.examId,'考试结束')
+      judgmentOfQuestionMakingSpeed()['submitting'](this.container) && await modifyStatus(this.answer.examId,'做题速度很快存在作弊嫌疑')
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){
@@ -317,10 +330,8 @@ export default {
 
     },
     async getWarning(){
-      const data = await getWarning(this.examId)
-      console.log(data)
-      return data
-    }
+      return await getWarning(this.examId)
+    },
   }
 }
 </script>

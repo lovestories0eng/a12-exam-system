@@ -46,6 +46,9 @@ const mutations = {
   },
   SET_FACE_TOKEN: (state, faceToken) => {
     state.faceToken = faceToken
+  },
+  SET_CONTAINER: (state, container) => {
+    state.container = container
   }
 }
 

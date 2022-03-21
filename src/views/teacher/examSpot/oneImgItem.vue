@@ -23,7 +23,7 @@ export default {
       }
     },
     selectId:{
-      type:String,
+      type:Number,
       default() {
         return undefined;
       }
