@@ -60,7 +60,6 @@
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <QuestionAnswerEdit
-                @doing="doing"
                 :id="'question-'+ item.itemOrder"
                 :q-type-str="item.exerciseType"
                 :chapter-id="item.chapterId"
@@ -73,6 +72,7 @@
                 :teacher-message="item.teacherMessage"
                 class="record-answer-info"
                 :container="container"
+                @doing="doing"
               />
             </el-form-item>
             <el-row class="do-align-center">

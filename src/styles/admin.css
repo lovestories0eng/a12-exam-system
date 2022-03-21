@@ -1,0 +1,17 @@
+/*管理端添加用户*/
+
+.add {
+  position: relative;
+  width: 25%;
+  left: 5%;
+  margin-top: 15px;
+}
+
+.add .input-wrapper {
+  width: 75%;
+}
+
+.diy-button {
+  text-align: center;
+  margin-top: 15px;
+}

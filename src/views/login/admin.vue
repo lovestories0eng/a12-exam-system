@@ -1,10 +1,10 @@
 <template>
   <el-form ref="form" :model="loginForm" :rules="loginRules" autocomplete="on" label-position="left">
     <h3 style="font-weight: 400; margin-bottom: 30px; color: #909399">{{ title }}</h3>
-    <el-form-item prop="username" style="margin-bottom: 27px;">
+    <el-form-item prop="userId" style="margin-bottom: 27px;">
       <el-input
-        ref="username"
-        v-model="loginForm.username"
+        ref="userId"
+        v-model="loginForm.userId"
         placeholder="请输入用户名或账号"
         style="width: calc(100% - 20px)"
         prefix-icon="el-icon-user"
@@ -22,10 +22,10 @@
         <i slot="reference" class="el-icon-warning-outline" style="cursor: pointer; color: #E6A23C"></i>
       </el-popover>
     </el-form-item>
-    <el-form-item prop="password" style="margin-bottom: 27px">
+    <el-form-item prop="userPassword" style="margin-bottom: 27px">
       <el-input
-        ref="password"
-        v-model="loginForm.password"
+        ref="userPassword"
+        v-model="loginForm.userPassword"
         type="password"
         placeholder="请输入密码"
         style="width: calc(100% - 20px)"
@@ -58,29 +58,27 @@
   </el-form>
 </template>
 <script>
-
 export default {
   data() {
     let validateUsername = (rule, value, callback) => {
-      console.log('asd')
-      if(this.loginForm.username === "")
+      if(this.loginForm.userId === "")
         return false;
-      let newUname = this.loginForm.username.replace(/\s/g, "")
+      let newUname = this.loginForm.userId.replace(/\s/g, "")
       if(newUname.length < 5 || newUname.length > 10){
         callback(new Error("长度为5~10位，不能包含空格"));
-        this.loginForm.username = "";
+        this.loginForm.userId = "";
         return false;
       }
       callback()
     }
 
     let validatePassword = (rule, value, callback) => {
-      if(this.loginForm.password === "")
+      if(this.loginForm.userPassword === "")
         return false;
-      let newPassword = this.loginForm.password.replace(/\s/g, "")
+      let newPassword = this.loginForm.userPassword.replace(/\s/g, "")
       if(newPassword.length < 6 || newPassword.length > 18){
         callback(new Error("密码长度为6~18位，不能包含空格"));
-        this.loginForm.password = "";
+        this.loginForm.userPassword = "";
         return false;
       }
       let zg =  /^[0-9a-zA-Z]*$/;
@@ -88,7 +86,7 @@ export default {
         let newPwd = newPassword.replaceAll("@","");
         if(!zg.test(newPwd)){
           callback(new Error("密码只能由数字和字母和@组成"));
-          this.loginForm.password = "";
+          this.loginForm.userPassword = "";
         }
       }
       callback()
@@ -96,22 +94,22 @@ export default {
     return {
       title: "管理员登录",
       loginForm: {
-        username: "admin",
-        password: "adminPassword",
+        userId: "20000000",
+        userPassword: "123456",
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        userId: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userPassword: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       btnLoad: false// 登录按钮加载
     };
   },
   mounted() {
     // 页面加载完毕自动聚焦
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
-      this.$refs.password.focus()
+    if (this.loginForm.userId === '') {
+      this.$refs.userId.focus()
+    } else if (this.loginForm.userPassword === '') {
+      this.$refs.userPassword.focus()
     }
   },
   methods: {
@@ -122,14 +120,14 @@ export default {
           // this.$store.dispatch(‘Login’, this.loginForm)来调取store里的user.js的login方法
           // 把this.loginForm中的账号密码发送给后台用于登录
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              // '/'默认为首页
-              this.$router.push({ path: this.redirect || '/s'})
-              this.btnLoad = false
-            })
-            .catch(() => {
-              this.btnLoad = false
-            })
+              .then(async () => {
+                // '/'默认为首页
+                await this.$router.push({path: this.redirect || '/'})
+                this.btnLoad = false
+              })
+              .catch(() => {
+                this.btnLoad = false
+              })
         } else {
           console.log('error submit!!')
           this.btnLoad = false

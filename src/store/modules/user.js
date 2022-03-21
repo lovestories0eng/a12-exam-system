@@ -16,6 +16,7 @@ const state = {
   avatar: '',
   introduction: '',
   className: '',
+  token: ''
 }
 
 // 注册所有的mutation方法
@@ -49,12 +50,21 @@ const mutations = {
   },
   SET_CONTAINER: (state, container) => {
     state.container = container
+  },
+  SET_TOKEN: (state, token) => {
+    state.token = token
   }
 }
 
 // action存在的意义就是执行异步操作
 // 注册所有的action方法
 const actions = {
+  changeRole({ commit }, { token, userId, role }) {
+    setUserId(userId)
+    setToken(token)
+    commit('SET_ROLE', role)
+    commit('SET_USERID', userId)
+  },
   // 登录
   // commit为VueX中自带的方法
   // 将commit 从 context 中结构出来
@@ -66,6 +76,7 @@ const actions = {
       // utils里的login
       login({ userId: userId.trim(), userPassword: userPassword }).then(response => {
         const { data } = response
+        console.log(data)
         setUserId(userId)
         setToken(data.token)
         resolve()

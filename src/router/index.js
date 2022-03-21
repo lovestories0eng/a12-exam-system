@@ -294,7 +294,79 @@ export const teacherRoutes = [
   }
 ]
 
-export const adminRoutes = []
+export const adminRoutes = [
+  {
+    path: '/',
+    redirect: '/addInfo'
+  },
+  {
+    path: '/addInfo',
+    component: Layout,
+    redirect: '/addInfo/addUser',
+    meta: {
+      title: "权限操作",
+      icon: '权限操作'
+    },
+    children: [
+      {
+        path: '/addInfo/addUser',
+        component: () => import('@/views/admin/add/AddUser'),
+        meta: {
+          title: '增加用户',
+          icon: '增加用户'
+        }
+      },
+      {
+        path: '/addInfo/addSubject',
+        component: () => import('@/views/admin/add/AddSubject'),
+        meta: {
+          title: '添加学科',
+          icon: '添加学科'
+        }
+      },
+      {
+        path: '/addInfo/addChapter',
+        component: () => import('@/views/admin/add/AddChapter'),
+        meta: {
+          title: '添加章节',
+          icon: '添加章节'
+        }
+      }
+    ]
+  },
+  {
+    path: '/simulate',
+    component: Layout,
+    meta: {
+      title: '模拟登录',
+      icon: '模拟登录'
+    },
+    children: [
+      {
+        path: '/simulate/student',
+        component: () => import('@/views/admin/simulate/Student'),
+        meta: {
+          title: '模拟学生登录',
+          icon: '学生'
+        }
+      },
+      {
+        path: '/simulate/teacher',
+        component: () => import('@/views/admin/simulate/Teacher'),
+        meta: {
+          title: '模拟老师登录',
+          icon: '老师'
+        }
+      }
+    ]
+  },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
+]
 
 // 解决路由相同跳转报错
 const originalPush = Router.prototype.push

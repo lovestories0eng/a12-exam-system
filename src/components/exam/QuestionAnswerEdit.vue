@@ -1,8 +1,9 @@
 <template>
   <div style="line-height:1.8;">
     <el-card
-        v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='choice8'"
-        :style="cardStyle">
+      v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='choice8'"
+      :style="cardStyle"
+    >
       <div class="bar">
         <span v-if="majorName.length !== 0" class="desc">学科：{{ majorName }}</span>
         <span class="desc">题型：{{ questionMap(qTypeStr) }}</span>
@@ -10,33 +11,34 @@
       </div>
       <div class="q-title">
         <mavon-editor
-            :value="questionOverview.question"
-            class="mavon-editor-question-show q-item-span-content"
-            :external-link="externalLink"
-            :subfield="false"
-            :default-open="'preview'"
-            :toolbars-flag="false"
-            :editable="false"
-            :scroll-style="true"
-            :ishljs="true"
+          :value="questionOverview.question"
+          class="mavon-editor-question-show q-item-span-content"
+          :external-link="externalLink"
+          :subfield="false"
+          :default-open="'preview'"
+          :toolbars-flag="false"
+          :editable="false"
+          :scroll-style="true"
+          :ishljs="true"
         ></mavon-editor>
       </div>
       <div v-if="qTypeStr==='choice4'">
         <div class="q-content">
           <el-radio-group v-model="answer.answer" @change="answer.completed = true; container.push(Date.now());$emit('doing',Date.now())">
             <el-radio v-for="index in 4" :key="questionOverview['option' + index]" class="answer-show-el-radio"
-                      :label="choice4Options[index]">
+                      :label="choice4Options[index]"
+            >
               <div>
                 <mavon-editor
-                    :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
-                    class="mavon-editor-choice-option q-item-span-content"
-                    :external-link="externalLink"
-                    :subfield="false"
-                    :default-open="'preview'"
-                    :toolbars-flag="false"
-                    :editable="false"
-                    :scroll-style="true"
-                    :ishljs="true"
+                  :value="choice4Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
                 >
                 </mavon-editor>
               </div>
@@ -48,18 +50,19 @@
         <div class="q-content" @click="doing">
           <el-radio-group v-model="answer.answer" @change="answer.completed = true">
             <el-radio v-for="index in 5" :key="questionOverview['option' + index]" class="answer-show-el-radio"
-                      :label="choice5Options[index]">
+                      :label="choice5Options[index]"
+            >
               <div>
                 <mavon-editor
-                    :value="choice5Options[index - 1] + '.' + questionOverview['option' + index]"
-                    class="mavon-editor-choice-option q-item-span-content"
-                    :external-link="externalLink"
-                    :subfield="false"
-                    :default-open="'preview'"
-                    :toolbars-flag="false"
-                    :editable="false"
-                    :scroll-style="true"
-                    :ishljs="true"
+                  :value="choice5Options[index - 1] + '.' + questionOverview['option' + index]"
+                  class="mavon-editor-choice-option q-item-span-content"
+                  :external-link="externalLink"
+                  :subfield="false"
+                  :default-open="'preview'"
+                  :toolbars-flag="false"
+                  :editable="false"
+                  :scroll-style="true"
+                  :ishljs="true"
                 >
                 </mavon-editor>
               </div>
@@ -71,21 +74,21 @@
         <div>
           <!--<el-input v-model="answer.answer" style="width: 50%;" @change="answer.completed = true" />-->
           <mavon-editor
-              v-model="answer.answer"
-              class="mavon-editor-subject-answer"
-              :toolbars="toolbars"
-              :autofocus="false"
-              default-open="preview"
-              :editable="true"
-              :subfield="true"
+            v-model="answer.answer"
+            class="mavon-editor-subject-answer"
+            :toolbars="toolbars"
+            :autofocus="false"
+            default-open="preview"
+            :editable="true"
+            :subfield="true"
           />
         </div>
       </div>
       <div v-if="qTypeStr==='judge'">
         <div class="q-content">
           <el-radio-group
-              v-model="answer.answer"
-              @change="answer.completed = true"
+            v-model="answer.answer"
+            @change="answer.completed = true"
           >
             <el-radio label="对">正确</el-radio>
             <el-radio label="错">错误</el-radio>
@@ -98,7 +101,8 @@
       </div>
       <div class="question-answer-show-item">
         <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'"
-              class="q-item-span-content" v-html="questionOverview.rightAnswer"/>
+              class="q-item-span-content" v-html="questionOverview.rightAnswer"
+        />
       </div>
     </el-card>
     <div v-else>
