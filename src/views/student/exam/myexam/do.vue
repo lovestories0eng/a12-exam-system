@@ -167,9 +167,10 @@ export default {
     }
   },
   // 清除考试时间的定时器
-  beforeDestroy () {
+  async beforeDestroy () {
     window.onresize = () => {}
     window.clearInterval(this.timer)
+    await modifyStatus(this.examId,'未进入考场')
   },
   async mounted() {
     await this.addMyEventListener()
@@ -195,7 +196,7 @@ export default {
       setInterval(async ()=>{
         try{
           let data = await this.getWarning(this.examId)
-          this.$message.warning(data.studentMessage + '')
+          if(data!=='暂无消息') this.$message.warning(data.studentMessage + '')
         }catch (e){
           console.log(1)
         }
@@ -271,7 +272,7 @@ export default {
         _this.formLoading = false
       })
       this.commit()
-      const data = await modifyStatus(this.answer.examId,'考试正常结束')
+      await modifyStatus(this.answer.examId,'考试结束')
     },
     //禁止右键，复制，粘贴，拖拽
     ban(){

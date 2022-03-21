@@ -65,6 +65,7 @@ function setInterceptor(Obj) {
           //   type: 'error',
           //   duration: 5 * 1000
           // })
+          console.log(res.message || 'Error')
 
           if (res.status === 200) {
             MessageBox.confirm('密码错误或者token失效', '强制登出', {
