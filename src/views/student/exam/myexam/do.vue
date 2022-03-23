@@ -207,14 +207,17 @@ export default {
       let timer = setInterval(async () => {
         try {
           let data = await this.getWarning(this.examId)
-          if (data.toString().indexOf('immediate quit') !== -1) {
-            this.$message.error(`老师取消了您的考试资格\n理由是:${data.toString().split("immediate quit")[0]}\n考试系统将于五秒后关闭`)
+          data = data.studentMessage
+          console.log(data)
+          if (data.indexOf('immediate quit') !== -1) {
+            this.$message.error(`老师取消了您的考试资格 理由是:${data.split("immediate quit")[0]} 考试系统将于五秒后关闭`)
             setTimeout(()=>{
-              clearInterval(timer)
+              // clearInterval(timer)
+              console.log(1)
               this.CloseWebPage()
             },5000)
           }
-          if (data !== '暂无消息') this.$message.warning(data.studentMessage + '')
+          else if (data !== '暂无消息') this.$message.warning(data + '')
         } catch (e) {
           // eslint-disable-next-line no-inner-declarations
           function a() {
