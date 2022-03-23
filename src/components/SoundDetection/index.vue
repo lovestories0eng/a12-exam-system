@@ -39,6 +39,7 @@ export default {
       default: ()=> 123
     }
   },
+  inject:['reload'],
   data() {
     return {
       leftTimes:5,
@@ -132,9 +133,11 @@ export default {
     },
     judgeLargeSound:detectionLargeSound(.1),
     openSoundTest(){
-      console.log('i click')
       this.isOpenCamera = true
       this.switchTimes = 0
+      history.pushState(null, null, document.URL);
+      window.addEventListener("popstate", ()=>{this.reload()},false)
+
       window.addEventListener('visibilitychange',this.switchListener)
     },
     async switchListener (){

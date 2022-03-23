@@ -32,6 +32,7 @@
             v-for="item of replaceArray"
             :key="item.id"
             :student-info="item"
+            @tryToDo="tryToDo"
           ></oneStudentItem>
         </div>
       </div>
@@ -47,6 +48,7 @@
           </div>
         </div>
       </div>
+      <FunctionsTables v-if="do_something" :exam-id="selectId" :name="bad_student.name" :user-id="bad_student.id" @functionalQuit="functionalQuit"></FunctionsTables>
       <a href="javascript:" data-title="同步数据" @click="clickReload"></a>
     </div>
     <loading v-if="isLoading"></loading>
@@ -64,12 +66,18 @@ import getSwitchTimes from "@/api/cheatData/getSwitchTimes";
 import processData from "@/api/cheatData/processData";
 import loading from "views/teacher/examSpot/loading";
 import awesomeButton from "utils/awesomeButton";
+import FunctionsTables from "views/teacher/examSpot/FunctionsTables";
 export default {
   name: "index",
-  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable,loading},
+  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable,loading,FunctionsTables},
   inject: ['reload'],
   data() {
     return {
+      bad_student:{
+        name:'',
+        id:0,
+      },
+      do_something:false,
       selectExamId:'',
       isLoading:false,
       dataOrigin: [],
@@ -145,6 +153,9 @@ export default {
     awesomeButton()
   },
   methods: {
+    functionalQuit(){
+      this.do_something = false
+    },
     clickReload(){
       this.getInfo(this.selectId)
     },
@@ -218,6 +229,10 @@ export default {
           studentCondition:item['studentCondition']?item['studentCondition']:'未进入考试'
         }
       })
+    },
+    tryToDo(studentInfo){
+      this.do_something = true
+      this.bad_student = studentInfo
     }
   }
 }

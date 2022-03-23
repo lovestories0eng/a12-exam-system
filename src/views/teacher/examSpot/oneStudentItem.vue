@@ -1,6 +1,6 @@
 <template>
   <div class="oneStudentItem">
-    <img :id="studentInfo.id" v-lazy="studentInfo.avatar" alt="" class="avatar" @click="getAbnormalPicture">
+    <img :id="studentInfo.id" v-lazy="studentInfo.avatar" alt="" class="avatar" @click="$emit('tryToDo',$props.studentInfo)">
     <div class="basicInfo">
       <div class="studentName">
         {{ "名字: "+studentInfo.name }}
@@ -45,9 +45,6 @@ export default {
   },
   methods: {
     //获取异常接口
-    getAbnormalPicture(){
-
-    }
   }
 }
 </script>
