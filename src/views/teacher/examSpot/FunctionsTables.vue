@@ -3,7 +3,7 @@
     <div class="warningStudent">
       <div class="bar" @click="factory(getEl('.warningStudent .content'),oWarningStudentHeight)()">警告学生</div>
       <div class="content">
-        <warningStudent :name="$props.name" :user-id="$props.userId" @confirmWarning = "confirmWarning"></warningStudent>
+        <warningStudent :name="$props.name" :user-id="$props.userId" @confirmWarning="confirmWarning"></warningStudent>
       </div>
     </div>
 
@@ -41,14 +41,6 @@ import addAnimation from "@/api/cheatData/addAnimation";
 import sendWarning from "@/api/cheatData/sendWarning";
 export default {
   name: "FunctionsTables",
-  data(){
-    return {
-      oWarningStudentHeight:0,
-      oForceStudentOutExamHeight:0,
-      oCheckPicturesHeight:0,
-      oAllPicturesHeight:0
-    }
-  },
   components:{warningStudent,forceQuitExam,comparePictures,AllPictures},
   props:{
     name:{
@@ -68,6 +60,14 @@ export default {
       default(){
         return 0
       }
+    }
+  },
+  data(){
+    return {
+      oWarningStudentHeight:0,
+      oForceStudentOutExamHeight:0,
+      oCheckPicturesHeight:0,
+      oAllPicturesHeight:0
     }
   },
   mounted() {
@@ -115,15 +115,14 @@ export default {
 <style scoped lang="scss">
 
 .functionsTable{
-  z-index: 999;
-  width: 500px;
-  height: 700px;
-  border: ghostwhite 2px solid;
-  border-radius: 2%;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+
+  width: 100%;
+  height: 100%;
+  position: relative;
+  //left: 50%;
+  //top: 50%;
+  //transform: translateX(-50%;
+  //transform: translateX(-50%) translateY(-50%);
   background-color: white;
   overflow-x: hidden;
   overflow-y: scroll;

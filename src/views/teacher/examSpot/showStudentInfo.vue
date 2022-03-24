@@ -1,10 +1,10 @@
 <template>
   <div class="studentInfo">
     <div class="studentName">
-      学生姓名:<input id="show_name" v-model="$props.name" type="text" class="name" disabled>
+      学生姓名:<el-input id="show_name" v-model="$props.name" type="text" class="name" disabled></el-input>
     </div>
     <div class="studentId">
-      学生学号:<input v-model="$props.userId" type="text" class="id" disabled>
+      学生学号:<el-input v-model="$props.userId" type="text" class="id" disabled></el-input>
     </div>
   </div>
 </template>
@@ -35,9 +35,12 @@ export default {
   flex-direction: column;
   flex-wrap: wrap;
   div{
-    width: 60%;
+    //width: 100%;
     margin: 0 auto;
     margin-top: 20px;
+    .el-input{
+      width: 80%;
+    }
   }
 }
 </style>

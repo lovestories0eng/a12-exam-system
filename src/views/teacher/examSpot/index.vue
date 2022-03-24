@@ -3,6 +3,7 @@
     <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot" style="visibility: hidden">
       <div class="imgDisplay"
+           v-if="!do_something"
            :style="{
              width:'90%',
            }"
@@ -10,7 +11,7 @@
         <div class="stretch">
           <span class="isShowImages" @click="isShowImages">查看异常照片 &downarrow;</span>
         </div>
-        <div class="imgArea">
+        <div class="imgArea" v-if="!do_something">
           <oneImgItem
             v-for="(item,index) of imgArea" :key="item.userId+index"
             :img-item="item"
@@ -19,6 +20,7 @@
         </div>
       </div>
       <div class="students-status"
+           v-if="!do_something"
            :style="{
              width:'90%',
              // position:'absolute'
@@ -37,6 +39,7 @@
         </div>
       </div>
       <div class="StatisticalTable"
+           v-if="!do_something"
            :style="{
              width:'90%',
            }"
@@ -49,7 +52,7 @@
         </div>
       </div>
       <FunctionsTables v-if="do_something" :exam-id="selectId" :name="bad_student.name" :user-id="bad_student.id" @functionalQuit="functionalQuit"></FunctionsTables>
-      <a href="javascript:" data-title="同步数据" @click="clickReload"></a>
+      <a href="javascript:" data-title="同步数据" @click="clickReload" v-if="!do_something"></a>
     </div>
     <loading v-if="isLoading"></loading>
   </div>

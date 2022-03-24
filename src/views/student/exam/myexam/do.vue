@@ -1,11 +1,11 @@
 <template>
   <div id="do">
     <SoundDetection
-        :exam-id="answer.examId"
+      :exam-id="answer.examId"
     ></SoundDetection>
     <MattersNeedingAttention
-        v-if="showNotice"
-        @beforeEntryExam="beforeEntryExam"
+      v-if="showNotice"
+      @beforeEntryExam="beforeEntryExam"
     >
     </MattersNeedingAttention>
     <el-container class="app-item-contain">
@@ -26,15 +26,16 @@
             <label>{{ formatSeconds(remainTime) }}</label>
             <span v-for="(item, index) in tableData" :key="item.itemOrder">
               <span v-if="questionOrder.indexOf(index) !== -1"
-                    style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                    style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;"
+              >
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <!-- item.completed判断题目是否做完 -->
               <el-tag
-                  :type="questionCompleted((answer.answerItems[index]).completed)"
-                  class="do-exam-title-tag"
-                  style="display:inline-block;"
-                  @click="goAnchor('#question-'+item.itemOrder)"
+                :type="questionCompleted((answer.answerItems[index]).completed)"
+                class="do-exam-title-tag"
+                style="display:inline-block;"
+                @click="goAnchor('#question-'+item.itemOrder)"
               >
                 {{ item.itemOrder }}
               </el-tag>
@@ -58,23 +59,24 @@
           <el-form ref="form" v-loading="formLoading" label-width="100px">
             <el-form-item v-for="(item, index) in tableData" :key="index">
               <span v-if="questionOrder.indexOf(index) !== -1"
-                    style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;">
+                    style="display: block; text-align:center; font-weight: 700; padding: 5px; background:#eee;"
+              >
                 {{ questionName[questionOrder.indexOf(index)] }} <br>
               </span>
               <QuestionAnswerEdit
-                  :id="'question-'+ item.itemOrder"
-                  :q-type-str="item.exerciseType"
-                  :chapter-id="item.chapterId"
-                  :chapter-name="item.chapterName"
-                  :major-name="item.majorName"
-                  :question-overview="item[item.exerciseType + 'Tea']"
-                  :answer="answer.answerItems[item.itemOrder - 1]"
-                  :student-value="item.studentValue"
-                  :exercise-value="item.exerciseValue"
-                  :teacher-message="item.teacherMessage"
-                  class="record-answer-info"
-                  :container="container"
-                  @doing="doing"
+                :id="'question-'+ item.itemOrder"
+                :q-type-str="item.exerciseType"
+                :chapter-id="item.chapterId"
+                :chapter-name="item.chapterName"
+                :major-name="item.majorName"
+                :question-overview="item[item.exerciseType + 'Tea']"
+                :answer="answer.answerItems[item.itemOrder - 1]"
+                :student-value="item.studentValue"
+                :exercise-value="item.exerciseValue"
+                :teacher-message="item.teacherMessage"
+                class="record-answer-info"
+                :container="container"
+                @doing="doing"
               />
             </el-form-item>
             <el-row class="do-align-center">
