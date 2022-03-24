@@ -95,10 +95,12 @@ export default {
 
 <style scoped lang="scss">
 .examTable{
+  height: 100%;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%) translateX(-50%);
+
 }
 
 </style>

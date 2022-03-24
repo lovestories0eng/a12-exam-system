@@ -1,5 +1,5 @@
 <template>
-  <div id="do">
+  <div id="myDo">
     <SoundDetection
       :exam-id="answer.examId"
     ></SoundDetection>
@@ -184,6 +184,9 @@ export default {
   },
   async mounted() {
     await this.addMyEventListener()
+    document.querySelector('#myDo').addEventListener('beforeunload',async ()=>{
+      await modifyStatus(this.examId, '退出考试')
+    })
   },
   methods: {
     doing(val) {
@@ -361,8 +364,8 @@ export default {
       window.onresize = () => {
       }
     },
-    beforeDestroy() {
-
+    async beforeDestroy() {
+      await modifyStatus(this.answer.examId, '考试结束')
     },
     async getWarning() {
       return await getWarning(this.examId)

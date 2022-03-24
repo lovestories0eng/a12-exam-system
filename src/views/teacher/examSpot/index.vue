@@ -35,6 +35,7 @@
             :key="item.id"
             :student-info="item"
             @tryToDo="tryToDo"
+            :exam-id="selectId"
           ></oneStudentItem>
         </div>
       </div>

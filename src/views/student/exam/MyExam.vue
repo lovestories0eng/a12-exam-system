@@ -107,6 +107,7 @@ export default {
           }catch (e) {
             console.log(e.message)
           }
+          window.addEventListener('beforeunload',this.beforeClosePage)
         },
         () => {
           Message.error('考试未开始，无法查看')
@@ -142,6 +143,9 @@ export default {
     )
   },
   methods: {
+    async beforeClosePage(){
+      await modifyStatus(this.row.examId,'退出考试')
+    },
     parseCategory(start, end) {
       start = new Date(start).getTime()
       end = new Date(end).getTime()

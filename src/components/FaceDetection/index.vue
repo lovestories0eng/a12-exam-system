@@ -77,29 +77,8 @@ export default {
         v.style.visibility = 'hidden'
         this.getCompetence()
         setTimeout(async () => {
-          let _this = this;
-          // canvas画图
-          _this.thisContext.drawImage(
-              _this.thisVideo,
-              0,
-              0,
-              _this.videoWidth,
-              _this.videoHeight
-          );
-          // 获取图片base64链接
-          this.imageBase64 = this.thisCanvas.toDataURL("image/png")
-          // let img = new Image()
-          // img.src = this.imageBase64
-          function dataURLtoFile(dataurl, filename) {
-            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            while (n--) {
-              u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new File([u8arr], filename, {type: mime});
-          }
-          // 发送照片
-          // await sendCheatPicture(dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
+          this.draw()
+          // await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
           //   console.log(res)
           // })
         }, 5000)
@@ -107,6 +86,26 @@ export default {
     }
   },
   methods: {
+    draw(){
+      let _this = this;
+      // canvas画图
+      _this.thisContext.drawImage(
+          _this.thisVideo,
+          0,
+          0,
+          _this.videoWidth,
+          _this.videoHeight
+      );
+      this.imageBase64 = this.thisCanvas.toDataURL("image/png")
+    },
+    dataURLtoFile(dataUrl, filename) {
+      let arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, {type: mime});
+    },
     checkFaceInfo(row) {
       this.face_token = this.$store.getters.faceToken
       if (this.face_token === '' || this.face_token === undefined || this.face_token === null) {

@@ -8,6 +8,9 @@
       <div class="studentId">
         {{ "学号: "+studentInfo.id }}
       </div>
+      <div class="operation">
+        <el-button type="warning" plain size="mini" @click="warning">警告学生</el-button>
+      </div>
     </div>
     <div class="status">
       <span
@@ -28,12 +31,20 @@
 </template>
 
 <script>
+import sendWarning from "@/api/cheatData/sendWarning";
+
 export default {
   name: "oneStudentItem",
   props: {
     studentInfo: {
       type:Object,
       required: true
+    },
+    examId:{
+      type:Number,
+      default(){
+        return 0
+      }
     }
   },
   data() {
@@ -45,6 +56,9 @@ export default {
   },
   methods: {
     //获取异常接口
+    warning(){
+      sendWarning(this.$props.examId,this.$props.studentInfo.id,'请认真考试')
+    }
   }
 }
 </script>
@@ -67,7 +81,7 @@ export default {
 
     div {
       text-align: center;
-      //margin-left: 30px;
+      margin-top: 10px;
     }
   }
 
@@ -75,6 +89,7 @@ export default {
     height: 50px;
     width: 100%;
     text-align: center;
+    margin-top: 10px;
   }
 }
 </style>
