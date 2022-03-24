@@ -134,10 +134,10 @@ export default {
       //打开摄像头
       this.getCompetence();
       await this.compareFaceInfo(row)
+      this.draw()
       try {
         const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
         console.log('login上传成功')
-        console.log(res)
       }catch (e) {
         console.log(e.message)
       }
@@ -237,7 +237,7 @@ export default {
         try {
           //large sound
           const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'largeSound')
-          console.log('切屏照片上传成功')
+          console.log('声音过大照片上传成功')
           console.log(res)
         }catch (e) {
           console.log(e.message)

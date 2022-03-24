@@ -114,6 +114,7 @@ export default {
           if (event.data.volume)  _volume = event.data.volume;
           if(this.judgeLargeSound(_volume * 100)){
             Message.error('请保持安静')
+            this.$refs.faceDetection.father_touch()
           }
 
           this.leads((_volume * 100) / _sensibility)
