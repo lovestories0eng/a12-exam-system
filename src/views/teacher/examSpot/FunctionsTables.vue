@@ -1,12 +1,25 @@
 <template>
   <div class="functionsTable">
+    <div class="checkPictures">
+      <div class="bar" @click="factory(getEl('.checkPictures .content'),oCheckPicturesHeight)()">比对照片</div>
+      <div class="content">
+        <comparePictures></comparePictures>
+      </div>
+    </div>
+    <hr>
+    <div class="checkAllPictures">
+      <div class="bar" @click="factory(getEl('.checkAllPictures .content'),oAllPicturesHeight)()">查看所有照片</div>
+      <div class="content">
+      </div>
+    </div>
+    <hr>
     <div class="warningStudent">
       <div class="bar" @click="factory(getEl('.warningStudent .content'),oWarningStudentHeight)()">警告学生</div>
       <div class="content">
         <warningStudent :name="$props.name" :user-id="$props.userId" @confirmWarning="confirmWarning"></warningStudent>
       </div>
     </div>
-
+    <hr>
     <div class="forceStudentOutExam">
       <div class="bar" @click="factory(getEl('.forceStudentOutExam .content'),oForceStudentOutExamHeight)()">强制结束考试</div>
       <div class="content">
@@ -14,18 +27,7 @@
         </forceQuitExam>
       </div>
     </div>
-
-    <div class="checkPictures">
-      <div class="bar" @click="factory(getEl('.checkPictures .content'),oCheckPicturesHeight)()">比对照片</div>
-      <div class="content">
-        <comparePictures></comparePictures>
-      </div>
-    </div>
-    <div class="checkAllPictures">
-      <div class="bar" @click="factory(getEl('.checkAllPictures .content'),oAllPicturesHeight)()">查看所有照片</div>
-      <div class="content">
-      </div>
-    </div>
+    <hr>
     <div class="quit">
       <el-button plain @click="quit">退出</el-button>
     </div>
@@ -170,5 +172,24 @@ export default {
   transition-property: all;
   transition-timing-function: ease;
   transition-delay: 0s;
+}
+
+hr {
+  height: 30px;
+  width: 80%;
+  border-style: solid;
+  border-color: #8c8b8b;
+  border-width: 1px 0 0 0;
+  border-radius: 20px;
+}
+hr:before {
+  display: block;
+  content: "";
+  height: 30px;
+  margin-top: -31px;
+  border-style: solid;
+  border-color: #8c8b8b;
+  border-width: 0 0 1px 0;
+  border-radius: 20px;
 }
 </style>
