@@ -125,7 +125,7 @@ export default {
       }
       return new File([u8arr], filename, {type: mime});
     },
-    checkFaceInfo(row) {
+    async checkFaceInfo(row) {
       this.face_token = this.$store.getters.faceToken
       if (this.face_token === '' || this.face_token === undefined || this.face_token === null) {
         this.$message.error('您还未注册人脸信息，请前往注册人脸信息')
@@ -133,7 +133,14 @@ export default {
       }
       //打开摄像头
       this.getCompetence();
-      this.compareFaceInfo(row)
+      await this.compareFaceInfo(row)
+      try {
+        const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
+        console.log('login上传成功')
+        console.log(res)
+      }catch (e) {
+        console.log(e.message)
+      }
     },
     getCompetence: openCamera,
     // 与人脸集信息进行比较
@@ -177,12 +184,6 @@ export default {
           title: '人脸校验',
           message: '正在进行人脸校验，请开启相机访问权限并对准相机。'
         })
-        try {
-          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
-          console.log('login上传成功')
-        }catch (e) {
-          console.log(e.message)
-        }
         await detectFaceInfo(this.imageBase64)
             .then(async res => {
               let resultFaceToken = res.data.faces[0].face_token
