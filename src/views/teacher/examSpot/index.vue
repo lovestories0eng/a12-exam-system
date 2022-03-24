@@ -399,7 +399,7 @@ export default {
 }
 a {
   position: absolute;
-  top: 180%;
+  top: 165%;
   left:45%;
   transform: translateX(-50%);
   display: inline-block;

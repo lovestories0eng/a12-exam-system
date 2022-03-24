@@ -38,9 +38,9 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <button style="background-color: whitesmoke;outline: none;border: none;font-size: 12px;font-weight: lighter;" @click="entryWatch(scope.row)">
+          <el-button plain style="background-color: whitesmoke;outline: none;border: none;font-size: 12px;font-weight: lighter;" @click="entryWatch(scope.row)">
             {{ scope.row.description }}
-          </button>
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
