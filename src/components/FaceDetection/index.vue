@@ -76,14 +76,33 @@ export default {
         let v = document.querySelector('#do-camera')
         v.style.visibility = 'hidden'
         this.getCompetence()
-        setTimeout(async () => {
+        setInterval(async () => {
           this.draw()
-          // await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId).then(res => {
-          //   console.log(res)
-          // })
-        }, 5000)
+          try{
+            // normal
+            const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId)
+            console.log(res)
+          }catch (e) {
+            console.log(e.message)
+          }
+        }, 10000)
       }
     }
+  },
+  mounted() {
+    setInterval(async ()=>{
+      this.draw()
+      if(document.visibilityState === 'hidden'){
+        try {
+          //outLook picture
+          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'outLook')
+          console.log('切屏照片上传成功')
+          console.log(res)
+        }catch (e) {
+          console.log(e.message)
+        }
+      }
+    },1000)
   },
   methods: {
     draw(){
@@ -163,9 +182,16 @@ export default {
               let resultFaceToken = res.data.faces[0].face_token
               //请求接口进行比对
               await compareFaceInfoByFaceToken(resultFaceToken, this.face_token)
-                  .then((res) => {
+                  .then(async (res) => {
                     //可信度大于85则进入考试
                     if (res.data.confidence > 20) {
+                      //login page
+                      try {
+                        const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
+                        console.log(res)
+                      }catch (e) {
+                        console.log(e.message)
+                      }
                       _this.faceComparedSuccess = true;
                       this.thisVideo.srcObject.getTracks()[0].stop();
                       this.camera = false;
@@ -204,6 +230,19 @@ export default {
       this.thisVideo.srcObject.getTracks()[0].stop();
       this.camera = false;
     },
+    async father_touch(){
+      this.draw()
+      if(document.visibilityState === 'hidden'){
+        try {
+          //large sound
+          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'largeSound')
+          console.log('切屏照片上传成功')
+          console.log(res)
+        }catch (e) {
+          console.log(e.message)
+        }
+      }
+    }
   }
 }
 </script>

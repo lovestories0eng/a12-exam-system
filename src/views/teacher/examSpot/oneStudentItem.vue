@@ -14,7 +14,7 @@
     </div>
     <div class="status">
       <span
-        v-if="studentInfo.studentCondition === '未进入考试' "
+        v-if="studentInfo.studentCondition !== '考试中' "
         style="color: red"
       >
         &circleddash;

@@ -1,7 +1,8 @@
 <template>
   <div class="oneImgItem">
-    <img v-lazy="imgItem.picUrl" alt="" @click="sendWarning">
+    <img v-if="userId === imgItem.userId" v-lazy="imgItem.picUrl" alt="" @click="sendWarning">
     <p class="userId">{{ "学号:"+imgItem.userId }}</p>
+    <p class="studentCondition">{{ "理由:" + imgItem.studentCondition }}</p>
   </div>
 </template>
 
@@ -18,7 +19,8 @@ export default {
       {
         return{
           picUrl:'',
-          userId:''
+          userId:'',
+          studentCondition:''
         }
       }
     },
@@ -26,6 +28,12 @@ export default {
       type:Number,
       default() {
         return undefined;
+      }
+    },
+    userId:{
+      type:Number,
+      default() {
+        return 0;
       }
     }
   },

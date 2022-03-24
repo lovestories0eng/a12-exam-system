@@ -2,8 +2,8 @@
   <div>
     <examTable v-if="!isEntry" @beforeEntryWatch="beforeEntryWatch"></examTable>
     <div v-else class="exam-spot" style="visibility: hidden">
-      <div class="imgDisplay"
-           v-if="!do_something"
+      <div v-if="!do_something"
+           class="imgDisplay"
            :style="{
              width:'90%',
            }"
@@ -11,7 +11,7 @@
         <div class="stretch">
           <span class="isShowImages" @click="isShowImages">查看异常照片 &downarrow;</span>
         </div>
-        <div class="imgArea" v-if="!do_something">
+        <div v-if="!do_something" class="imgArea">
           <oneImgItem
             v-for="(item,index) of imgArea" :key="item.userId+index"
             :img-item="item"
@@ -19,8 +19,8 @@
           ></oneImgItem>
         </div>
       </div>
-      <div class="students-status"
-           v-if="!do_something"
+      <div v-if="!do_something"
+           class="students-status"
            :style="{
              width:'90%',
              // position:'absolute'
@@ -34,13 +34,13 @@
             v-for="item of replaceArray"
             :key="item.id"
             :student-info="item"
-            @tryToDo="tryToDo"
             :exam-id="selectId"
+            @tryToDo="tryToDo"
           ></oneStudentItem>
         </div>
       </div>
-      <div class="StatisticalTable"
-           v-if="!do_something"
+      <div v-if="!do_something"
+           class="StatisticalTable"
            :style="{
              width:'90%',
            }"
@@ -52,8 +52,8 @@
           </div>
         </div>
       </div>
-      <FunctionsTables v-if="do_something" :exam-id="selectId" :name="bad_student.name" :user-id="bad_student.id" @functionalQuit="functionalQuit"></FunctionsTables>
-      <a href="javascript:" data-title="同步数据" @click="clickReload" v-if="!do_something"></a>
+      <FunctionsTables v-if="do_something" :exam-id="selectId" :name="bad_student.name" :user-id="bad_student.id" @functionalQuit="functionalQuit" :all-pages="allPages" :system-page="systemPage"></FunctionsTables>
+      <a v-if="!do_something" href="javascript:" data-title="同步数据" @click="clickReload"></a>
     </div>
     <loading v-if="isLoading"></loading>
   </div>
@@ -81,6 +81,8 @@ export default {
         name:'',
         id:0,
       },
+      systemPage:null,
+      allPages:[],
       do_something:false,
       selectExamId:'',
       isLoading:false,
@@ -96,56 +98,7 @@ export default {
       searchKeyWord: '',
       studentInfo: [],
       initImgArea:[],
-      imgArea:[
-          {
-        picUrl:'watch_img/P1.jpg',
-        userId:'123'
-      },
-        {
-          picUrl:'watch_img/P2.jpg',
-          userId:'234'
-        },
-        {
-          picUrl:'watch_img/P3.jpg',
-          userId:'345'
-        },
-        {
-          picUrl:'watch_img/P4.jpg',
-          userId:'456'
-        },
-        {
-          picUrl:'watch_img/P5.jpg',
-          userId:'567'
-        },
-        {
-          picUrl:'watch_img/P6.jpg',
-          userId:'678'
-        },
-        {
-          picUrl:'watch_img/P7.jpg',
-          userId:'789'
-        },
-        {
-          picUrl:'watch_img/P8.jpg',
-          userId:'890'
-        },
-        {
-          picUrl:'watch_img/P9.jpg',
-          userId:'901'
-        },
-        {
-          picUrl:'watch_img/P10.jpg',
-          userId:'012'
-        },
-        {
-          picUrl:'watch_img/P2.jpg',
-          userId:'222'
-        },
-        {
-          picUrl:'watch_img/P1.jpg',
-          userId:'333'
-        }
-      ],
+      imgArea:[],
       replaceArray: []
     }
   },
@@ -190,17 +143,13 @@ export default {
     },
     async beforeEntryWatch(scoped){
       this.selectId = scoped.examId
-      const {data:res} = await getCheatPic(scoped.examId)
-      res.forEach((item)=>{
-        this.imgArea.push({userId:item.userId,picUrl: item.picUrl})
-      })
       this.isEntry = !this.isEntry
       this.isLoading = !this.isLoading
       setTimeout(()=>{
         this.isLoading = !this.isLoading
         document.querySelector('.exam-spot').style.visibility = 'visible'
       },2000)
-
+     await  this.getInfo(this.selectId)
       //监听浏览器回退事件
       const _this = this
       function watchPopEvent(){
@@ -224,6 +173,7 @@ export default {
     },
     async getInfo(id){
       const {data:detailInfo} =  await getSwitchTimes(id)
+      const {data:res} = await getCheatPic(this.selectId)
       this.dataOrigin = processData(detailInfo)
       this.replaceArray = this.dataOrigin.map((item,index)=>{
         return {
@@ -231,6 +181,32 @@ export default {
           name:item['name'],
           avatar:`avatar/p${index+1}.webp`,
           studentCondition:item['studentCondition']?item['studentCondition']:'未进入考试'
+        }
+      })
+      res.forEach((item)=>{
+        if(item.studentCondition || item.studentCondition === 'outLook' || item.studentCondition === 'largeSound'){
+          let content = ''
+          switch (item.studentCondition) {
+            case 'outLook':
+              content = '切屏'
+              break;
+            case 'largeSound':
+              content = '吵闹'
+              break;
+            default:
+              break;
+          }
+          this.imgArea.push({userId:item.userId,picUrl: item.picUrl,studentCondition:content})
+        }else if(item.studentCondition!=='login'){
+          this.allPages.push(item)
+        }else{
+          this.systemPage = item
+        }
+        for(let i = 0;i<this.replaceArray.length;i++){
+          if(this.replaceArray[i].id === item.userId && (!item.studentCondition || item.studentCondition === 'normal') && (!this.replaceArray[i].getTime || Date.parse(item.getTime) > this.replaceArray[i].getTime)){
+            this.replaceArray[i].avatar = item.picUrl
+            this.replaceArray[i].getTime = Date.parse(item.getTime)
+          }
         }
       })
     },
@@ -262,6 +238,7 @@ export default {
 }
 .exam-spot {
   width: 100%;
+  height: 100%;
   margin-left: 50px;
   position: relative;
   .students-status {
@@ -399,7 +376,7 @@ export default {
 }
 a {
   position: absolute;
-  top: 165%;
+  top:180%;
   left:45%;
   transform: translateX(-50%);
   display: inline-block;

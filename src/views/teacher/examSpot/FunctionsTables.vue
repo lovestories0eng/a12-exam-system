@@ -3,13 +3,14 @@
     <div class="checkPictures">
       <div class="bar" @click="factory(getEl('.checkPictures .content'),oCheckPicturesHeight)()">比对照片</div>
       <div class="content">
-        <comparePictures></comparePictures>
+        <comparePictures :system-page="systemPage" :user-id="$props.userId"></comparePictures>
       </div>
     </div>
     <hr>
     <div class="checkAllPictures">
       <div class="bar" @click="factory(getEl('.checkAllPictures .content'),oAllPicturesHeight)()">查看所有照片</div>
-      <div class="content">
+      <div class="content" style="overflow: hidden">
+        <AllPages :all-pages = 'allPages' :user-id="$props.userId"></AllPages>
       </div>
     </div>
     <hr>
@@ -41,9 +42,10 @@ import forceQuitExam from "views/teacher/examSpot/forceQuitExam"
 import comparePictures from "views/teacher/examSpot/comparePictures";
 import addAnimation from "@/api/cheatData/addAnimation";
 import sendWarning from "@/api/cheatData/sendWarning";
+import AllPages from "views/teacher/examSpot/AllPages";
 export default {
   name: "FunctionsTables",
-  components:{warningStudent,forceQuitExam,comparePictures,AllPictures},
+  components:{warningStudent,forceQuitExam,comparePictures,AllPictures,AllPages},
   props:{
     name:{
       type:String,
@@ -62,6 +64,18 @@ export default {
       default(){
         return 0
       }
+    },
+    allPages:{
+      type:Array,
+      default(){
+        return []
+      }
+    },
+    systemPage:{
+      type:Object,
+      default(){
+        return null
+      }
     }
   },
   data(){
@@ -76,7 +90,7 @@ export default {
     this.oWarningStudentHeight = this.getEl('.warningStudent .content').clientHeight
     this.oForceStudentOutExamHeight = this.getEl('.forceStudentOutExam .content').clientHeight
     this.oCheckPicturesHeight = this.getEl('.checkPictures .content').clientHeight
-    this.oAllPicturesHeight = this.getEl('.checkAllPictures .content')
+    this.oAllPicturesHeight = this.getEl('.checkAllPictures .content').clientHeight
     document.querySelectorAll('.bar').forEach((item)=>{
       item.click()
     })
