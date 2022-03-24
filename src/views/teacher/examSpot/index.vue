@@ -183,8 +183,11 @@ export default {
           studentCondition:item['studentCondition']?item['studentCondition']:'未进入考试'
         }
       })
+      this.allPages = []
+      this.imgArea = []
+      console.log(res)
       res.forEach((item)=>{
-        if(item.studentCondition || item.studentCondition === 'outLook' || item.studentCondition === 'largeSound'){
+        if((item.studentCondition!=='normal' || item.studentCondition!=='login') || item.studentCondition === 'outLook' || item.studentCondition === 'largeSound'){
           let content = ''
           switch (item.studentCondition) {
             case 'outLook':

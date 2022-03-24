@@ -1,8 +1,8 @@
 <template>
   <div class="oneImgItem">
-    <img v-if="userId === imgItem.userId" v-lazy="imgItem.picUrl" alt="" @click="sendWarning">
+    <img  v-lazy="imgItem.picUrl" alt="" @click="sendWarning">
     <p class="userId">{{ "学号:"+imgItem.userId }}</p>
-    <p class="studentCondition">{{ "理由:" + imgItem.studentCondition }}</p>
+    <p class="studentCondition">{{ imgItem.studentCondition?"理由: " + imgItem.condition:"理由: " + '异常' }}</p>
   </div>
 </template>
 

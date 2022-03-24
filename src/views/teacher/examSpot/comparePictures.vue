@@ -1,6 +1,6 @@
 <template>
   <div class="compare">
-    <img v-if="userId === systemPage.userId" :src="systemPage.picUrl" alt="">
+    <img  :src="systemPage.picUrl" alt="">
   </div>
 </template>
 

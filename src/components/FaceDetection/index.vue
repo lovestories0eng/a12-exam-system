@@ -177,6 +177,12 @@ export default {
           title: '人脸校验',
           message: '正在进行人脸校验，请开启相机访问权限并对准相机。'
         })
+        try {
+          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
+          console.log('login上传成功')
+        }catch (e) {
+          console.log(e.message)
+        }
         await detectFaceInfo(this.imageBase64)
             .then(async res => {
               let resultFaceToken = res.data.faces[0].face_token
@@ -186,12 +192,6 @@ export default {
                     //可信度大于85则进入考试
                     if (res.data.confidence > 20) {
                       //login page
-                      try {
-                        const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
-                        console.log(res)
-                      }catch (e) {
-                        console.log(e.message)
-                      }
                       _this.faceComparedSuccess = true;
                       this.thisVideo.srcObject.getTracks()[0].stop();
                       this.camera = false;
