@@ -246,7 +246,7 @@ export const teacherRoutes = [
       },
       {
         path: '/exam/exam-data',
-        component: () => import('@/views/teacher/examData'),
+        component: () => import('@/views/teacher/examData/charts/index'),
         name: '考试数据',
         meta: {
           title: '考试数据',
