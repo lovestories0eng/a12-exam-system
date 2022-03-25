@@ -71,38 +71,33 @@ export default {
         return
       this.checkFaceInfo(newValue)
     },
-    isOpenCamera(newValue) {
+    async isOpenCamera(newValue) {
       if (newValue) {
         let v = document.querySelector('#do-camera')
         v.style.visibility = 'hidden'
         this.getCompetence()
+        setTimeout(async ()=>{
+          try {
+            this.draw()
+            const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
+            console.log('login上传成功')
+            console.log(res)
+          }catch (e) {
+            console.log(e.message)
+          }
+        },2000)
+        //normal
         setInterval(async () => {
           this.draw()
           try{
             // normal
-            const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId)
-            console.log(res)
+            await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId)
           }catch (e) {
             console.log(e.message)
           }
         }, 10000)
       }
     }
-  },
-  mounted() {
-    setInterval(async ()=>{
-      this.draw()
-      if(document.visibilityState === 'hidden'){
-        try {
-          //outLook picture
-          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'outLook')
-          console.log('切屏照片上传成功')
-          console.log(res)
-        }catch (e) {
-          console.log(e.message)
-        }
-      }
-    },1000)
   },
   methods: {
     draw(){
@@ -134,13 +129,6 @@ export default {
       //打开摄像头
       this.getCompetence();
       await this.compareFaceInfo(row)
-      this.draw()
-      try {
-        const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'login')
-        console.log('login上传成功')
-      }catch (e) {
-        console.log(e.message)
-      }
     },
     getCompetence: openCamera,
     // 与人脸集信息进行比较
@@ -231,19 +219,19 @@ export default {
       this.thisVideo.srcObject.getTracks()[0].stop();
       this.camera = false;
     },
-    async father_touch(){
+    async father_touch(type){
       this.draw()
       if(document.visibilityState === 'hidden'){
         try {
           //large sound
-          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,'largeSound')
+          const res = await sendCheatPicture(this.dataURLtoFile(this.imageBase64, new Date().getTime()), this.$props.examId,type)
           console.log('声音过大照片上传成功')
           console.log(res)
         }catch (e) {
           console.log(e.message)
         }
       }
-    }
+    },
   }
 }
 </script>

@@ -114,7 +114,7 @@ export default {
           if (event.data.volume)  _volume = event.data.volume;
           if(this.judgeLargeSound(_volume * 100)){
             Message.error('请保持安静')
-            this.$refs.faceDetection.father_touch()
+            this.$refs.faceDetection.father_touch('largeSound')
           }
 
           this.leads((_volume * 100) / _sensibility)
@@ -165,9 +165,10 @@ export default {
           console.log(e.message)
         }
       }
-      if(document.visibilityState === 'hidden' && this.leftTimes>=0)
+      if(document.visibilityState === 'hidden' && this.leftTimes>=0) {
         Message.error(`考试途中请勿切屏，超过5次将视作作弊！！还剩${--this.leftTimes}次`)
-      await sendCheatPicture()
+        await this.$refs.faceDetection.father_touch('outLook')
+      }
       if(this.leftTimes<0 && document.visibilityState === 'hidden'){
         Message.error('您已被记为作弊，5S后将自动关闭页面')
         //发送作弊信息

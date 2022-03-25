@@ -1,7 +1,7 @@
 <template>
   <div id="myDo">
     <SoundDetection
-      :exam-id="answer.examId"
+      :exam-id="myExamId"
     ></SoundDetection>
     <MattersNeedingAttention
       v-if="showNotice"
@@ -110,6 +110,7 @@ export default {
   components: {QuestionAnswerEdit, SoundDetection, MattersNeedingAttention},
   data() {
     return {
+      myExamId:0,
       container: [],
       lastTime: null,
       gap: null,
@@ -145,6 +146,7 @@ export default {
   async created() {
     this.isFullScreen = document.fullscreenElement !== null
     let examId = this.$route.query.examId
+    this.myExamId = examId
     let _this = this
     // 得到数据
     if (examId && parseInt(examId) !== 0) {

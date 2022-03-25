@@ -2,15 +2,15 @@
   <div class="functionsTable">
     <div class="checkPictures">
       <div class="bar" @click="factory(getEl('.checkPictures .content'),oCheckPicturesHeight)()">比对照片</div>
-      <div class="content">
-        <comparePictures :system-page="systemPage" :user-id="$props.userId"></comparePictures>
+      <div class="content" style="height: 350px;width: 100%">
+        <comparePictures :system-page="loginPictures[0]" :newest-page="normalPictures[0]" :user-id="$props.userId"></comparePictures>
       </div>
     </div>
     <hr>
     <div class="checkAllPictures">
       <div class="bar" @click="factory(getEl('.checkAllPictures .content'),oAllPicturesHeight)()">查看所有照片</div>
       <div class="content" style="overflow: hidden">
-        <AllPages :all-pages = 'allPages' :user-id="$props.userId"></AllPages>
+        <AllPages :all-pages="normalPictures" :user-id="$props.userId"></AllPages>
       </div>
     </div>
     <hr>
@@ -45,6 +45,7 @@ import sendWarning from "@/api/cheatData/sendWarning";
 import AllPages from "views/teacher/examSpot/AllPages";
 export default {
   name: "FunctionsTables",
+  inject:['reload'],
   components:{warningStudent,forceQuitExam,comparePictures,AllPictures,AllPages},
   props:{
     name:{
@@ -65,16 +66,17 @@ export default {
         return 0
       }
     },
-    allPages:{
+
+    loginPictures:{
       type:Array,
       default(){
         return []
       }
     },
-    systemPage:{
-      type:Object,
+    normalPictures:{
+      type:Array,
       default(){
-        return null
+        return []
       }
     }
   },
@@ -91,11 +93,15 @@ export default {
     this.oForceStudentOutExamHeight = this.getEl('.forceStudentOutExam .content').clientHeight
     this.oCheckPicturesHeight = this.getEl('.checkPictures .content').clientHeight
     this.oAllPicturesHeight = this.getEl('.checkAllPictures .content').clientHeight
-    document.querySelectorAll('.bar').forEach((item)=>{
+    document.querySelectorAll('.bar').forEach((item,index)=>{
+      if(index !== 0)
       item.click()
     })
   },
   methods:{
+    getNewPage(){
+      this.reload()
+    },
     factory(el,height){
       console.log(el)
       return function (){
@@ -157,6 +163,11 @@ export default {
   .checkPictures{
     width: 100%;
     overflow:hidden;
+    .el-button{
+      display: block;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
   }
   .quit{
     width: 100%;

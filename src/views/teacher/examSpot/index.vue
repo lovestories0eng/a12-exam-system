@@ -52,7 +52,16 @@
           </div>
         </div>
       </div>
-      <FunctionsTables v-if="do_something" :exam-id="selectId" :name="bad_student.name" :user-id="bad_student.id" @functionalQuit="functionalQuit" :all-pages="allPages" :system-page="systemPage"></FunctionsTables>
+      <FunctionsTables
+        v-if="do_something"
+        :exam-id="selectId"
+        :name="bad_student.name"
+        :user-id="bad_student.id"
+        :login-pictures="out_data[bad_student.id.toString()]['login']"
+        :normal-pictures="out_data[bad_student.id.toString()]['normal']"
+        @functionalQuit="functionalQuit"
+      >
+      </FunctionsTables>
       <a v-if="!do_something" href="javascript:" data-title="同步数据" @click="clickReload"></a>
     </div>
     <loading v-if="isLoading"></loading>
@@ -71,34 +80,34 @@ import processData from "@/api/cheatData/processData";
 import loading from "views/teacher/examSpot/loading";
 import awesomeButton from "utils/awesomeButton";
 import FunctionsTables from "views/teacher/examSpot/FunctionsTables";
+
 export default {
   name: "index",
-  components: {oneStudentItem,oneImgItem,StatisticalTable,examTable,loading,FunctionsTables},
+  components: {oneStudentItem, oneImgItem, StatisticalTable, examTable, loading, FunctionsTables},
   inject: ['reload'],
   data() {
     return {
-      bad_student:{
-        name:'',
-        id:0,
+      bad_student: {
+        name: '',
+        id: 0,
       },
-      systemPage:null,
-      allPages:[],
-      do_something:false,
-      selectExamId:'',
-      isLoading:false,
+      out_data: null,
+      do_something: false,
+      selectExamId: '',
+      isLoading: false,
       dataOrigin: [],
-      selectId:'',
-      isEntry:false,
-      isTable:false,
+      selectId: '',
+      isEntry: false,
+      isTable: false,
       isStatus: false,
-      isImages:false,
-      imgAreaHeight:0,
-      tableAreaHeight:0,
+      isImages: false,
+      imgAreaHeight: 0,
+      tableAreaHeight: 0,
       statusHeight: 0,
       searchKeyWord: '',
       studentInfo: [],
-      initImgArea:[],
-      imgArea:[],
+      initImgArea: [],
+      imgArea: [],
       replaceArray: []
     }
   },
@@ -110,17 +119,17 @@ export default {
     awesomeButton()
   },
   methods: {
-    functionalQuit(){
+    functionalQuit() {
       this.do_something = false
     },
-    clickReload(){
+    clickReload() {
       this.getInfo(this.selectId)
     },
-    entry(){
+    entry() {
       this.isEntry = !this.isEntry
       this.getPictures()
     },
-    async getPictures(){
+    async getPictures() {
       let res = await getCheatPic(this.selectId)
     },
     isShowStatus() {
@@ -129,93 +138,113 @@ export default {
       oDataArea.style.height = this.isStatus ? '0' : this.statusHeight + 'px'
       this.isStatus = !this.isStatus
     },
-    isShowImages(){
+    isShowImages() {
       let oImgArea = document.querySelector('.imgArea')
-      this.imgAreaHeight = this.imgAreaHeight === 0? oImgArea.clientHeight : this.imgAreaHeight
-      oImgArea.style.height = this.isImages? '0':this.imgAreaHeight + 'px'
+      this.imgAreaHeight = this.imgAreaHeight === 0 ? oImgArea.clientHeight : this.imgAreaHeight
+      oImgArea.style.height = this.isImages ? '0' : this.imgAreaHeight + 'px'
       this.isImages = !this.isImages
     },
     isShowTable() {
       let oTableArea = document.querySelector('.tableArea')
-      this.tableAreaHeight = this.tableAreaHeight === 0? oTableArea.clientHeight : this.tableAreaHeight
-      oTableArea.style.height = this.isTable ? '0':this.tableAreaHeight + 'px'
+      this.tableAreaHeight = this.tableAreaHeight === 0 ? oTableArea.clientHeight : this.tableAreaHeight
+      oTableArea.style.height = this.isTable ? '0' : this.tableAreaHeight + 'px'
       this.isTable = !this.isTable
     },
-    async beforeEntryWatch(scoped){
+    async beforeEntryWatch(scoped) {
       this.selectId = scoped.examId
       this.isEntry = !this.isEntry
       this.isLoading = !this.isLoading
-      setTimeout(()=>{
+      setTimeout(() => {
         this.isLoading = !this.isLoading
         document.querySelector('.exam-spot').style.visibility = 'visible'
-      },2000)
-     await  this.getInfo(this.selectId)
+      }, 2000)
+      await this.getInfo(this.selectId)
       //监听浏览器回退事件
       const _this = this
-      function watchPopEvent(){
-        _this.isEntry = ! _this.isEntry
+
+      function watchPopEvent() {
+        _this.isEntry = !_this.isEntry
         _this.imgArea = _this.initImgArea
-        window.removeEventListener('popstate',watchPopEvent)
+        window.removeEventListener('popstate', watchPopEvent)
       }
+
       history.pushState(null, null, document.URL);
-      window.addEventListener("popstate", watchPopEvent,false)
+      window.addEventListener("popstate", watchPopEvent, false)
 
       await this.getInfo(this.selectId)
-      setTimeout(()=>{
+      setTimeout(() => {
         this.isShowStatus()
         this.isShowStatus()
         this.isShowTable()
         this.isShowImages()
-      },50)
-      setInterval(async ()=>{
+      }, 50)
+      setInterval(async () => {
         await this.getInfo(scoped.examId)
-      },60000)
+      }, 60000)
     },
-    async getInfo(id){
-      const {data:detailInfo} =  await getSwitchTimes(id)
-      const {data:res} = await getCheatPic(this.selectId)
+    async getInfo(id) {
+      const {data: detailInfo} = await getSwitchTimes(id)
+      const {data: res} = await getCheatPic(this.selectId)
       this.dataOrigin = processData(detailInfo)
-      this.replaceArray = this.dataOrigin.map((item,index)=>{
+      this.replaceArray = this.dataOrigin.map((item, index) => {
         return {
-          id:item['userId'],
-          name:item['name'],
-          avatar:`avatar/p${index+1}.webp`,
-          studentCondition:item['studentCondition']?item['studentCondition']:'未进入考试'
+          id: item['userId'],
+          name: item['name'],
+          avatar: `avatar/p${index + 1}.webp`,
+          studentCondition: item['studentCondition'] ? item['studentCondition'] : '未进入考试'
         }
       })
       this.allPages = []
       this.imgArea = []
-      console.log(res)
-      res.forEach((item)=>{
-        if((item.studentCondition!=='normal' || item.studentCondition!=='login') || item.studentCondition === 'outLook' || item.studentCondition === 'largeSound'){
-          let content = ''
-          switch (item.studentCondition) {
-            case 'outLook':
-              content = '切屏'
-              break;
-            case 'largeSound':
-              content = '吵闹'
-              break;
-            default:
-              break;
-          }
-          this.imgArea.push({userId:item.userId,picUrl: item.picUrl,studentCondition:content})
-        }else if(item.studentCondition!=='login'){
-          this.allPages.push(item)
-        }else{
-          this.systemPage = item
+      this.out_data = this.tryBuildData(res)
+      for (let i = 0; i < this.dataOrigin.length; i++) {
+        const tag = this.dataOrigin[i].userId.toString()
+        if (this.out_data[tag]) {
+          this.imgArea = [
+            ...this.out_data[tag]['abnormal']['outLook'],
+            ...this.out_data[tag]['abnormal']['largeSound']
+          ]
+          this.replaceArray[i].avatar = this.out_data[tag]['normal'][0].picUrl
         }
-        for(let i = 0;i<this.replaceArray.length;i++){
-          if(this.replaceArray[i].id === item.userId && (!item.studentCondition || item.studentCondition === 'normal') && (!this.replaceArray[i].getTime || Date.parse(item.getTime) > this.replaceArray[i].getTime)){
-            this.replaceArray[i].avatar = item.picUrl
-            this.replaceArray[i].getTime = Date.parse(item.getTime)
-          }
-        }
-      })
+
+      }
     },
-    tryToDo(studentInfo){
+    tryToDo(studentInfo) {
       this.do_something = true
       this.bad_student = studentInfo
+    },
+    tryBuildData(value) {
+      let result = {}
+      value.forEach(item => {
+        const tag = item.userId.toString()
+        const condition = item.studentCondition
+        if (!result[tag]) {
+          result[tag] = {
+            'normal': [],
+            'abnormal': {
+              'outLook': [],
+              'largeSound': []
+            },
+            'login': []
+          }
+        }
+        switch (condition) {
+          case 'normal':
+            item.studentCondition = "正常"
+            result[tag][condition].push(item)
+            break;
+          case 'login':
+            result[tag][condition].push(item)
+            break;
+          default:
+            item.studentCondition = item.studentCondition === 'outLook' ? '切屏' : '吵闹'
+            result[tag]['abnormal'][condition].push(item)
+            break;
+        }
+
+      })
+      return result
+
     }
   }
 }
@@ -223,30 +252,35 @@ export default {
 
 <style scoped lang="scss">
 
-.beforeEntry{
+.beforeEntry {
   position: absolute;
   left: 50%;
-  top:50%;
+  top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  span{
+
+  span {
     width: 300px;
     display: inline-block;
     text-align: center;
     margin-bottom: 20px;
   }
-  .inputExamId{
+
+  .inputExamId {
     height: 50px;
     width: 300px;
   }
 }
+
 .exam-spot {
   width: 100%;
   height: 100%;
   margin-left: 50px;
   position: relative;
+
   .students-status {
     position: relative;
     height: 100%;
+
     .dataArea {
       position: relative;
       display: flex;
@@ -266,10 +300,12 @@ export default {
       border: none;
     }
   }
-  .imgDisplay{
+
+  .imgDisplay {
     position: relative;
     height: 100%;
-    .imgArea{
+
+    .imgArea {
       position: relative;
       display: flex;
       overflow-y: scroll;
@@ -320,11 +356,13 @@ export default {
       font-family: Italic, serif;
     }
   }
-}::-webkit-scrollbar {
-   width: 6px;
-   height: 6px;
-   background: transparent;
- }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
 
 ::-webkit-scrollbar-thumb {
   background: transparent;
@@ -338,18 +376,21 @@ export default {
 :hover::-webkit-scrollbar-track {
   background: hsla(0, 0%, 53%, 0.1);
 }
-.stretch{
-  span{
+
+.stretch {
+  span {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    &:hover{
+
+    &:hover {
       cursor: pointer;
     }
   }
 }
-.tableArea{
+
+.tableArea {
   transition-duration: .5s;
   transition-property: all;
   transition-timing-function: ease;
@@ -359,17 +400,19 @@ export default {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-.stretch{
+
+.stretch {
   width: 100%;
-  height:50px;
-  background-color:white;
+  height: 50px;
+  background-color: white;
   box-shadow: whitesmoke 4px 4px 4px 4px;
-  text-align:center;
-  line-height:50px;
-  margin-bottom:20px;
-  margin-top:20px;
+  text-align: center;
+  line-height: 50px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
-.reload{
+
+.reload {
   width: 300px;
   height: 50px;
   position: absolute;
@@ -377,10 +420,11 @@ export default {
   left: 50%;
   transform: translateX(-50%);
 }
+
 a {
   position: absolute;
-  top:180%;
-  left:45%;
+  top: 180%;
+  left: 45%;
   transform: translateX(-50%);
   display: inline-block;
   padding: 1.2em 2em;
@@ -402,11 +446,7 @@ a {
     transition: box-shadow .5s ease, transform .2s ease;
     will-change: transform;
     box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
-    transform:
-        translateY(var(--ty, 0))
-        rotateX(var(--rx, 0))
-        rotateY(var(--ry, 0))
-        translateZ(var(--tz, -12px));
+    transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)) translateZ(var(--tz, -12px));
   }
 
   &:hover::before {
@@ -421,10 +461,7 @@ a {
     font-weight: bold;
     letter-spacing: .01em;
     will-change: transform;
-    transform:
-        translateY(var(--ty, 0))
-        rotateX(var(--rx, 0))
-        rotateY(var(--ry, 0));
+    transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0));
   }
 }
 
