@@ -4,7 +4,7 @@
       <el-form-item label="试题类型">
         <el-select v-model="form.exerciseType" placeholder="请选择试题类型">
           <el-option label="单选题" :value="questionMap('单选题')"></el-option>
-          <el-option label="五选题" :value="questionMap('五选题')"></el-option>
+          <el-option label="多选题" :value="questionMap('多选题')"></el-option>
           <el-option label="填空题" :value="questionMap('填空题')"></el-option>
           <el-option label="判断题" :value="questionMap('判断题')"></el-option>
           <el-option label="解答题" :value="questionMap('解答题')"></el-option>

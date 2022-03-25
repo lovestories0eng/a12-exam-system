@@ -80,7 +80,7 @@ export default {
 
       this.chart.setOption({
         title: {
-          text: '学科实力分析',
+          text: '学生学科实力分析',
           left: 'center'
         },
         tooltip: {

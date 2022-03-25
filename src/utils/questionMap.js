@@ -7,9 +7,12 @@ export const questionMap = (questionType) => {
       return 'choice4'
     }
     case 'choice5': {
-      return '五选题'
+      return '多选题'
     }
-    case '五选题': {
+    // case '五选题': {
+    //   return 'choice5'
+    // }
+    case '多选题': {
       return 'choice5'
     }
     case 'fill': {
