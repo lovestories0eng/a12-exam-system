@@ -1,8 +1,5 @@
 <template>
   <div id="myDo">
-    <SoundDetection
-      :exam-id="myExamId"
-    ></SoundDetection>
     <MattersNeedingAttention
       v-if="showNotice"
       @beforeEntryExam="beforeEntryExam"
@@ -18,6 +15,9 @@
           <span class="detail">
             学生姓名：{{ $store.getters.name }}
           </span>
+          <SoundDetection
+            :exam-id="myExamId"
+          ></SoundDetection>
         </div>
         <!-- 试卷总览 -->
         <el-row class="do-exam-title">

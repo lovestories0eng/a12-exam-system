@@ -5,7 +5,7 @@
       :is-open-camera="isOpenCamera"
       :exam-id="examId"
     ></FaceDetection>
-    <span>Microphone</span>
+    <span style="color: black;">音量检测</span>
     <div class="volumen-wrapper">
       <div class="led"></div>
       <div class="led"></div>
@@ -63,6 +63,11 @@ export default {
       listening: false,
       audioContext: null
     }
+  },
+  created() {
+    setTimeout(() => {
+      this.$message.warning('请保持安静')
+    }, 20000)
   },
   async mounted() {
     document.getElementById('audio').addEventListener('click', () => {
@@ -137,7 +142,7 @@ export default {
 
       this.listening = !this.listening
     },
-    judgeLargeSound:detectionLargeSound(.1),
+    judgeLargeSound:detectionLargeSound(.000008),
     openSoundTest(){
       this.isOpenCamera = true
       this.switchTimes = 0
@@ -184,16 +189,18 @@ export default {
 
 <style scoped>
   .container {
+    color: black;
     position: relative;
     width: 100%;
-    background-color: #292a38;
+    /*background-color: lightblue;*/
+    /*background-color: #eee;*/
     border-radius: 8px;
-    padding: 20px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 150px;
+    height: 50px;
   }
   span {
     font-size: 20px;
@@ -207,9 +214,9 @@ export default {
     align-items: center;
   }
   .led {
-    width: 40px;
-    height: 25px;
-    background-color: #292a38;
+    width: 22px;
+    height: 15px;
+    background-color: #eee;
     border-radius: 4px;
 
     box-shadow: -2px -2px 4px 0 #a7a7a73d inset, 2px 2px 4px 0 #0a0a0e5e inset;
