@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-steps :active="active" finish-status="success">
+  <div style="box-shadow: 0 2px 15px rgba(0, 0, 255, .2); padding: 10px;">
+    <el-steps :active="active + 1" finish-status="success">
       <el-step title="步骤 1" description="试卷总览"></el-step>
       <el-step title="步骤 2" description="添加题目"></el-step>
       <el-step title="步骤 3" description="试卷提交"></el-step>
@@ -90,6 +90,23 @@
       </el-form>
     </el-form>
     <el-form v-show="active === 2">
+      <h2 style="text-align:center;">试卷预览</h2>
+      <!-- 试卷预览以及确认创建试卷 -->
+      <el-form ref="form" label-width="100px">
+        <el-form-item v-for="(item, index) in tableData" :key="index">
+          <QuestionAnswerEdit
+            v-if="item[item.exerciseType + 'Tea'].status === '已选择'"
+            :id="'question-'+ item.itemOrder"
+            :q-type-str="item.exerciseType"
+            :chapter-id="item.chapterId"
+            :chapter-name="item.chapterName"
+            :major-name="item.majorName"
+            :question-overview="item[item.exerciseType + 'Tea']"
+            :exercise-value="item.exerciseValue"
+            class="record-answer-info"
+          />
+        </el-form-item>
+      </el-form>
       <el-button @click="createExam">创建试卷</el-button>
     </el-form>
     <el-button style="margin-top: 12px;" @click="previous">上一步</el-button>
@@ -104,12 +121,14 @@ import {questionMap} from "utils/questionMap"
 import {createExam} from "@/api/exam/publishPaper"
 import QuestionAnswerShow from "components/exam/QuestionAnswerShow"
 import QuestionAnswerCreate from "components/exam/QuestionAnswerCreate"
+import QuestionAnswerEdit from "components/exam/QuestionAnswerEdit"
 
 export default {
   name: "ExamForm",
   components: {
     QuestionAnswerShow,
-    QuestionAnswerCreate
+    QuestionAnswerCreate,
+    QuestionAnswerEdit
   },
   data() {
     return {
@@ -225,6 +244,7 @@ export default {
             this.tableData.push(res[i])
             // this.tableData.push(res[i][exerciseType + 'Tea'])
           }
+          console.log(this.tableData)
         }
       })
       .catch(error => {
@@ -232,7 +252,7 @@ export default {
       })
     },
     next() {
-      if (this.active > 2) {
+      if (this.active >= 2) {
         this.$message.error('步骤已完毕')
       } else {
         this.active++

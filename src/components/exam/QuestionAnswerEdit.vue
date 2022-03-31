@@ -99,11 +99,6 @@
         <span class="question-show-item">题目分数：</span>
         <span>{{ exerciseValue }}</span>
       </div>
-      <div class="question-answer-show-item">
-        <span v-if="qTypeStr==='choice4'||qTypeStr==='choice5' ||qTypeStr==='fill'||qTypeStr==='judge'"
-              class="q-item-span-content" v-html="questionOverview.rightAnswer"
-        />
-      </div>
     </el-card>
     <div v-else>
     </div>
