@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" style="box-shadow: 0 2px 15px rgba(0, 0, 255, .2); padding: 10px;">
     <el-form>
       <el-form-item label="试题类型">
         <el-select v-model="form.exerciseType" placeholder="请选择试题类型">
