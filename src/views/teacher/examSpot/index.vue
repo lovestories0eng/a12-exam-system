@@ -38,22 +38,6 @@
             @tryToDo="tryToDo"
           >
           </oneStudentItem>
-          <oneStudentItem
-            v-for="item of replaceArray"
-            :key="item.id"
-            :student-info="item"
-            :exam-id="selectId"
-            @tryToDo="tryToDo"
-          >
-          </oneStudentItem>
-          <oneStudentItem
-            v-for="item of replaceArray"
-            :key="item.id"
-            :student-info="item"
-            :exam-id="selectId"
-            @tryToDo="tryToDo"
-          >
-          </oneStudentItem>
         </div>
       </div>
       <div v-if="!do_something"
