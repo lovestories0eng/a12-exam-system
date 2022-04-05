@@ -207,8 +207,8 @@ export default {
         return {
           id: item['userId'],
           name: item['name'],
-          // avatar: `avatar/p${index + 1}.webp`,
-          avatar: `avatar/P${index + 1}.JPG`,
+          avatar: `avatar/p${index + 1}.webp`,
+          // avatar: `avatar/P${index + 1}.JPG`,
           studentCondition: item['studentCondition'] ? item['studentCondition'] : '未进入考试'
         }
       })
