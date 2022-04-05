@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" style="box-shadow: 0 2px 15px rgba(0, 0, 255, .2); padding: 10px;">
+  <div class="wrapper" style="padding: 10px; border: solid 1px #eee8d5">
     <el-form>
       <el-form-item label="试题类型">
         <el-select v-model="form.exerciseType" placeholder="请选择试题类型">
@@ -10,24 +10,36 @@
           <el-option label="解答题" :value="questionMap('解答题')"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="学科  ">
-        <el-select v-model="form.majorId" style="width: 25%;" placeholder="请选择学科" @change="loadChapterData">
-          <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
-        </el-select>
-        <!--<el-input v-model="form.majorId" style="width: 25%;" placeholder="请输入学科"></el-input>-->
-      </el-form-item>
-      <el-form-item label="章节  ">
-        <el-select v-model="form.chapterId" style="width: 25%;" placeholder="请先选择学科" :disabled="form.majorId === ''">
-          <el-option v-for="(item, index) in chaptersShow" :key="index" :value="item.chapterId" :label="item.chapterName"></el-option>
-        </el-select>
-        <!--<el-input v-model="form.chapterId" style="width: 25%;" placeholder="请选择章节"></el-input>-->
-      </el-form-item>
-      <el-form-item label="分值  ">
-        <el-input v-model="form.exerciseValue" style="width: 25%;"></el-input>
-      </el-form-item>
-      <el-form-item label="难度  ">
-        <el-rate v-model="form.exerciseHard" style="margin-top: 11px"></el-rate>
-      </el-form-item>
+      <el-row>
+        <el-col span="10">
+          <el-form-item label="学科">
+            <el-select v-model="form.majorId" placeholder="请选择学科" @change="loadChapterData">
+              <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
+            </el-select>
+            <!--<el-input v-model="form.majorId" style="width: 25%;" placeholder="请输入学科"></el-input>-->
+          </el-form-item>
+        </el-col>
+        <el-col span="10">
+          <el-form-item label="章节  ">
+            <el-select v-model="form.chapterId" placeholder="请先选择学科" :disabled="form.majorId === ''">
+              <el-option v-for="(item, index) in chaptersShow" :key="index" :value="item.chapterId" :label="item.chapterName"></el-option>
+            </el-select>
+            <!--<el-input v-model="form.chapterId" style="width: 25%;" placeholder="请选择章节"></el-input>-->
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col span="10">
+          <el-form-item label="分值  ">
+            <el-input v-model="form.exerciseValue" style="width: 25%;"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col span="10">
+          <el-form-item label="难度  ">
+            <el-rate v-model="form.exerciseHard" style="margin-top: 11px"></el-rate>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item label="题目">
         <!--<el-input v-model="variable.question" style="width: 25%;"></el-input>-->
         <el-upload

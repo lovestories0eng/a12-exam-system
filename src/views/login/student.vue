@@ -94,8 +94,10 @@ export default {
     return {
       title: "学生登录",
       loginForm: {
-        userId: "20273110",
-        userPassword: "123456",
+        // userId: "20273110",
+        // userPassword: "123456",
+        userId: "",
+        userPassword: ""
       },
       loginRules: {
         userId: [{ required: true, trigger: 'blur', validator: validateUsername }],

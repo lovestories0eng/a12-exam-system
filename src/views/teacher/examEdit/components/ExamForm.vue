@@ -1,70 +1,83 @@
 <template>
-  <div style="box-shadow: 0 2px 15px rgba(0, 0, 255, .2); padding: 10px;">
+  <div style="padding: 10px; border: solid 1px #eee8d5">
     <el-steps :active="active + 1" finish-status="success">
       <el-step title="步骤 1" description="试卷总览"></el-step>
       <el-step title="步骤 2" description="添加题目"></el-step>
       <el-step title="步骤 3" description="试卷提交"></el-step>
     </el-steps>
 
-    <el-form v-show="active === 0" ref="form" :model="form" label-width="80px">
-      <el-form-item label="试卷名称">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-      <el-form-item label="试卷类型">
-        <el-select v-model="form.examType" placeholder="请选择试卷类型">
-          <el-option label="班级试卷" value="班级试卷"></el-option>
-          <el-option label="学生个人试卷" value="学生个人试卷"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="考试时间">
-        <el-col :span="5">
-          <el-date-picker v-model="form.startEndDate" type="datetimerange" range-separator="至" placeholder="选择日期" style="width: 100%;" value-format="timestamp"></el-date-picker>
+    <el-form v-show="active === 0" ref="form" :model="form" label-width="80px" style="width: 100%;">
+      <el-row>
+        <el-col span="10">
+          <el-form-item label="试卷名称">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
         </el-col>
-      </el-form-item>
-      <el-form-item label="班级">
-        <el-select v-model="form.classBelonging" @change="changeClassBelonging">
-          <el-option v-for="item in classInfo" :key="item.classId" :label="item.className" :value="item.classId"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="学生列表">
-        <div v-if="form.studentList.length === 0 && form.classBelonging === ''" style="color: red">
-          请先选择班级
-        </div>
-        <div v-else-if="form.studentList.length === 0 && form.classBelonging !== ''" style="color: red">
-          该班暂无学生
-        </div>
-        <el-checkbox-group v-else v-model="form.studentChosenList">
-          <el-checkbox
-            v-for="(item, index) in form.studentList"
-            :key="index"
-            :label="item"
-            :value="form.studentChosenId[index]"
-            name="type"
-          >
-          </el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-
+        <el-col span="10">
+          <el-form-item label="试卷类型">
+            <el-select v-model="form.examType" placeholder="请选择试卷类型">
+              <el-option label="班级试卷" value="班级试卷"></el-option>
+              <el-option label="学生个人试卷" value="学生个人试卷"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col span="10">
+          <el-form-item label="班级">
+            <el-select v-model="form.classBelonging" @change="changeClassBelonging">
+              <el-option v-for="item in classInfo" :key="item.classId" :label="item.className" :value="item.classId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col span="10">
+          <el-form-item label="学生列表">
+            <div v-if="form.studentList.length === 0 && form.classBelonging === ''" style="color: red">
+              请先选择班级
+            </div>
+            <div v-else-if="form.studentList.length === 0 && form.classBelonging !== ''" style="color: red">
+              该班暂无学生
+            </div>
+            <el-checkbox-group v-else v-model="form.studentChosenList">
+              <el-checkbox
+                v-for="(item, index) in form.studentList"
+                :key="index"
+                :label="item"
+                :value="form.studentChosenId[index]"
+                name="type"
+              >
+              </el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <!--<el-form-item label="学科">-->
       <!--  <el-input v-model="form.major" style="width: 25%;" placeholder="请输入学科"></el-input>-->
       <!--</el-form-item>-->
       <!--<el-form-item label="章节">-->
       <!--  <el-input v-model="form.chapter" style="width: 25%;" placeholder="请输入章节"></el-input>-->
       <!--</el-form-item>-->
-      <el-form-item label="学科">
-        <el-select v-model="form.majorId" style="width: 25%;" placeholder="请选择学科" @change="loadChapterData">
-          <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
-        </el-select>
+      <el-row>
+        <el-col span="10">
+          <el-form-item label="学科">
+            <el-select v-model="form.majorId" placeholder="请选择学科" @change="loadChapterData">
+              <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col span="10">
+          <el-form-item label="章节  ">
+            <el-select v-model="form.chapterId" placeholder="请先选择学科" :disabled="form.majorId === ''">
+              <el-option v-for="(item, index) in chaptersShow" :key="index" :label="item.chapterName" :value="item.chapterId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="考试时间">
+        <el-col :span="5">
+          <el-date-picker v-model="form.startEndDate" type="datetimerange" range-separator="至" placeholder="选择日期" style="width: 100%;" value-format="timestamp"></el-date-picker>
+        </el-col>
       </el-form-item>
-
-
-      <el-form-item label="章节  ">
-        <el-select v-model="form.chapterId" style="width: 25%;" placeholder="请先选择学科" :disabled="form.majorId === ''">
-          <el-option v-for="(item, index) in chaptersShow" :key="index" :label="item.chapterName" :value="item.chapterId"></el-option>
-        </el-select>
-      </el-form-item>
-
-
       <el-form-item label="备注">
         <el-input v-model="form.note" type="textarea"></el-input>
       </el-form-item>

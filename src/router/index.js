@@ -250,7 +250,7 @@ export const teacherRoutes = [
         name: '考试数据',
         meta: {
           title: '考试数据',
-          icon: 'cuotiben'
+          icon: 'shujukanban'
         }
       },
     ]

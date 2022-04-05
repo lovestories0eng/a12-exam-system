@@ -1,7 +1,7 @@
 <template>
   <div class="allpages" style="width: 80%;height: 500px;display: flex;flex-wrap: wrap;margin:0 auto;margin-top: 50px;">
     <div v-for="(item,index) of allPages" :key="item.userId + index + ''">
-      <img :src="item.picUrl" alt="" style="width: 150px;height: 150px;margin-right: 20px">
+      <img v-lazy="item.picUrl" alt="" style="width: 150px;height: 150px;margin-right: 20px">
       <p>{{ processTimeTamp(item.getTime) }}</p>
     </div>
   </div>

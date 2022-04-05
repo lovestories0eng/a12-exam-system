@@ -94,8 +94,10 @@ export default {
     return {
       title: "管理员登录",
       loginForm: {
-        userId: "20000000",
-        userPassword: "123456",
+        // userId: "20000000",
+        // userPassword: "123456",
+        userId: "",
+        userPassword: ""
       },
       loginRules: {
         userId: [{ required: true, trigger: 'blur', validator: validateUsername }],
