@@ -1,7 +1,7 @@
 <template>
   <div style="line-height:1.8;">
     <el-card
-      v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='choice8'"
+      v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='solve'"
       :style="cardStyle"
     >
       <div class="bar">
@@ -71,6 +71,20 @@
         </div>
       </div>
       <div v-if="qTypeStr==='fill'">
+        <div>
+          <!--<el-input v-model="answer.answer" style="width: 50%;" @change="answer.completed = true" />-->
+          <mavon-editor
+            v-model="answer.answer"
+            class="mavon-editor-subject-answer"
+            :toolbars="toolbars"
+            :autofocus="false"
+            default-open="preview"
+            :editable="true"
+            :subfield="true"
+          />
+        </div>
+      </div>
+      <div v-if="qTypeStr==='solve'">
         <div>
           <!--<el-input v-model="answer.answer" style="width: 50%;" @change="answer.completed = true" />-->
           <mavon-editor
@@ -218,7 +232,6 @@ export default {
   },
   mounted() {
     // for debug
-    // console.log(this.questionOverview)
     console.log(this.$props.judge)
   },
   methods: {

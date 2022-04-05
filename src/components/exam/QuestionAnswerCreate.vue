@@ -1,6 +1,6 @@
 <template>
   <div style="line-height:1.8;">
-    <el-card v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='choice8'" :style="cardStyle">
+    <el-card v-if="qTypeStr==='choice4'||qTypeStr==='choice5'||qTypeStr==='fill'||qTypeStr==='judge'||qTypeStr==='choice8'||qTypeStr==='solve'" :style="cardStyle">
       <div class="bar">
         <span v-if="majorName.length !== 0" class="desc">学科：{{ majorName }}</span>
         <span class="desc">题型：{{ questionMap(qTypeStr) }}</span>
@@ -189,7 +189,7 @@ export default {
     })
   },
   mounted() {
-    // console.log(this.questionOverview)
+    console.log(this.questionOverview)
   },
   methods: {
     handleClick() {

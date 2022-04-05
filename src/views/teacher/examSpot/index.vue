@@ -38,6 +38,22 @@
             @tryToDo="tryToDo"
           >
           </oneStudentItem>
+          <oneStudentItem
+            v-for="item of replaceArray"
+            :key="item.id"
+            :student-info="item"
+            :exam-id="selectId"
+            @tryToDo="tryToDo"
+          >
+          </oneStudentItem>
+          <oneStudentItem
+            v-for="item of replaceArray"
+            :key="item.id"
+            :student-info="item"
+            :exam-id="selectId"
+            @tryToDo="tryToDo"
+          >
+          </oneStudentItem>
         </div>
       </div>
       <div v-if="!do_something"
@@ -191,7 +207,8 @@ export default {
         return {
           id: item['userId'],
           name: item['name'],
-          avatar: `avatar/p${index + 1}.webp`,
+          // avatar: `avatar/p${index + 1}.webp`,
+          avatar: `avatar/P${index + 1}.JPG`,
           studentCondition: item['studentCondition'] ? item['studentCondition'] : '未进入考试'
         }
       })

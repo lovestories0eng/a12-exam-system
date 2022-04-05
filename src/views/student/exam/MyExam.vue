@@ -132,13 +132,18 @@ export default {
     examClassification()
       .then(response => {
         this.allExams = response.data
+        console.log(this.allExams)
         for (let i of this.allExams) {
+          // 返回的数据中存在null值，做特殊处理
+          if (i === null) continue
+          // console.log(i.examBeginTime)
           i.processedBeginTime = formatDate(new Date(i.examBeginTime), 'yyyy-MM-dd hh:ss')
           i.processedEndTime = formatDate(new Date(i.examEndTime), 'yyyy-MM-dd hh:ss')
           let index = this.parseCategory(i.examBeginTime, i.examEndTime)
           this.examLists[index].push(i)
         }
         this.examsShow = this.examLists
+        console.log(this.examsShow)
       }
     )
   },

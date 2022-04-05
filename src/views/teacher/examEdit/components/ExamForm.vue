@@ -8,12 +8,12 @@
 
     <el-form v-show="active === 0" ref="form" :model="form" label-width="80px" style="width: 100%;">
       <el-row>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="试卷名称">
             <el-input v-model="form.name"></el-input>
           </el-form-item>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="试卷类型">
             <el-select v-model="form.examType" placeholder="请选择试卷类型">
               <el-option label="班级试卷" value="班级试卷"></el-option>
@@ -23,14 +23,14 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="班级">
             <el-select v-model="form.classBelonging" @change="changeClassBelonging">
               <el-option v-for="item in classInfo" :key="item.classId" :label="item.className" :value="item.classId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="学生列表">
             <div v-if="form.studentList.length === 0 && form.classBelonging === ''" style="color: red">
               请先选择班级
@@ -58,14 +58,14 @@
       <!--  <el-input v-model="form.chapter" style="width: 25%;" placeholder="请输入章节"></el-input>-->
       <!--</el-form-item>-->
       <el-row>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="学科">
             <el-select v-model="form.majorId" placeholder="请选择学科" @change="loadChapterData">
               <el-option v-for="(item, index) in majors" :key="index" :label="item.majorName" :value="item.majorId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           <el-form-item label="章节  ">
             <el-select v-model="form.chapterId" placeholder="请先选择学科" :disabled="form.majorId === ''">
               <el-option v-for="(item, index) in chaptersShow" :key="index" :label="item.chapterName" :value="item.chapterId"></el-option>
@@ -176,7 +176,6 @@ export default {
     getMajorList()
     .then(res => {
       this.majors = res.data
-      console.log(this.majors)
     })
   },
   methods: {
@@ -186,7 +185,6 @@ export default {
         formData.append('majorId', majorId)
         getChapterByMajorId(formData)
         .then(res => {
-          console.log(res);
           this.chapters[majorId] = res.chapters
           this.chaptersShow = res.chapters
         })

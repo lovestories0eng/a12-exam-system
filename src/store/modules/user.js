@@ -76,7 +76,6 @@ const actions = {
       // utils里的login
       login({ userId: userId.trim(), userPassword: userPassword }).then(response => {
         const { data } = response
-        console.log(data)
         setUserId(userId)
         setToken(data.token)
         resolve()
@@ -97,7 +96,6 @@ const actions = {
         if (!data) {
           reject('认证失败，请重新登录')
         }
-        console.log(data);
         const { image, role, sex, address, phoneNumber, name, userId, email, faceToken } = data
         commit('SET_IMAGE', image)
         commit('SET_ROLE', role)
