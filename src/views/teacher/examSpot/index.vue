@@ -398,7 +398,7 @@ export default {
   transition-timing-function: ease;
   transition-delay: 0s;
 
-  height: 300px;
+  height: 200px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -424,9 +424,9 @@ export default {
 }
 
 a {
-  position: absolute;
-  top: 180%;
-  left: 45%;
+  position: fixed;
+  bottom: 5%;
+  left: 55%;
   transform: translateX(-50%);
   display: inline-block;
   padding: 1.2em 2em;
